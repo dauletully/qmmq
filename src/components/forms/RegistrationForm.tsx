@@ -294,13 +294,8 @@ export function RegistrationForm({
             error={e.phone}
             onChange={(d) => form.set('phone', d)}
             onBlur={() => form.blur('phone')}
-            describedById={e.phone ? 'r-phone-e' : 'r-phone-h r-phone-h2'}
+            describedById={e.phone ? 'r-phone-e' : undefined}
           />
-          {!e.phone && (
-            <p className="q-hint only-m" id="r-phone-h">
-              {f.phoneHint}
-            </p>
-          )}
           <ErrorText id="r-phone-e" text={e.phone} />
         </div>
         <Field id="r-email" label={f.email} required error={e.email}>
@@ -322,9 +317,6 @@ export function RegistrationForm({
           />
         </Field>
       </div>
-      <p className="q-hint only-d lp-phone-hint" id="r-phone-h2">
-        {f.phoneHint}
-      </p>
 
       {howHeardOptions.length > 0 && (
         <Field id="r-how" label={f.howHeard} optional={f.optional}>

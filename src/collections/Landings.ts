@@ -295,11 +295,6 @@ export const Landings: CollectionConfig = {
             },
             textarea('documentNote', 'Какой документ получает участник'),
             textarea('groupTerms', 'Условия для групп от школы'),
-            textarea('paymentNote', 'Об оплате', {
-              placeholder:
-                'Оплата — через менеджера: после регистрации он свяжется с вами по WhatsApp.',
-              description: 'Начало до двоеточия выделяется жирным.',
-            }),
             textarea('deadlineNote', 'О сроке регистрации', {
               description: 'Строка под счётчиком.',
             }),
@@ -466,7 +461,10 @@ export const Landings: CollectionConfig = {
               type: 'relationship',
               relationTo: 'partners',
               hasMany: true,
-              admin: { description: 'Порядок — перетаскиванием.' },
+              admin: {
+                description:
+                  'Выберите партнёров из раздела «Партнёры» или создайте нового кнопкой «+» справа от поля. Порядок на странице — как здесь, меняется перетаскиванием. После сохранения лендинга карточки обновятся на сайте.',
+              },
             },
           ],
         },

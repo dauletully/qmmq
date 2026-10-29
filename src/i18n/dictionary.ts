@@ -95,6 +95,7 @@ const ru = {
     kinds: {
       ministry: 'Организатор',
       organizer: 'Организатор',
+      partner: 'Партнёр',
       university: 'Вуз',
       sponsor: 'Спонсор',
       media: 'СМИ',
@@ -150,7 +151,6 @@ const ru = {
     experienceChips: { lt5: 'до 5', '5to15': '5–15', gt15: 'более 15' },
     phone: 'Телефон WhatsApp',
     phonePlain: 'Телефон',
-    phoneHint: 'Менеджер напишет на этот номер, чтобы договориться об оплате',
     email: 'E-mail',
     howHeard: 'Как вы узнали о конкурсе',
     howHeardPh: 'Выберите вариант',
@@ -395,6 +395,7 @@ const kk: Dict = {
     kinds: {
       ministry: 'Ұйымдастырушы',
       organizer: 'Ұйымдастырушы',
+      partner: 'Серіктес',
       university: 'ЖОО',
       sponsor: 'Демеуші',
       media: 'БАҚ',
@@ -451,7 +452,6 @@ const kk: Dict = {
     experienceChips: { lt5: '5-ке дейін', '5to15': '5–15', gt15: '15-тен көп' },
     phone: 'WhatsApp телефоны',
     phonePlain: 'Телефон',
-    phoneHint: 'Төлем туралы келісу үшін менеджер осы нөмірге жазады',
     email: 'E-mail',
     howHeard: 'Байқау туралы қайдан білдіңіз',
     howHeardPh: 'Нұсқаны таңдаңыз',

@@ -106,7 +106,6 @@ export type LandingView = {
     includes: string[]
     documentNote: string
     groupTerms: string
-    paymentNote: string
     deadlineNote: string
   }
   speakers: { heading: string; lead: string; people: PersonView[] }
@@ -411,7 +410,6 @@ async function loadLanding(routeSlug: string, locale: Locale): Promise<LandingVi
       includes: (landing.pricing?.includes ?? []).map((i) => s(i.text)).filter(Boolean),
       documentNote: s(landing.pricing?.documentNote),
       groupTerms: s(landing.pricing?.groupTerms),
-      paymentNote: s(landing.pricing?.paymentNote),
       deadlineNote: s(landing.pricing?.deadlineNote),
     },
     speakers: {
@@ -492,7 +490,7 @@ async function loadLanding(routeSlug: string, locale: Locale): Promise<LandingVi
   }
 }
 
-const cachedLanding = unstable_cache(loadLanding, ['landing-view-v1'], {
+const cachedLanding = unstable_cache(loadLanding, ['landing-view-v2'], {
   tags: [LANDING_CACHE_TAG],
   revalidate: 3600,
 })

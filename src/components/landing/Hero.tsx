@@ -124,7 +124,7 @@ export function Hero({ ctx }: { ctx: Ctx }) {
         <div className="lp-wrap">
           <div className="q-stats lp-hero__stats">
             {hero.stats.map((s, i) => (
-              <div className="q-stat q-stat--row" key={i}>
+              <div className="q-stat" key={i}>
                 <span className="q-stat__value" data-count={s.value}>
                   {s.value}
                 </span>

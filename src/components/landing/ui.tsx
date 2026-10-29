@@ -288,14 +288,3 @@ export function Paragraphs({ text, className }: { text: string; className?: stri
     </>
   )
 }
-
-// «Оплата — через менеджера: после регистрации…» → начало до двоеточия жирным.
-export function LeadBold({ text }: { text: string }) {
-  const m = /^(.{3,80}?[:.])\s+(.+)$/s.exec(text)
-  if (!m) return <>{text}</>
-  return (
-    <>
-      <b style={{ fontWeight: 600 }}>{m[1]}</b> {m[2]}
-    </>
-  )
-}

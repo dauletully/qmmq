@@ -2,6 +2,8 @@
 // Казахские версии — только то, что есть в макете (первый экран, черновой перевод) и подписи фото;
 // остальное заполнит команда. Всё казахское требует вычитки носителем.
 
+import type { Partner } from '../payload-types'
+
 const TBD =
   'Уточняем вместе с положением о конкурсе. Если вопрос срочный — напишите менеджеру в WhatsApp.'
 
@@ -92,9 +94,41 @@ export const speakerPhoto = {
   altKk: 'Академик Асқар Жұмаділдаев',
 }
 
-export const partners = [
-  { name: 'Министерство просвещения Республики Казахстан', kind: 'ministry' as const, order: 1 },
-  { name: 'РФМШ', kind: 'partner' as const, order: 2 },
+type SeedPartner = {
+  name: string
+  nameKk: string
+  // Прежние названия из ранних версий сида: по ним находим и обновляем старую запись.
+  aliases?: string[]
+  kind: Partner['kind']
+  url: string
+  order: number
+  logo?: { file: string; alt: string; altKk: string }
+}
+
+// Полные названия — как на официальных сайтах (gov.kz, fizmat.kz).
+// Знак Министерства — государственный герб; в рекламе его не используем, на сайте нейтральный значок.
+export const partners: SeedPartner[] = [
+  {
+    name: 'Министерство просвещения Республики Казахстан',
+    nameKk: 'Қазақстан Республикасы Оқу-ағарту министрлігі',
+    kind: 'ministry',
+    url: 'https://www.gov.kz/memleket/entities/edu',
+    order: 1,
+  },
+  {
+    name: 'Республиканская физико-математическая школа',
+    nameKk: 'Республикалық физика-математика мектебі',
+    aliases: ['РФМШ'],
+    kind: 'partner',
+    url: 'https://fizmat.kz',
+    order: 2,
+    // Упрощённый логотип с fizmat.kz
+    logo: {
+      file: 'partner-rfmsh.png',
+      alt: 'Логотип Республиканской физико-математической школы',
+      altKk: 'Республикалық физика-математика мектебінің логотипі',
+    },
+  },
 ]
 
 export const logo = {
@@ -265,7 +299,6 @@ export const landing = {
     documentNote: '',
     groupTerms:
       'Групповые условия и документы для бухгалтерии. Оставьте заявку — менеджер перезвонит в рабочее время.',
-    paymentNote: 'Оплата — через менеджера: после регистрации он свяжется с вами по WhatsApp.',
     deadlineNote: 'Срок регистрации — по положению о конкурсе',
   },
   speakers: {

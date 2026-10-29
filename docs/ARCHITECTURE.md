@@ -68,7 +68,7 @@ docs/                      документация
 **people** — единая сущность «человек» (команда, спикеры, жюри, педагоги-мастера, авторы историй).
 `name`, `photo`, `roles[]` (`team` | `speaker` | `jury` | `master`), `position` *loc* (регалии), `contribution` *loc* (одна строка о вкладе), `subjects[]`, `region`, `school` *loc*, `firstParticipationYear`, `studentAchievements` *loc*, `publishConsent` (без согласия человек не показывается на сайте), `order`.
 
-**partners** — `name`, `logo`, `url`, `kind` (`ministry` | `organizer` | `university` | `sponsor` | `media`), `order`.
+**partners** — `name` *loc* (полное название), `logo`, `url`, `kind` (`ministry` | `organizer` | `partner` | `university` | `sponsor` | `media`), `order`.
 
 **events** — мероприятие (конкурс, олимпиада, семинар, тренинг). Здесь — цена и даты, единые для лендинга и сайта.
 `title` *loc*, `slug`, `type`, `subjects[]`, `level` (`international` | `republic` | `regional` | `city`), `format` (`offline` | `online`), `city` *loc*, `venue` *loc*, `venueAddress` *loc*, `mapUrl`, `startDate`, `endDate`, `registrationDeadline`, `price` (₸), `groupMinSize`, `program[]` (день: `date`, `title` *loc*, `items[]`: `time`, `title` *loc*, `description` *loc*), `regulationsPdf`, `certificateSample`, `participantsChatUrl`.
@@ -79,7 +79,7 @@ docs/                      документация
 - `audience`: `heading` *loc*, `cards[]` (`subject`, `title` *loc*, `text` *loc*)
 - `benefits`: `heading` *loc*, `items[]` (`icon` — имя иконки Lucide из списка, `title` *loc*, `text` *loc*)
 - `program`: `heading` *loc*, `note` *loc* (само расписание берётся из `event.program`)
-- `pricing`: `heading` *loc*, `includes[]` *loc*, `documentNote` *loc* (какой документ получает участник), `groupTerms` *loc*, `paymentNote` *loc* («Оплату принимает менеджер…»), `deadlineNote` *loc*
+- `pricing`: `heading` *loc*, `includes[]` *loc*, `documentNote` *loc* (какой документ получает участник), `groupTerms` *loc*, `deadlineNote` *loc*
 - `speakers`: `heading` *loc*, `people[]` (→ people, порядок вручную)
 - `history`: `heading` *loc*, `milestones[]` (`period`, `title` *loc*, `text` *loc*), `figures[]` (`value`, `label` *loc*), `prizes[]` (`title` *loc*, `value` *loc*, `text` *loc*)
 - `stories`: `heading` *loc*, `items[]` (`person` → people, `quote` *loc*, `achievement` *loc*)

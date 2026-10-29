@@ -51,7 +51,7 @@ async function upsertBySlug<T extends 'events' | 'landings'>(
   return { id: doc.id, written: true }
 }
 
-async function findOrCreateByName<T extends 'people' | 'partners'>(
+async function findOrCreateByName<T extends 'people'>(
   payload: Payload,
   collection: T,
   data: { name: string } & Record<string, unknown>,
@@ -175,6 +175,74 @@ async function ensurePerson(
   return id
 }
 
+// Партнёр ищется по названию или прежнему названию. В существующей записи заполняются только пустые
+// поля (и короткое прежнее название меняется на полное) — правки команды не трогаем.
+async function ensurePartner(
+  payload: Payload,
+  partner: (typeof content.partners)[number],
+): Promise<number> {
+  const { nameKk, aliases = [], logo, ...data } = partner
+  const { docs } = await payload.find({
+    collection: 'partners',
+    where: { name: { in: [data.name, ...aliases] } },
+    limit: 1,
+    depth: 0,
+    locale: 'ru',
+    overrideAccess: true,
+  })
+  const existing = docs[0]
+  if (!existing) {
+    const doc = await payload.create({
+      collection: 'partners',
+      data: { ...data, ...(logo ? { logo: await ensureMedia(payload, logo) } : {}) },
+      locale: 'ru',
+      overrideAccess: true,
+    })
+    await payload.update({
+      collection: 'partners',
+      id: doc.id,
+      data: { name: nameKk },
+      locale: 'kk',
+      overrideAccess: true,
+    })
+    payload.logger.info(`seed: partners «${data.name}» — создано`)
+    return doc.id
+  }
+
+  const patch: Record<string, unknown> = force ? { ...data } : {}
+  if (aliases.includes(existing.name)) patch.name = data.name
+  if (!existing.url) patch.url = data.url
+  if (logo && (force || !existing.logo)) patch.logo = await ensureMedia(payload, logo)
+  if (Object.keys(patch).length) {
+    await payload.update({
+      collection: 'partners',
+      id: existing.id,
+      data: patch,
+      locale: 'ru',
+      overrideAccess: true,
+    })
+    payload.logger.info(`seed: partners «${data.name}» — дополнено`)
+  }
+  const kk = await payload.findByID({
+    collection: 'partners',
+    id: existing.id,
+    depth: 0,
+    locale: 'kk',
+    fallbackLocale: false,
+    overrideAccess: true,
+  })
+  if (force || !kk.name) {
+    await payload.update({
+      collection: 'partners',
+      id: existing.id,
+      data: { name: nameKk },
+      locale: 'kk',
+      overrideAccess: true,
+    })
+  }
+  return existing.id
+}
+
 // Абзацы → документ Lexical для полей richText.
 function richText(paragraphs: string[]) {
   return {
@@ -273,9 +341,7 @@ export async function seed(payload: Payload) {
   const authorId = await ensurePerson(payload, content.addressAuthor, content.addressAuthorPhoto)
 
   const partnerIds: number[] = []
-  for (const partner of content.partners) {
-    partnerIds.push(await findOrCreateByName(payload, 'partners', partner))
-  }
+  for (const partner of content.partners) partnerIds.push(await ensurePartner(payload, partner))
 
   const galleryIds: number[] = []
   for (const photo of content.gallery) galleryIds.push(await ensureMedia(payload, photo))

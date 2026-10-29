@@ -1,4 +1,4 @@
-import { Building, Check, Info } from 'lucide-react'
+import { Building, Check } from 'lucide-react'
 
 import { Countdown } from '@/components/client/Countdown'
 import { RegistrationForm } from '@/components/forms/RegistrationForm'
@@ -6,7 +6,7 @@ import { formatPrice } from '@/i18n/format'
 
 import type { Ctx } from './context'
 import { WaitlistBox } from './Hero'
-import { LeadBold, SectionHead } from './ui'
+import { SectionHead } from './ui'
 
 export function Pricing({ ctx }: { ctx: Ctx }) {
   const { view, t, locale } = ctx
@@ -37,14 +37,6 @@ export function Pricing({ ctx }: { ctx: Ctx }) {
                     ))}
                   </ul>
                   {p.documentNote && <p className="q-small">{p.documentNote}</p>}
-                </div>
-              )}
-              {p.paymentNote && (
-                <div className="q-note">
-                  <Info className="q-icon" aria-hidden="true" />
-                  <span>
-                    <LeadBold text={p.paymentNote} />
-                  </span>
                 </div>
               )}
               {ev.deadline && (

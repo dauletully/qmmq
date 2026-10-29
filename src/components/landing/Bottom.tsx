@@ -1,8 +1,22 @@
-import { ArrowRight, ChevronDown, Landmark, Mail, MapPin, MessageCircle, Phone } from 'lucide-react'
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Award,
+  ChevronDown,
+  GraduationCap,
+  Handshake,
+  Landmark,
+  type LucideIcon,
+  Mail,
+  MapPin,
+  MessageCircle,
+  Newspaper,
+  Phone,
+  Users,
+} from 'lucide-react'
 import Image from 'next/image'
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 
-import type { Img } from '@/app/(frontend)/_lib/data'
 import { Countdown } from '@/components/client/Countdown'
 import { MapEmbed } from '@/components/client/MapEmbed'
 
@@ -12,23 +26,56 @@ import { WaitlistBox } from './Hero'
 import { highlightRoman, Logo, SectionHead } from './ui'
 
 // ---------- 10. Партнёры ----------
-function PartnerLogo({ logo, wide }: { logo: Img; wide?: boolean }) {
-  const h = wide ? 52 : 48
-  return (
-    <Image
-      className="lp-partner__logo"
-      src={logo.src}
-      alt={logo.alt}
-      width={Math.round((logo.width / logo.height) * h)}
-      height={h}
-      sizes="200px"
-      unoptimized={logo.svg}
-    />
+// Без логотипа — нейтральный значок по типу партнёра (герб для Министерства не используем).
+const PARTNER_ICONS: Record<string, LucideIcon> = {
+  ministry: Landmark,
+  organizer: Users,
+  partner: Handshake,
+  university: GraduationCap,
+  sponsor: Award,
+  media: Newspaper,
+}
+
+function PartnerCard({ p, kind }: { p: Ctx['view']['partners']['items'][number]; kind: string }) {
+  const Icon = PARTNER_ICONS[p.kind] ?? Handshake
+  const inner = (
+    <>
+      <span className={`lp-partner__mark${p.logo ? '' : ' lp-partner__mark--icon'}`}>
+        {p.logo ? (
+          <Image
+            className="lp-partner__logo"
+            src={p.logo.src}
+            alt=""
+            width={p.logo.width}
+            height={p.logo.height}
+            sizes="(min-width: 1024px) 72px, 48px"
+            unoptimized={p.logo.svg}
+          />
+        ) : (
+          <Icon className="q-icon q-icon--lg" aria-hidden="true" />
+        )}
+      </span>
+      <span className="lp-partner__text">
+        {kind && <span className="lp-partner__kind">{kind}</span>}
+        <span className="lp-partner__name">{p.name}</span>
+      </span>
+      {p.url && <ArrowUpRight className="q-icon lp-partner__ext" aria-hidden="true" />}
+    </>
+  )
+  return p.url ? (
+    <a className="lp-partner lp-partner--link" href={p.url} target="_blank" rel="noopener">
+      {inner}
+    </a>
+  ) : (
+    <div className="lp-partner">{inner}</div>
   )
 }
 
 export function Partners({ ctx }: { ctx: Ctx }) {
   const { view, t } = ctx
+  const items = view.partners.items
+  // На компьютере: до трёх в ряд, четыре — сеткой 2 × 2.
+  const cols = items.length === 4 ? 2 : Math.min(items.length, 3)
   return (
     <section className="lp-sec" id="partners" data-section="partners">
       <div className="lp-wrap lp-reveal">
@@ -42,56 +89,16 @@ export function Partners({ ctx }: { ctx: Ctx }) {
             <ArrowRight className="q-icon" aria-hidden="true" />
           </a>
         </div>
-        <div className="lp-partners">
-          {view.partners.items.map((p) => {
-            const wide = p.kind === 'ministry'
-            const kind = t.partners.kinds[p.kind as keyof typeof t.partners.kinds] ?? ''
-            const long = p.name.length > 14
-            const inner = wide ? (
-              <>
-                {p.logo ? (
-                  <PartnerLogo logo={p.logo} wide />
-                ) : (
-                  <span className="lp-partner__icon">
-                    <Landmark className="q-icon q-icon--lg" aria-hidden="true" />
-                  </span>
-                )}
-                <div>
-                  {kind && <p className="lp-partner__kind">{kind}</p>}
-                  <p className="lp-partner__name">{p.name}</p>
-                </div>
-              </>
-            ) : (
-              <>
-                {kind && <p className="lp-partner__kind">{kind}</p>}
-                {p.logo ? (
-                  <PartnerLogo logo={p.logo} />
-                ) : (
-                  <p className={`lp-partner__name${long ? ' lp-partner__name--long' : ''}`}>
-                    {p.name}
-                  </p>
-                )}
-              </>
-            )
-            const cls = `lp-partner${wide ? ' lp-partner--wide' : ''}`
-            return p.url ? (
-              <a
-                key={p.id}
-                className={cls}
-                href={p.url}
-                target="_blank"
-                rel="noopener"
-                aria-label={p.logo ? p.name : undefined}
-              >
-                {inner}
-              </a>
-            ) : (
-              <div key={p.id} className={cls}>
-                {inner}
-              </div>
-            )
-          })}
-        </div>
+        <ul className="lp-partners" style={{ '--cols': cols } as CSSProperties}>
+          {items.map((p) => (
+            <li key={p.id}>
+              <PartnerCard
+                p={p}
+                kind={t.partners.kinds[p.kind as keyof typeof t.partners.kinds] ?? ''}
+              />
+            </li>
+          ))}
+        </ul>
         <a className="q-btn q-btn--text lp-textbtn lp-partners__more only-m" href="#contacts">
           {t.partners.become}
           <ArrowRight className="q-icon" aria-hidden="true" />
