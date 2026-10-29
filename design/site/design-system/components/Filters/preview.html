@@ -1,0 +1,55 @@
+<!-- @dsCard group="Формы" height=410 width=1200 subtitle="Фильтры каталога: лента чипов на 390, строка селектов на 1440, выбранные значения" -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Filters</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+  body { margin: 0; }
+  .stage { padding: 24px; display: flex; flex-direction: column; gap: 24px; }
+  .cap { margin: 0 0 8px; font-size: 12px; line-height: 16px; color: var(--ink-muted); }
+  .m { width: 350px; padding: 0 20px; overflow: hidden; }
+</style>
+</head>
+<body class="q-root">
+<div class="stage">
+  <div>
+    <p class="cap">390 — поиск, кнопка «Фильтры» со счётчиком, лента чипов</p>
+    <div class="m">
+      <div class="q-filters">
+        <div class="q-filters__bar">
+          <div class="q-search" style="flex:1 1 auto"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><label class="q-sr" for="s1">Поиск</label><input class="q-input" id="s1" type="search" placeholder="Поиск по названию"></div>
+          <button class="q-chip q-chip--filter" type="button"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4h-7"></path><path d="M10 4H3"></path><path d="M21 12h-9"></path><path d="M8 12H3"></path><path d="M21 20h-5"></path><path d="M12 20H3"></path><path d="M14 2v4"></path><path d="M8 10v4"></path><path d="M16 18v4"></path></svg>Фильтры<span class="q-chip__n">2</span></button>
+        </div>
+        <div class="q-filters__scroll">
+          <button class="q-chip q-chip--math is-selected" type="button">Математика</button>
+          <button class="q-chip q-chip--physics" type="button">Физика</button>
+          <button class="q-chip q-chip--informatics" type="button">Информатика</button>
+          <button class="q-chip" type="button">Онлайн</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="q-d">
+    <p class="cap">1440 — всё в строку, выбранные фильтры и сброс</p>
+    <div class="q-filters" style="width:1152px">
+      <div class="q-search"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><label class="q-sr" for="s2">Поиск</label><input class="q-input" id="s2" type="search" placeholder="Поиск по названию"></div>
+      <button class="q-chip q-chip--math is-selected" type="button">Математика</button>
+      <button class="q-chip q-chip--physics" type="button">Физика</button>
+      <button class="q-chip q-chip--informatics" type="button">Информатика</button>
+      <div class="q-select q-select--inline"><select class="q-input" aria-label="Тип"><option>Все типы</option></select><svg class="q-icon q-select__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></div>
+      <div class="q-select q-select--inline"><select class="q-input" aria-label="Формат"><option>Очно и онлайн</option></select><svg class="q-icon q-select__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></div>
+      <div class="q-select q-select--inline"><select class="q-input" aria-label="Регион"><option>Все регионы</option></select><svg class="q-icon q-select__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></div>
+      <div class="q-select q-select--inline"><select class="q-input" aria-label="Год"><option>2026</option></select><svg class="q-icon q-select__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></div>
+      <span class="q-filters__count">Найдено 24</span>
+    </div>
+    <div class="q-active" style="margin-top:16px">
+      <span class="q-active__chip">Математика<svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></span>
+      <span class="q-active__chip">2026<svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></span>
+      <a class="q-active__reset" href="#">Сбросить</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

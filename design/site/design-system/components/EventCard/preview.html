@@ -1,0 +1,50 @@
+<!-- @dsCard group="Контент" height=665 width=1200 subtitle="Карточка мероприятия: сетка, строка на 1440, прошедшее событие" -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>EventCard</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+  body { margin: 0; }
+  .stage { display: flex; flex-direction: column; gap: 24px; padding: 24px; }
+  .cap { margin: 0 0 8px; font-size: 12px; line-height: 16px; color: var(--ink-muted); }
+  .grid { display: grid; grid-template-columns: 350px 350px; gap: 24px; }
+</style>
+</head>
+<body class="q-root">
+<div class="stage">
+  <div>
+    <p class="cap">Сетка — регистрация открыта и анонс</p>
+    <div class="grid">
+      <a class="q-event" href="#">
+        <div class="q-event__top"><div class="q-event__tags"><span class="q-tag q-tag--math">Математика</span><span class="q-tag q-tag--physics">Физика</span><span class="q-tag q-tag--informatics">Информатика</span></div></div>
+        <div class="q-event__date"><div class="q-event__day"><b>5–6</b><span>дек</span></div><div><p class="q-event__when" style="margin:0">5–6 декабря 2026</p><p class="q-event__where" style="margin:0"><svg class="q-icon q-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>Алматы · очно</p></div></div>
+        <h3 class="q-event__title">XII Международный творческий конкурс учителей математики, физики и информатики</h3>
+        <p class="q-event__meta"><span>Международный</span><span>Конкурс</span></p>
+        <div class="q-event__foot"><span class="q-event__price">50&nbsp;000&nbsp;₸<small>от школы — от 5 участников</small></span><span class="q-status q-status--open">Регистрация до 30 ноя</span></div>
+      </a>
+      <a class="q-event" href="#">
+        <div class="q-event__top"><div class="q-event__tags"><span class="q-tag q-tag--math">Математика</span></div></div>
+        <div class="q-event__date"><div class="q-event__day"><b>—</b><span>2027</span></div><div><p class="q-event__when" style="margin:0">Дата уточняется</p><p class="q-event__where" style="margin:0"><svg class="q-icon q-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><rect width="20" height="14" x="2" y="3" rx="2"></rect><path d="M8 21h8"></path><path d="M12 17v4"></path></svg>Онлайн</p></div></div>
+        <h3 class="q-event__title">Онлайн-олимпиада для учителей математики</h3>
+        <p class="q-event__meta"><span>Республиканская</span><span>Олимпиада</span></p>
+        <div class="q-event__foot"><span class="q-event__price">Стоимость уточняется</span><span class="q-status q-status--soon">Анонс</span></div>
+      </a>
+    </div>
+  </div>
+  <div class="q-d">
+    <p class="cap">1440 — строка, прошедшее событие</p>
+    <a class="q-event q-event--row q-event--past" href="#" style="width:1152px">
+      <div class="q-event__day"><b>2–4</b><span>окт</span></div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="q-event__tags"><span class="q-tag q-tag--math">Математика</span><span class="q-tag q-tag--physics">Физика</span></div>
+        <h3 class="q-event__title">Городская олимпиада молодых учителей физики и математики к 70-летию академика А. С. Джумадильдаева</h3>
+        <p class="q-event__meta"><span>Городской</span><span>Олимпиада</span><span>Алматы · очно</span><span>115 участников</span></p>
+      </div>
+      <div class="q-event__foot"><span class="q-status q-status--past">Итоги · 27 октября 2026</span><span class="q-more">Победители и фото<svg class="q-icon q-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></span></div>
+    </a>
+  </div>
+</div>
+</body>
+</html>

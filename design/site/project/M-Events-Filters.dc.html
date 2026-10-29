@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Мероприятия · фильтры · 390</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/qmmq/tokens.css">
+<link rel="stylesheet" href="ds/qmmq/components/bundle.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:inherit}
+</style>
+</helmet>
+<div class="q-root q-m" data-theme="{{theme}}" style="width: 390px; height: 844px; position: relative; overflow: hidden; background: var(--surface);">
+
+<header class="q-sitehead q-dark">
+<a class="q-logo" href="Main.dc.html" aria-label="QMMQ — на главную"><img src="assets/qmmq-logo.png" alt=""></a>
+<span class="q-sitehead__spacer"></span>
+<nav class="q-lang" aria-label="Язык"><a href="#" aria-current="true">RU</a><a href="#">KZ</a></nav>
+<a class="q-iconbtn" href="M-Menu.dc.html" aria-label="Меню"><svg class="q-icon q-icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg></a>
+</header>
+
+<section class="q-pagehero q-pagehero--light" data-section="hero">
+<div class="q-wrap"><div class="q-pagehero__in">
+<ol class="q-crumbs"><li><a href="Main.dc.html">Главная</a></li><li>Мероприятия</li></ol>
+<h1 class="q-h1 q-h1--page" style="color: var(--brand);">Мероприятия</h1>
+<p class="q-lead">Конкурсы, олимпиады, семинары и тренинги ассоциации — очно и онлайн.</p>
+</div></div>
+</section>
+
+<section class="q-section q-section--tight" data-section="filters" style="padding-bottom: 0;">
+<div class="q-wrap">
+<div class="q-filters">
+<div class="q-filters__bar">
+<div class="q-search" style="flex: 1 1 auto;"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><label class="q-sr" for="ev-search">Поиск</label><input class="q-input" id="ev-search" type="search" placeholder="Название или город"></div>
+<a style="text-decoration: none;" class="q-chip q-chip--filter" href="#"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4h-7"></path><path d="M10 4H3"></path><path d="M21 12h-9"></path><path d="M8 12H3"></path><path d="M21 20h-5"></path><path d="M12 20H3"></path><path d="M14 2v4"></path><path d="M8 10v4"></path><path d="M16 18v4"></path></svg>Фильтры <span class="q-chip__n">2</span></a>
+</div>
+<div class="q-filters__scroll">
+<a style="text-decoration: none;" class="q-chip q-chip--math is-selected" href="#">Математика</a>
+<a style="text-decoration: none;" class="q-chip q-chip--physics" href="#">Физика</a>
+<a style="text-decoration: none;" class="q-chip q-chip--informatics" href="#">Информатика</a>
+</div>
+</div>
+</div>
+</section>
+
+<div class="q-scrim"></div>
+
+<div class="q-sheet" role="dialog" aria-label="Фильтры">
+<span class="q-sheet__grab"></span>
+<div class="q-sheet__head" style="padding-top: 20px;">
+<h2 class="q-h3" style="margin:0;">Фильтры</h2>
+<a class="q-iconbtn" href="M-Events.dc.html" aria-label="Закрыть" style="color: var(--brand);"><svg class="q-icon q-icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></a>
+</div>
+<div class="q-sheet__body">
+<div class="q-fgroup">
+<span class="q-fgroup__label">Предмет</span>
+<div class="q-chips">
+<a style="text-decoration: none;" class="q-chip q-chip--math is-selected" href="#"><svg class="q-icon q-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 7V5a1 1 0 0 0-1-1H6.5a.5.5 0 0 0-.4.8l4.5 6a2 2 0 0 1 0 2.4l-4.5 6a.5.5 0 0 0 .4.8H17a1 1 0 0 0 1-1v-2"></path></svg>Математика</a>
+<a style="text-decoration: none;" class="q-chip q-chip--physics" href="#"><svg class="q-icon q-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="1"></circle><path d="M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.54-4.52-9.87-6.54-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.54 4.52 9.87 6.54 11.9 4.5Z"></path><path d="M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5Z"></path></svg>Физика</a>
+<a style="text-decoration: none;" class="q-chip q-chip--informatics" href="#"><svg class="q-icon q-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="m18 16 4-4-4-4"></path><path d="m6 8-4 4 4 4"></path><path d="m14.5 4-5 16"></path></svg>Информатика</a>
+</div>
+</div>
+<div class="q-fgroup">
+<span class="q-fgroup__label">Тип</span>
+<div class="q-chips"><a style="text-decoration: none;" class="q-chip" href="#">Конкурс</a><a style="text-decoration: none;" class="q-chip" href="#">Олимпиада</a><a style="text-decoration: none;" class="q-chip" href="#">Семинар</a><a style="text-decoration: none;" class="q-chip" href="#">Тренинг</a></div>
+</div>
+<div class="q-fgroup">
+<span class="q-fgroup__label">Формат</span>
+<div class="q-chips"><a style="text-decoration: none;" class="q-chip" href="#">Очно</a><a style="text-decoration: none;" class="q-chip" href="#">Онлайн</a></div>
+</div>
+<div class="q-fgroup">
+<span class="q-fgroup__label">Уровень</span>
+<div class="q-chips"><a style="text-decoration: none;" class="q-chip" href="#">Международный</a><a style="text-decoration: none;" class="q-chip" href="#">Республиканский</a><a style="text-decoration: none;" class="q-chip" href="#">Областной</a><a style="text-decoration: none;" class="q-chip" href="#">Городской</a></div>
+</div>
+<div class="q-fgroup">
+<label class="q-fgroup__label" for="f-region">Регион</label>
+<div class="q-select"><select class="q-input is-placeholder" id="f-region"><option>Все регионы</option><option>Алматы</option><option>Астана</option><option>Шымкент</option><option>Абайская область</option></select><svg class="q-icon q-select__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></div>
+</div>
+<div class="q-fgroup">
+<span class="q-fgroup__label">Год</span>
+<div class="q-chips"><a style="text-decoration: none;" class="q-chip is-selected" href="#">2026</a><a style="text-decoration: none;" class="q-chip" href="#">2025</a><a style="text-decoration: none;" class="q-chip" href="#">2024</a><a style="text-decoration: none;" class="q-chip" href="#">2023</a><a style="text-decoration: none;" class="q-chip" href="#">Раньше</a></div>
+</div>
+</div>
+<div class="q-sheet__foot">
+<a class="q-btn q-btn--secondary" href="#" style="flex: 0 0 auto;">Сбросить</a>
+<a class="q-btn q-btn--primary q-btn--block" href="M-Events.dc.html">Показать 7</a>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["navy","board"],"default":"navy","section":"Палитра"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { theme: this.props.theme ?? 'navy' };
+  }
+}
+</script>
+</body>
+</html>

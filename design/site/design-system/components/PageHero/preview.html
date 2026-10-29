@@ -1,0 +1,43 @@
+<!-- @dsCard group="Навигация" height=780 width=1200 subtitle="Шапка внутренней страницы: синяя лента и светлый вариант для каталогов" -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>PageHero</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+  body { margin: 0; }
+  .stage { display: flex; flex-direction: column; gap: 24px; padding: 24px; }
+  .cap { margin: 0 0 8px; font-size: 12px; line-height: 16px; color: var(--ink-muted); }
+  .m { width: 390px; }
+  .d { width: 1152px; }
+  .q-root .q-d .q-wrap { padding: 0 48px; }
+</style>
+</head>
+<body class="q-root">
+<div class="stage">
+  <div>
+    <p class="cap">390 — на brand, со статусом мероприятия</p>
+    <section class="q-pagehero q-dark m">
+      <div class="q-wrap q-pagehero__in">
+        <nav aria-label="Вы здесь"><ol class="q-crumbs"><li><a href="#">Главная</a></li><li><a href="#">Мероприятия</a></li></ol></nav>
+        <div style="display:flex;flex-wrap:wrap;gap:6px"><span class="q-tag q-tag--math">Математика</span><span class="q-tag q-tag--physics">Физика</span><span class="q-tag q-tag--informatics">Информатика</span></div>
+        <h1 class="q-h1 q-h1--page">XII Международный творческий конкурс учителей</h1>
+        <span class="q-status q-status--open q-status--lg" style="width:fit-content">Регистрация до 30 ноября</span>
+      </div>
+    </section>
+  </div>
+  <div class="q-d">
+    <p class="cap">1440 — светлый вариант для каталога</p>
+    <section class="q-pagehero q-pagehero--light d">
+      <div class="q-wrap q-pagehero__in">
+        <nav aria-label="Вы здесь"><ol class="q-crumbs"><li><a href="#">Главная</a></li><li aria-current="page">Мероприятия</li></ol></nav>
+        <p class="q-overline">Каталог</p>
+        <h1 class="q-h1 q-h1--page">Мероприятия ассоциации</h1>
+        <p class="q-lead">Конкурсы, олимпиады, семинары и тренинги для учителей математики, физики и информатики — очно и онлайн.</p>
+      </div>
+    </section>
+  </div>
+</div>
+</body>
+</html>

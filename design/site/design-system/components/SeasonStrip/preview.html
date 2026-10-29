@@ -1,0 +1,34 @@
+<!-- @dsCard group="Навигация" height=382 width=1200 subtitle="Сезоны конкурса: лента лет и карточки сезонов, пунктир у неподтверждённых" -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>SeasonStrip</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+  body { margin: 0; }
+  .stage { padding: 24px; display: flex; flex-direction: column; gap: 24px; }
+  .cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+</style>
+</head>
+<body class="q-root q-d">
+<div class="stage" style="width:1152px">
+  <nav class="q-years" aria-label="Сезоны">
+    <a href="#"><b>I</b><span>2013</span></a>
+    <a href="#" style="border-style:dashed"><b>II–VI</b><span>2014–18</span></a>
+    <a href="#"><b>VII</b><span>2019</span></a>
+    <a href="#"><b>VIII</b><span>2021</span></a>
+    <a href="#"><b>IX</b><span>2022</span></a>
+    <a href="#" aria-current="true"><b>X</b><span>2023</span></a>
+    <a href="#" style="border-style:dashed"><b>XI</b><span>—</span></a>
+    <a href="#" class="is-next"><b>XII</b><span>2026</span></a>
+  </nav>
+  <div class="cards">
+    <a class="q-season" href="#"><span class="q-season__num">X</span><p class="q-season__title">Международный творческий конкурс учителей математики, физики и информатики</p><p class="q-season__meta">Алматы · 2–3 декабря 2023 · Satbayev University, МУИТ</p></a>
+    <a class="q-season" href="#"><span class="q-season__num">IX</span><p class="q-season__title">Международный творческий конкурс</p><p class="q-season__meta">Алматы · 3–4 декабря 2022 · КазНПУ им. Абая · более 400 учителей</p></a>
+    <a class="q-season" href="#"><span class="q-season__num">I</span><p class="q-season__title">Первый творческий конкурс учителей математики Казахстана</p><p class="q-season__meta">Алматы · 26–28 сентября 2013 · РФМШ · 69 учителей</p></a>
+    <div class="q-season q-season--muted"><span class="q-season__num">XI</span><p class="q-season__title">Данные уточняются</p><p class="q-season__meta">Год и площадка подтверждаются у ассоциации</p></div>
+  </div>
+</div>
+</body>
+</html>

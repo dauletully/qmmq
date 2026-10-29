@@ -1,0 +1,29 @@
+<!-- @dsCard group="Контент" height=372 width=1200 subtitle="Строки контактов и заглушка карты «Показать карту»" -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>ContactRow</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+  body { margin: 0; }
+  .stage { display: grid; grid-template-columns: 420px minmax(0, 1fr); gap: 48px; padding: 24px; align-items: start; }
+</style>
+</head>
+<body class="q-root">
+<div class="stage">
+  <div>
+    <a class="q-contact" href="#"><span class="q-contact__icon"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></span><div><p class="q-contact__label">Телефон</p><p class="q-contact__value">+7 (000) 000-00-00</p></div></a>
+    <a class="q-contact" href="#"><span class="q-contact__icon"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path></svg></span><div><p class="q-contact__label">WhatsApp</p><p class="q-contact__value">Написать менеджеру</p></div></a>
+    <a class="q-contact" href="#"><span class="q-contact__icon"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg></span><div><p class="q-contact__label">E-mail</p><p class="q-contact__value">name@qmmq.kz</p></div></a>
+    <div class="q-contact"><span class="q-contact__icon"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg></span><div><p class="q-contact__label">Адрес</p><p class="q-contact__value">Алматы, ул. Бухар Жырау, 36</p></div></div>
+  </div>
+  <div class="q-map" style="min-height:300px">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:12px">
+      <span class="q-map__pin"><svg class="q-icon q-icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg></span>
+      <button class="q-btn q-btn--secondary" type="button">Показать карту</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

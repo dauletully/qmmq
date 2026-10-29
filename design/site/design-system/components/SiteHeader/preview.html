@@ -1,0 +1,43 @@
+<!-- @dsCard group="Навигация" height=272 width=1400 subtitle="Шапка сайта: 390 с кнопкой меню, 1440 с семью разделами и кнопкой" -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>SiteHeader</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+  body { margin: 0; }
+  .stage { display: flex; flex-direction: column; gap: 24px; padding: 24px; }
+  .cap { margin: 0 0 8px; font-size: 12px; line-height: 16px; color: var(--ink-muted); }
+  .m { width: 390px; }
+  .d { width: 1352px; }
+  .q-root .q-d .q-sitehead { padding: 0 40px; }
+  .q-sitehead .q-logo { align-self: center; }
+</style>
+</head>
+<body class="q-root">
+<div class="stage">
+  <div>
+    <p class="cap">390 — логотип, язык, меню</p>
+    <header class="q-sitehead q-dark m">
+      <a class="q-logo" href="#" aria-label="QMMQ — на главную"><span style="display:block;width:42px;height:32px;background:var(--brand-tint)"></span></a>
+      <span class="q-sitehead__spacer"></span>
+      <nav class="q-lang" aria-label="Язык"><a href="#" aria-current="true">RU</a><a href="#">KZ</a></nav>
+      <button class="q-iconbtn" type="button" aria-label="Меню"><svg class="q-icon q-icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg></button>
+    </header>
+  </div>
+  <div class="q-d">
+    <p class="cap">1440 — семь разделов, активный подчёркнут золотом; на /about и /partners — третий язык EN</p>
+    <header class="q-sitehead q-dark d">
+      <a class="q-logo" href="#" aria-label="QMMQ — на главную"><span style="display:block;width:42px;height:32px;background:var(--brand-tint)"></span></a>
+      <nav class="q-sitehead__nav" aria-label="Разделы">
+        <a href="#" class="is-active">Об ассоциации</a><a href="#">Мероприятия</a><a href="#">Конкурс учителей</a><a href="#">Сообщество</a><a href="#">Новости</a><a href="#">Партнёрам</a><a href="#">Контакты</a>
+      </nav>
+      <span class="q-sitehead__spacer"></span>
+      <nav class="q-lang" aria-label="Язык"><a href="#" aria-current="true">RU</a><a href="#">KZ</a><a href="#">EN</a></nav>
+      <a class="q-btn q-btn--primary q-btn--sm" href="#">Вступить в сообщество</a>
+    </header>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Вступить в сообщество · 1440</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/qmmq/tokens.css">
+<link rel="stylesheet" href="ds/qmmq/components/bundle.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:inherit}
+</style>
+</helmet>
+<div class="q-root q-d" data-theme="{{theme}}" style="width: 1440px; position: relative; overflow: hidden; background: var(--surface);">
+
+<header class="q-sitehead q-dark">
+<a class="q-logo" href="D-Home.dc.html" aria-label="QMMQ — на главную"><img src="assets/qmmq-logo.png" alt=""></a>
+<nav class="q-sitehead__nav" aria-label="Разделы">
+<a href="D-About.dc.html">Об ассоциации</a><a href="D-Events.dc.html">Мероприятия</a><a href="D-Contest.dc.html">Конкурс учителей</a><a href="D-Community.dc.html" class="is-active">Сообщество</a><a href="D-News.dc.html">Новости</a><a href="D-Partners.dc.html">Партнёрам</a><a href="D-Contacts.dc.html">Контакты</a>
+</nav>
+<span class="q-sitehead__spacer"></span>
+<nav class="q-lang" aria-label="Язык"><a href="#" aria-current="true">RU</a><a href="#">KZ</a></nav>
+<a class="q-btn q-btn--primary q-btn--sm" href="D-Join.dc.html">Вступить в сообщество</a>
+</header>
+
+<section class="q-pagehero q-pagehero--light" data-section="pagehero">
+<div class="q-wrap q-pagehero__in">
+<ul class="q-crumbs"><li><a href="D-Home.dc.html">Главная</a></li><li><a href="D-Community.dc.html">Сообщество</a></li><li><span>Вступить</span></li></ul>
+<h1 class="q-h1 q-h1--page">Вступить в сообщество</h1>
+<p class="q-lead">Членство бесплатное. После заявки координатор добавит вас в чат по предмету и пригласит на ближайшую встречу.</p>
+
+</div>
+</section>
+<section class="q-section q-section--tight" data-section="forms"><div class="q-wrap">
+<nav class="q-tabs" aria-label="Формы"><a href="#join" aria-current="true">Вступить в сообщество</a><a href="#speaker">Стать спикером / членом жюри</a></nav>
+<div class="q-cols q-cols--8-4" style="margin-top: 32px;">
+<div class="q-stack" style="gap: 32px;"><form class="q-form-card q-form" id="join" aria-labelledby="join-h">
+<h2 class="q-h3" id="join-h">Заявка на вступление</h2>
+<div class="q-field"><label class="q-label" for="j-name">ФИО<span class="q-req">*</span></label><input class="q-input" id="j-name" type="text" placeholder="Фамилия Имя Отчество" autocomplete="name"></div>
+<div class="q-field"><span class="q-label">Предмет<span class="q-req">*</span> <span class="q-opt">(можно несколько)</span></span><div class="q-chips"><a class="q-chip q-chip--math is-selected" href="#" style="text-decoration: none;">Математика</a><a class="q-chip q-chip--physics" href="#" style="text-decoration: none;">Физика</a><a class="q-chip q-chip--informatics" href="#" style="text-decoration: none;">Информатика</a></div></div>
+<div class="q-form__row"><div class="q-field"><label class="q-label" for="j-region">Регион<span class="q-req">*</span></label><div class="q-select"><select class="q-input is-placeholder" id="j-region"><option>Выберите регион</option><option>Астана</option><option>Алматы</option><option>Шымкент</option><option>Абайская область</option><option>Акмолинская область</option><option>Актюбинская область</option><option>Алматинская область</option><option>Атырауская область</option><option>Восточно-Казахстанская область</option><option>Жамбылская область</option><option>Жетысуская область</option><option>Западно-Казахстанская область</option><option>Карагандинская область</option><option>Костанайская область</option><option>Кызылординская область</option><option>Мангистауская область</option><option>Павлодарская область</option><option>Северо-Казахстанская область</option><option>Туркестанская область</option><option>Улытауская область</option></select><svg class="q-icon q-select__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></div></div><div class="q-field"><label class="q-label" for="j-city">Город<span class="q-req">*</span></label><input class="q-input" id="j-city" type="text" placeholder="Например, Талдыкорган"></div></div>
+<div class="q-field"><label class="q-label" for="j-school">Школа или организация<span class="q-req">*</span></label><input class="q-input" id="j-school" type="text" placeholder="Полное название"></div>
+<div class="q-field"><span class="q-label">Стаж</span><div class="q-segment"><a href="#">До 5 лет</a><a class="is-selected" href="#">5–15 лет</a><a href="#">Более 15</a></div></div>
+<div class="q-form__row"><div class="q-field"><label class="q-label" for="j-phone">Телефон WhatsApp<span class="q-req">*</span></label><div class="q-phone"><span class="q-phone__code">+7</span><input id="j-phone" type="tel" placeholder="(700) 000-00-00" autocomplete="tel"></div></div><div class="q-field"><label class="q-label" for="j-email">E-mail<span class="q-req">*</span></label><input class="q-input" id="j-email" type="email" placeholder="name@example.kz" autocomplete="email"></div></div>
+<div class="q-field"><span class="q-label">Как хотите участвовать</span><label class="q-check is-checked"><span class="q-check__box"><svg class="q-icon q-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></span><span>Встречи и семинары в регионе</span></label><label class="q-check is-checked"><span class="q-check__box"><svg class="q-icon q-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></span><span>Чат по предмету</span></label><label class="q-check"><span class="q-check__box"></span><span>Наставничество: готов(а) быть наставником или подопечным</span></label></div>
+<label class="q-check"><span class="q-check__box"></span><span>Согласен(на) на публикацию в каталоге педагогов-мастеров <span class="q-opt">(необязательно)</span></span></label>
+<label class="q-check"><span class="q-check__box"></span><span>Даю согласие на <a class="q-link" href="#">обработку персональных данных</a> и принимаю <a class="q-link" href="#">политику конфиденциальности</a><span class="q-req">*</span></span></label>
+<button class="q-btn q-btn--primary q-btn--block" type="button">Отправить заявку</button>
+<p class="q-small" style="text-align: center;">Ответим в течение трёх рабочих дней.</p>
+</form><form class="q-form-card q-form" id="speaker" aria-labelledby="sp-h">
+<h2 class="q-h3" id="sp-h">Стать спикером или членом жюри</h2>
+<p class="q-body">Для выпускников конкурсов и опытных педагогов. Анкету рассматривает программный комитет.</p>
+<div class="q-field"><span class="q-label">Роль<span class="q-req">*</span></span><div class="q-chips"><a class="q-chip is-selected" href="#" style="text-decoration: none;">Спикер</a><a class="q-chip" href="#" style="text-decoration: none;">Член жюри</a></div></div>
+<div class="q-field"><span class="q-label">Предмет<span class="q-req">*</span></span><div class="q-chips"><a class="q-chip q-chip--math" href="#" style="text-decoration: none;">Математика</a><a class="q-chip q-chip--physics is-selected" href="#" style="text-decoration: none;">Физика</a><a class="q-chip q-chip--informatics" href="#" style="text-decoration: none;">Информатика</a></div></div>
+<div class="q-field"><label class="q-label" for="s-name">ФИО<span class="q-req">*</span></label><input class="q-input" id="s-name" type="text" placeholder="Фамилия Имя Отчество" autocomplete="name"></div>
+<div class="q-field"><label class="q-label" for="s-topic">Тема выступления или опыт<span class="q-req">*</span></label><textarea class="q-input q-textarea" id="s-topic" placeholder="Например: разбор геометрических задач областного тура; опыт в жюри с 2019 года"></textarea></div>
+<div class="q-field"><label class="q-label" for="s-achv">Регалии и достижения учеников <span class="q-opt">(необязательно)</span></label><textarea class="q-input q-textarea" id="s-achv" placeholder="Категория, звания, призёры олимпиад с годами"></textarea></div>
+<div class="q-field"><label class="q-label" for="s-link">Ссылка на материалы <span class="q-opt">(необязательно)</span></label><input class="q-input" id="s-link" type="url" placeholder="https://"><p class="q-hint">Презентация, видео, публикация</p></div>
+<div class="q-form__row"><div class="q-field"><label class="q-label" for="s-phone">Телефон WhatsApp<span class="q-req">*</span></label><div class="q-phone"><span class="q-phone__code">+7</span><input id="s-phone" type="tel" placeholder="(700) 000-00-00" autocomplete="tel"></div></div><div class="q-field"><label class="q-label" for="s-email">E-mail<span class="q-req">*</span></label><input class="q-input" id="s-email" type="email" placeholder="name@example.kz" autocomplete="email"></div></div>
+<label class="q-check"><span class="q-check__box"></span><span>Даю согласие на <a class="q-link" href="#">обработку персональных данных</a> и принимаю <a class="q-link" href="#">политику конфиденциальности</a><span class="q-req">*</span></span></label>
+<button class="q-btn q-btn--brand q-btn--block" type="button">Отправить</button>
+</form></div>
+<aside class="q-stack" style="gap: 24px;">
+<div class="q-tile q-tile--alt"><h2 class="q-h3">Что даёт сообщество</h2><ul class="q-checks">
+<li><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg><span>Встречи и семинары в регионах</span></li><li><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg><span>Разборы задач после каждого конкурса</span></li><li><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg><span>Чаты по предметам</span></li><li><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg><span>Наставничество для молодых учителей</span></li><li><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg><span>Каталог педагогов-мастеров — по желанию</span></li></ul></div>
+<div class="q-tile"><div class="q-stack" style="gap: 16px;"><h2 class="q-h3">Что дальше</h2><ol class="q-steps">
+<li><span><b>Координатор свяжется с вами</b>в WhatsApp в течение трёх рабочих дней</span></li>
+<li><span><b>Добавим в чат по предмету</b>и в рассылку сообщества</span></li>
+<li><span><b>Пригласим на ближайшую встречу</b>в вашем регионе или онлайн</span></li>
+</ol></div></div>
+<div class="q-tile q-tile--alt"><h2 class="q-h3">Вопросы</h2><a class="q-contact" href="#"><span class="q-contact__icon"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path></svg></span><span><p class="q-contact__label">WhatsApp</p><p class="q-contact__value">+7 (000) 000-00-00</p></span></a><a class="q-contact" href="#" style="border-bottom: 0;"><span class="q-contact__icon"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg></span><span><p class="q-contact__label">E-mail</p><p class="q-contact__value">name@qmmq.kz</p></span></a></div>
+</aside>
+</div>
+</div></section>
+
+<footer class="q-sitefoot">
+<div class="q-wrap">
+<div class="q-sitefoot__grid">
+<div class="q-stack">
+<span class="q-logo"><img src="assets/qmmq-logo.png" alt="QMMQ"></span>
+<p style="margin:0; font-size: 16px; line-height: 24px; font-weight: 600; max-width: 300px;">Казахстанская ассоциация учителей математики</p>
+<p class="q-sitefoot__muted" style="max-width: 340px;">Республиканское общественное объединение. Профессиональное сообщество учителей математики, физики и информатики с 2012 года.</p>
+<div class="q-row" style="gap: 8px 20px; font-size: 15px;"><a href="#">Instagram</a><a href="#">Telegram</a><a href="#">YouTube</a></div>
+</div>
+<div>
+<p class="q-sitefoot__h">Разделы</p>
+<ul class="q-sitefoot__list"><li><a href="D-About.dc.html">Об ассоциации</a></li><li><a href="D-Events.dc.html">Мероприятия</a></li><li><a href="D-Contest.dc.html">Конкурс учителей</a></li><li><a href="D-Community.dc.html">Сообщество</a></li><li><a href="D-News.dc.html">Новости и материалы</a></li><li><a href="D-Partners.dc.html">Партнёрам</a></li><li><a href="D-Contacts.dc.html">Контакты</a></li></ul>
+</div>
+<div>
+<p class="q-sitefoot__h">Контакты</p>
+<ul class="q-sitefoot__list"><li><a href="#">+7 (000) 000-00-00</a></li><li><a href="#">WhatsApp</a></li><li><a href="#">name@qmmq.kz</a></li><li><span class="q-sitefoot__muted">Алматы, ул. Бухар Жырау, 36</span></li></ul>
+</div>
+<div>
+<p class="q-sitefoot__h">Документы</p>
+<ul class="q-sitefoot__list"><li><a href="D-Page.dc.html">Политика конфиденциальности</a></li><li><a href="#">Договор-оферта</a></li><li><a href="D-About.dc.html">Устав и реквизиты</a></li></ul>
+<p class="q-sitefoot__h" style="margin-top: 24px;">Язык</p>
+<nav class="q-lang" aria-label="Язык"><a href="#" aria-current="true">RU</a><a href="#">KZ</a></nav>
+</div>
+</div>
+<hr class="q-sitefoot__rule">
+<div class="q-sitefoot__bottom">
+<span>РОО «Казахстанская ассоциация учителей математики» · БИН 120740017281 · Алматы, ул. Бухар Жырау, 36</span>
+<span>© 2012–2026</span>
+</div>
+</div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["navy","board"],"default":"navy","section":"Палитра"},"$preview":{"width":1440,"height":3371}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { theme: this.props.theme ?? 'navy' };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!-- @dsCard group="Данные" height=547 width=1200 subtitle="Победители: строки с плашкой места на 390, таблица на 1440" -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>WinnersTable</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+  body { margin: 0; }
+  .stage { display: grid; grid-template-columns: 350px minmax(0, 1fr); gap: 48px; padding: 24px; align-items: start; }
+  .cap { margin: 0 0 8px; font-size: 12px; line-height: 16px; color: var(--ink-muted); }
+</style>
+</head>
+<body class="q-root">
+<div class="stage">
+  <div>
+    <p class="cap">390 — строки</p>
+    <div class="q-winners">
+      <div class="q-winner"><span class="q-place q-place--grand">Гран-при</span><div><p class="q-winner__name">Еркегүл Шынарбек</p><p class="q-winner__meta">Школа-гимназия № 208 · Алматы · 38 баллов</p><div class="q-winner__tags"><span class="q-tag q-tag--math">Математика</span></div></div></div>
+      <div class="q-winner"><span class="q-place q-place--grand">Гран-при</span><div><p class="q-winner__name">Айсана Советхан</p><p class="q-winner__meta">Специализированный лицей № 126 · Алматы · 16,5 балла</p><div class="q-winner__tags"><span class="q-tag q-tag--physics">Физика</span></div></div></div>
+      <div class="q-winner"><span class="q-place q-place--1">I</span><div><p class="q-winner__name">Имя Фамилия</p><p class="q-winner__meta">Школа · регион</p><div class="q-winner__tags"><span class="q-tag q-tag--math">Математика</span></div></div></div>
+      <div class="q-winner"><span class="q-place q-place--2">II</span><div><p class="q-winner__name">Имя Фамилия</p><p class="q-winner__meta">Школа · регион</p></div></div>
+    </div>
+  </div>
+  <div class="q-d">
+    <p class="cap">1440 — таблица</p>
+    <div class="q-tablewrap">
+      <table class="q-table">
+        <thead><tr><th>Место</th><th>Участник</th><th>Школа, регион</th><th>Предмет</th><th class="q-num">Балл</th></tr></thead>
+        <tbody>
+          <tr><td><span class="q-place q-place--grand">Гран-при</span></td><td>Еркегүл Шынарбек</td><td>Школа-гимназия № 208<span class="q-table__sub">Алматы</span></td><td><span class="q-tag q-tag--math">Математика</span></td><td class="q-num">38</td></tr>
+          <tr><td><span class="q-place q-place--grand">Гран-при</span></td><td>Айсана Советхан</td><td>Специализированный лицей № 126<span class="q-table__sub">Алматы</span></td><td><span class="q-tag q-tag--physics">Физика</span></td><td class="q-num">16,5</td></tr>
+          <tr><td><span class="q-place q-place--1">I</span></td><td>Имя Фамилия</td><td>Школа<span class="q-table__sub">Регион</span></td><td><span class="q-tag q-tag--math">Математика</span></td><td class="q-num">—</td></tr>
+          <tr><td><span class="q-place q-place--2">II</span></td><td>Имя Фамилия</td><td>Школа<span class="q-table__sub">Регион</span></td><td><span class="q-tag q-tag--informatics">Информатика</span></td><td class="q-num">—</td></tr>
+          <tr><td><span class="q-place q-place--3">III</span></td><td>Имя Фамилия</td><td>Школа<span class="q-table__sub">Регион</span></td><td><span class="q-tag q-tag--physics">Физика</span></td><td class="q-num">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</body>
+</html>

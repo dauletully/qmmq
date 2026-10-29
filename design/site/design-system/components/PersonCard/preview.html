@@ -1,0 +1,67 @@
+<!-- @dsCard group="Контент" height=473 width=1200 subtitle="Карточка человека: сетка 2 × 2 на 390, 4 в ряд на 1440, строка" -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>PersonCard</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+  body { margin: 0; }
+  .stage { display: grid; grid-template-columns: 350px minmax(0, 1fr); gap: 48px; padding: 24px; align-items: start; }
+  .cap { margin: 0 0 8px; font-size: 12px; line-height: 16px; color: var(--ink-muted); }
+</style>
+</head>
+<body class="q-root">
+<div class="stage">
+  <div>
+    <p class="cap">390 — команда, 2 в ряд</p>
+    <div class="q-people">
+      <div class="q-person">
+        <div class="q-person__photo"><div class="q-placeholder"><span class="q-placeholder__initials q-placeholder__initials--sm">КМ</span></div></div>
+        <h3 class="q-person__name">Кайрош Макишев</h3>
+        <p class="q-person__role">Президент ассоциации, канд. физ.-мат. наук</p>
+      </div>
+      <div class="q-person">
+        <div class="q-person__photo"><div class="q-placeholder"><span class="q-placeholder__initials q-placeholder__initials--sm">БЗ</span></div></div>
+        <h3 class="q-person__name">Бахнур Зиябеков</h3>
+        <p class="q-person__role">Вице-президент ассоциации</p>
+      </div>
+    </div>
+    <p class="cap" style="margin-top:24px">Строка — жюри на странице мероприятия</p>
+    <div class="q-person q-person--row">
+      <div class="q-person__photo"><div class="q-placeholder"><span class="q-placeholder__initials q-placeholder__initials--sm">АД</span></div></div>
+      <div><h3 class="q-person__name">Аскар Джумадильдаев</h3><p class="q-person__role">Академик НАН РК, председатель жюри I конкурса</p></div>
+    </div>
+  </div>
+  <div class="q-d">
+    <p class="cap">1440 — каталог педагогов-мастеров, 4 в ряд, с тегами</p>
+    <div class="q-people">
+      <a class="q-person" href="#">
+        <div class="q-person__photo"><div class="q-placeholder"><span class="q-placeholder__initials">ИФ</span></div></div>
+        <h3 class="q-person__name">Имя Фамилия</h3>
+        <p class="q-person__role">Учитель математики, школа уточняется</p>
+        <div class="q-person__tags"><span class="q-tag q-tag--math">Математика</span><span class="q-tag q-tag--outline">Алматы</span></div>
+      </a>
+      <a class="q-person" href="#">
+        <div class="q-person__photo"><div class="q-placeholder"><span class="q-placeholder__initials">ИФ</span></div></div>
+        <h3 class="q-person__name">Имя Фамилия</h3>
+        <p class="q-person__role">Учитель физики</p>
+        <div class="q-person__tags"><span class="q-tag q-tag--physics">Физика</span><span class="q-tag q-tag--outline">Шымкент</span></div>
+      </a>
+      <a class="q-person" href="#">
+        <div class="q-person__photo"><div class="q-placeholder"><span class="q-placeholder__initials">ИФ</span></div></div>
+        <h3 class="q-person__name">Имя Фамилия</h3>
+        <p class="q-person__role">Учитель информатики</p>
+        <div class="q-person__tags"><span class="q-tag q-tag--informatics">Информатика</span><span class="q-tag q-tag--outline">Астана</span></div>
+      </a>
+      <a class="q-person" href="#">
+        <div class="q-person__photo"><div class="q-placeholder" style="background-color:var(--ink-muted);background-image:none;color:var(--on-brand)"><span style="font-size:13px;line-height:18px;text-align:center;padding:0 24px">Портрет: ч/б, квадрат, глаза на 40 % высоты</span></div></div>
+        <h3 class="q-person__name">Имя Фамилия</h3>
+        <p class="q-person__role">Учитель математики</p>
+        <div class="q-person__tags"><span class="q-tag q-tag--math">Математика</span><span class="q-tag q-tag--outline">Караганда</span></div>
+      </a>
+    </div>
+  </div>
+</div>
+</body>
+</html>
