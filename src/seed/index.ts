@@ -1,3 +1,4 @@
+import fs from 'fs'
 import path from 'path'
 import { getPayload, type Payload } from 'payload'
 import { fileURLToPath } from 'url'
@@ -82,6 +83,41 @@ async function findOrCreateByName<T extends 'people' | 'partners'>(
   })
   payload.logger.info(`seed: ${collection} «${data.name}» — создано`)
   return doc.id
+}
+
+function mediaPath(payload: Payload, filename: string) {
+  const upload = payload.collections.media.config.upload
+  const dir = typeof upload === 'object' && upload.staticDir ? upload.staticDir : 'media'
+  return path.resolve(process.cwd(), dir, filename)
+}
+
+// Запись в media есть, а файла на диске нет (например, папку media удалили) —
+// загружаем файл из src/seed/assets заново под тем же именем.
+async function restoreMediaFiles(payload: Payload) {
+  const { docs } = await payload.find({
+    collection: 'media',
+    limit: 1000,
+    depth: 0,
+    pagination: false,
+    overrideAccess: true,
+  })
+  for (const doc of docs) {
+    if (!doc.filename) continue
+    // Если Payload уже переименовал файл при прошлом восстановлении (name-1.jpg) — возвращаем имя.
+    const original = doc.filename.replace(/-\d+(\.[a-z0-9]+)$/i, '$1')
+    const asset = [doc.filename, original].find((f) => fs.existsSync(path.join(assetsDir, f)))
+    if (!asset) continue
+    if (fs.existsSync(mediaPath(payload, doc.filename)) && doc.filename === asset) continue
+    await payload.update({
+      collection: 'media',
+      id: doc.id,
+      data: {},
+      filePath: path.join(assetsDir, asset),
+      overwriteExistingFiles: true,
+      overrideAccess: true,
+    })
+    payload.logger.info(`seed: media ${asset} — файл восстановлен`)
+  }
 }
 
 // Файл из src/seed/assets → media (повторно не загружается: ищем по имени файла).
@@ -204,6 +240,7 @@ async function writeLandingKk(payload: Payload, landingId: number) {
 }
 
 export async function seed(payload: Payload) {
+  await restoreMediaFiles(payload)
   const eventResult = await upsertBySlug(payload, 'events', content.event.slug, content.event)
   if (eventResult.written) {
     await payload.update({
