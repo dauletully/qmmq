@@ -2,6 +2,7 @@ import type { CollectionConfig, Field } from 'payload'
 
 import { anyone, contentEditors } from '../access'
 import { adminOptions, BENEFIT_ICONS, SUBJECTS } from '../lib/constants'
+import { revalidateAfterChange, revalidateAfterDelete } from '../lib/revalidate'
 import { validateSlug } from '../lib/validators'
 
 type TextOpts = { description?: string; placeholder?: string; required?: boolean }
@@ -26,6 +27,10 @@ const textarea = (name: string, label: string, opts: TextOpts = {}): Field => ({
 
 const heading = (placeholder?: string): Field => text('heading', 'Заголовок блока', { placeholder })
 
+// Вводный абзац под заголовком блока. Пусто — абзаца нет.
+const lead = (): Field =>
+  textarea('lead', 'Вводный абзац', { description: 'Одно-два предложения под заголовком блока.' })
+
 export const Landings: CollectionConfig = {
   slug: 'landings',
   labels: { singular: 'Лендинг', plural: 'Лендинги' },
@@ -42,6 +47,10 @@ export const Landings: CollectionConfig = {
     create: contentEditors,
     update: contentEditors,
     delete: contentEditors,
+  },
+  hooks: {
+    afterChange: [revalidateAfterChange],
+    afterDelete: [revalidateAfterDelete],
   },
   fields: [
     {
@@ -81,9 +90,18 @@ export const Landings: CollectionConfig = {
           name: 'hero',
           label: 'Первый экран',
           fields: [
-            text('eyebrow', 'Надзаголовок', { placeholder: 'XII конкурс · Алматы, декабрь 2026' }),
-            textarea('heading', 'Заголовок'),
-            textarea('subheading', 'Подзаголовок'),
+            text('eyebrow', 'Надзаголовок', {
+              placeholder: 'Казахстанская ассоциация учителей математики · с 2012 года',
+              description: 'Название ассоциации и год через « · ». На телефоне — две строки.',
+            }),
+            textarea('heading', 'Заголовок', {
+              description: 'Римский номер конкурса (XII) выделяется золотом автоматически.',
+            }),
+            textarea('subheading', 'Дата под заголовком', {
+              placeholder: 'Декабрь 2026',
+              description:
+                'Строка с иконкой календаря рядом с городом. Пусто — даты из мероприятия.',
+            }),
             text('partnerNote', 'Строка о партнёре', {
               placeholder: 'Совместно с Министерством просвещения РК',
             }),
@@ -127,7 +145,10 @@ export const Landings: CollectionConfig = {
             {
               type: 'row',
               fields: [
-                text('primaryCta', 'Главная кнопка', { placeholder: 'Зарегистрироваться' }),
+                text('primaryCta', 'Главная кнопка', {
+                  placeholder: 'Зарегистрироваться',
+                  description: 'Цена из мероприятия добавляется автоматически.',
+                }),
                 text('secondaryCta', 'Второстепенная кнопка', { placeholder: 'Скачать положение' }),
               ],
             },
@@ -138,6 +159,7 @@ export const Landings: CollectionConfig = {
           label: 'Для кого',
           fields: [
             heading('Для кого конкурс'),
+            lead(),
             {
               name: 'cards',
               label: 'Карточки',
@@ -154,6 +176,43 @@ export const Landings: CollectionConfig = {
                 textarea('text', 'Текст'),
               ],
             },
+            {
+              name: 'notes',
+              label: 'Кто что получит',
+              type: 'array',
+              labels: { singular: 'Строка', plural: 'Строки' },
+              admin: {
+                description:
+                  'Серая плашка под карточками: «Молодым учителям…», «Директорам…». Заголовок выделяется жирным, текст продолжает его.',
+              },
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'icon',
+                      label: 'Иконка',
+                      type: 'select',
+                      options: adminOptions(BENEFIT_ICONS),
+                      admin: { width: '50%' },
+                    },
+                    {
+                      name: 'action',
+                      label: 'Ссылка под текстом',
+                      type: 'select',
+                      defaultValue: 'none',
+                      options: [
+                        { value: 'none', label: 'Нет' },
+                        { value: 'school', label: '«Заявка от школы»' },
+                      ],
+                      admin: { width: '50%' },
+                    },
+                  ],
+                },
+                text('title', 'Заголовок', { placeholder: 'Молодым учителям' }),
+                textarea('text', 'Текст'),
+              ],
+            },
           ],
         },
         {
@@ -161,6 +220,7 @@ export const Landings: CollectionConfig = {
           label: 'Что получает участник',
           fields: [
             heading('Что получает участник'),
+            lead(),
             {
               name: 'items',
               label: 'Выгоды',
@@ -180,10 +240,45 @@ export const Landings: CollectionConfig = {
           ],
         },
         {
+          name: 'gallery',
+          label: 'Фотографии',
+          description:
+            'Блок после «Что получает участник». Только реальные фото конкурсов. Пусто — блок не показывается.',
+          fields: [
+            heading('Как проходит конкурс'),
+            lead(),
+            {
+              name: 'images',
+              label: 'Фотографии',
+              type: 'array',
+              labels: { singular: 'Фото', plural: 'Фото' },
+              admin: {
+                description:
+                  'Порядок — перетаскиванием. Первое фото на компьютере крупное — ставьте горизонтальное и чёткое. Описание для незрячих (alt) — в карточке файла.',
+              },
+              fields: [
+                {
+                  name: 'image',
+                  label: 'Фото',
+                  type: 'upload',
+                  relationTo: 'media',
+                  required: true,
+                },
+                text('caption', 'Подпись', { placeholder: 'Олимпиадный тур' }),
+              ],
+            },
+          ],
+        },
+        {
           name: 'program',
           label: 'Программа',
           description: 'Само расписание редактируется в мероприятии, вкладка «Программа».',
-          fields: [heading('Программа'), textarea('note', 'Примечание под программой')],
+          fields: [
+            heading('Программа'),
+            textarea('note', 'Примечание к программе', {
+              description: 'Голубая плашка над расписанием.',
+            }),
+          ],
         },
         {
           name: 'pricing',
@@ -202,9 +297,12 @@ export const Landings: CollectionConfig = {
             textarea('groupTerms', 'Условия для групп от школы'),
             textarea('paymentNote', 'Об оплате', {
               placeholder:
-                'Онлайн-оплаты нет: после регистрации менеджер свяжется и примет оплату.',
+                'Оплата — через менеджера: после регистрации он свяжется с вами по WhatsApp.',
+              description: 'Начало до двоеточия выделяется жирным.',
             }),
-            textarea('deadlineNote', 'О сроке регистрации'),
+            textarea('deadlineNote', 'О сроке регистрации', {
+              description: 'Строка под счётчиком.',
+            }),
           ],
         },
         {
@@ -212,6 +310,7 @@ export const Landings: CollectionConfig = {
           label: 'Спикеры и жюри',
           fields: [
             heading('Спикеры и жюри'),
+            lead(),
             {
               name: 'people',
               label: 'Люди',
@@ -230,6 +329,7 @@ export const Landings: CollectionConfig = {
           label: 'История',
           fields: [
             heading('История и достижения'),
+            lead(),
             {
               name: 'milestones',
               label: 'Таймлайн',
@@ -237,10 +337,27 @@ export const Landings: CollectionConfig = {
               labels: { singular: 'Веха', plural: 'Вехи' },
               fields: [
                 {
-                  name: 'period',
-                  label: 'Период',
-                  type: 'text',
-                  admin: { placeholder: '2012–2023' },
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'period',
+                      label: 'Период',
+                      type: 'text',
+                      admin: { placeholder: '2012–2023', width: '50%' },
+                    },
+                    {
+                      name: 'kind',
+                      label: 'Вид точки',
+                      type: 'select',
+                      defaultValue: 'default',
+                      options: [
+                        { value: 'default', label: 'Обычная веха' },
+                        { value: 'pause', label: 'Пауза (пунктир)' },
+                        { value: 'current', label: 'Текущий конкурс (золотая)' },
+                      ],
+                      admin: { width: '50%' },
+                    },
+                  ],
                 },
                 text('title', 'Заголовок'),
                 textarea('text', 'Текст'),
@@ -251,6 +368,10 @@ export const Landings: CollectionConfig = {
               label: 'Цифры',
               type: 'array',
               labels: { singular: 'Цифра', plural: 'Цифры' },
+              admin: {
+                description:
+                  'Первая — крупная цифра карточки. Остальные — полоса-диаграмма «Конкурсы 2012–2023»: пропорции считаются по числам (~130 → 130).',
+              },
               fields: [
                 {
                   type: 'row',
@@ -272,6 +393,10 @@ export const Landings: CollectionConfig = {
               label: 'Призы прошлых лет',
               type: 'array',
               labels: { singular: 'Приз', plural: 'Призы' },
+              admin: {
+                description:
+                  'Крупно — «Размер / ценность» (или название, если ценности нет), мелко — название.',
+              },
               fields: [
                 text('title', 'Название'),
                 text('value', 'Размер / ценность'),
@@ -285,6 +410,7 @@ export const Landings: CollectionConfig = {
           label: 'Истории участников',
           fields: [
             heading('Истории участников'),
+            lead(),
             {
               name: 'items',
               label: 'Истории',
@@ -364,7 +490,12 @@ export const Landings: CollectionConfig = {
           label: 'Контакты',
           description:
             'Телефоны, WhatsApp, e-mail и соцсети берутся из «Настроек сайта», адрес площадки — из мероприятия.',
-          fields: [heading('Контакты'), textarea('finalCta', 'Финальный призыв')],
+          fields: [
+            heading('Контакты'),
+            textarea('finalCta', 'Финальный призыв', {
+              description: 'Заголовок синей ленты перед контактами.',
+            }),
+          ],
         },
         {
           name: 'forms',
@@ -381,7 +512,8 @@ export const Landings: CollectionConfig = {
               placeholder: 'Менеджер перезвонит в рабочее время',
             }),
             textarea('consentText', 'Текст согласия', {
-              description: 'Рядом с галочкой согласия во всех формах.',
+              description:
+                'Рядом с галочкой в форме регистрации. Ссылки: [договора-оферты](offer) и [обработку персональных данных](privacy) — ведут на документы из «Настроек сайта».',
             }),
           ],
         },

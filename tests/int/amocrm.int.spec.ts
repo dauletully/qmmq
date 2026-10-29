@@ -298,6 +298,8 @@ describe('формы', () => {
     expect(normalizePhone('+7 701 123 45 67')).toBe('+77011234567')
     expect(normalizePhone('7011234567')).toBe('+77011234567')
     expect(normalizePhone('12345')).toBeNull()
+    expect(normalizePhone('+7 916 123 45 67')).toBeNull()
+    expect(normalizePhone('701123456')).toBeNull()
   })
 
   it('регистрация: ключи ошибок', () => {

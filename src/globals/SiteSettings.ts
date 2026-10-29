@@ -2,6 +2,7 @@ import type { GlobalConfig } from 'payload'
 
 import { anyone, contentEditors } from '../access'
 import { adminOptions, SOCIAL_NETWORKS } from '../lib/constants'
+import { revalidateGlobalAfterChange } from '../lib/revalidate'
 import { validateEmail, validateOptionalPhone, validateUrl } from '../lib/validators'
 
 export const SiteSettings: GlobalConfig = {
@@ -16,6 +17,7 @@ export const SiteSettings: GlobalConfig = {
     update: contentEditors,
   },
   versions: { max: 25 },
+  hooks: { afterChange: [revalidateGlobalAfterChange] },
   fields: [
     {
       type: 'tabs',
@@ -108,6 +110,16 @@ export const SiteSettings: GlobalConfig = {
                       validate: validateUrl,
                     },
                   ],
+                },
+                {
+                  name: 'label',
+                  label: 'Подпись на сайте',
+                  type: 'text',
+                  localized: true,
+                  admin: {
+                    placeholder: 'канал сообщества',
+                    description: 'Как ссылка называется на странице. Пусто — название сети.',
+                  },
                 },
               ],
             },

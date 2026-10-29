@@ -381,8 +381,17 @@ export interface Landing {
    */
   event: number | Event;
   hero?: {
+    /**
+     * Название ассоциации и год через « · ». На телефоне — две строки.
+     */
     eyebrow?: string | null;
+    /**
+     * Римский номер конкурса (XII) выделяется золотом автоматически.
+     */
     heading?: string | null;
+    /**
+     * Строка с иконкой календаря рядом с городом. Пусто — даты из мероприятия.
+     */
     subheading?: string | null;
     partnerNote?: string | null;
     partnerLogo?: (number | null) | Media;
@@ -396,11 +405,18 @@ export interface Landing {
           id?: string | null;
         }[]
       | null;
+    /**
+     * Цена из мероприятия добавляется автоматически.
+     */
     primaryCta?: string | null;
     secondaryCta?: string | null;
   };
   audience?: {
     heading?: string | null;
+    /**
+     * Одно-два предложения под заголовком блока.
+     */
+    lead?: string | null;
     cards?:
       | {
           subject?: ('math' | 'physics' | 'informatics') | null;
@@ -409,15 +425,56 @@ export interface Landing {
           id?: string | null;
         }[]
       | null;
+    /**
+     * Серая плашка под карточками: «Молодым учителям…», «Директорам…». Заголовок выделяется жирным, текст продолжает его.
+     */
+    notes?:
+      | {
+          icon?:
+            | (
+                | 'Award'
+                | 'FileBadge'
+                | 'Hourglass'
+                | 'Building'
+                | 'GraduationCap'
+                | 'BookOpen'
+                | 'Brain'
+                | 'Calculator'
+                | 'Clock'
+                | 'Lightbulb'
+                | 'MessagesSquare'
+                | 'Mic'
+                | 'Sigma'
+                | 'Atom'
+                | 'Code'
+                | 'Trophy'
+                | 'Users'
+                | 'Handshake'
+                | 'Star'
+                | 'Target'
+              )
+            | null;
+          action?: ('none' | 'school') | null;
+          title?: string | null;
+          text?: string | null;
+          id?: string | null;
+        }[]
+      | null;
   };
   benefits?: {
     heading?: string | null;
+    /**
+     * Одно-два предложения под заголовком блока.
+     */
+    lead?: string | null;
     items?:
       | {
           icon?:
             | (
                 | 'Award'
                 | 'FileBadge'
+                | 'Hourglass'
+                | 'Building'
                 | 'GraduationCap'
                 | 'BookOpen'
                 | 'Brain'
@@ -442,8 +499,28 @@ export interface Landing {
         }[]
       | null;
   };
+  gallery?: {
+    heading?: string | null;
+    /**
+     * Одно-два предложения под заголовком блока.
+     */
+    lead?: string | null;
+    /**
+     * Порядок — перетаскиванием. Первое фото на компьютере крупное — ставьте горизонтальное и чёткое. Описание для незрячих (alt) — в карточке файла.
+     */
+    images?:
+      | {
+          image: number | Media;
+          caption?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
   program?: {
     heading?: string | null;
+    /**
+     * Голубая плашка над расписанием.
+     */
     note?: string | null;
   };
   pricing?: {
@@ -456,11 +533,21 @@ export interface Landing {
       | null;
     documentNote?: string | null;
     groupTerms?: string | null;
+    /**
+     * Начало до двоеточия выделяется жирным.
+     */
     paymentNote?: string | null;
+    /**
+     * Строка под счётчиком.
+     */
     deadlineNote?: string | null;
   };
   speakers?: {
     heading?: string | null;
+    /**
+     * Одно-два предложения под заголовком блока.
+     */
+    lead?: string | null;
     /**
      * Порядок — перетаскиванием. Показываются только люди с отметкой «Согласие на публикацию».
      */
@@ -468,14 +555,22 @@ export interface Landing {
   };
   history?: {
     heading?: string | null;
+    /**
+     * Одно-два предложения под заголовком блока.
+     */
+    lead?: string | null;
     milestones?:
       | {
           period?: string | null;
+          kind?: ('default' | 'pause' | 'current') | null;
           title?: string | null;
           text?: string | null;
           id?: string | null;
         }[]
       | null;
+    /**
+     * Первая — крупная цифра карточки. Остальные — полоса-диаграмма «Конкурсы 2012–2023»: пропорции считаются по числам (~130 → 130).
+     */
     figures?:
       | {
           value?: string | null;
@@ -483,6 +578,9 @@ export interface Landing {
           id?: string | null;
         }[]
       | null;
+    /**
+     * Крупно — «Размер / ценность» (или название, если ценности нет), мелко — название.
+     */
     prizes?:
       | {
           title?: string | null;
@@ -494,6 +592,10 @@ export interface Landing {
   };
   stories?: {
     heading?: string | null;
+    /**
+     * Одно-два предложения под заголовком блока.
+     */
+    lead?: string | null;
     /**
      * Только реальные люди с согласием на публикацию: имя, школа и год первого участия берутся из карточки человека.
      */
@@ -551,6 +653,9 @@ export interface Landing {
   };
   contacts?: {
     heading?: string | null;
+    /**
+     * Заголовок синей ленты перед контактами.
+     */
     finalCta?: string | null;
   };
   forms?: {
@@ -562,7 +667,7 @@ export interface Landing {
       | null;
     schoolNote?: string | null;
     /**
-     * Рядом с галочкой согласия во всех формах.
+     * Рядом с галочкой в форме регистрации. Ссылки: [договора-оферты](offer) и [обработку персональных данных](privacy) — ведут на документы из «Настроек сайта».
      */
     consentText?: string | null;
   };
@@ -1018,10 +1123,20 @@ export interface LandingsSelect<T extends boolean = true> {
     | T
     | {
         heading?: T;
+        lead?: T;
         cards?:
           | T
           | {
               subject?: T;
+              title?: T;
+              text?: T;
+              id?: T;
+            };
+        notes?:
+          | T
+          | {
+              icon?: T;
+              action?: T;
               title?: T;
               text?: T;
               id?: T;
@@ -1031,12 +1146,26 @@ export interface LandingsSelect<T extends boolean = true> {
     | T
     | {
         heading?: T;
+        lead?: T;
         items?:
           | T
           | {
               icon?: T;
               title?: T;
               text?: T;
+              id?: T;
+            };
+      };
+  gallery?:
+    | T
+    | {
+        heading?: T;
+        lead?: T;
+        images?:
+          | T
+          | {
+              image?: T;
+              caption?: T;
               id?: T;
             };
       };
@@ -1065,16 +1194,19 @@ export interface LandingsSelect<T extends boolean = true> {
     | T
     | {
         heading?: T;
+        lead?: T;
         people?: T;
       };
   history?:
     | T
     | {
         heading?: T;
+        lead?: T;
         milestones?:
           | T
           | {
               period?: T;
+              kind?: T;
               title?: T;
               text?: T;
               id?: T;
@@ -1099,6 +1231,7 @@ export interface LandingsSelect<T extends boolean = true> {
     | T
     | {
         heading?: T;
+        lead?: T;
         items?:
           | T
           | {
@@ -1457,6 +1590,10 @@ export interface SiteSetting {
     | {
         network: 'instagram' | 'facebook' | 'telegram' | 'whatsapp' | 'youtube' | 'tiktok' | 'vk' | 'other';
         url: string;
+        /**
+         * Как ссылка называется на странице. Пусто — название сети.
+         */
+        label?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -1611,6 +1748,7 @@ export interface SiteSettingsSelect<T extends boolean = true> {
     | {
         network?: T;
         url?: T;
+        label?: T;
         id?: T;
       };
   requisites?: T;

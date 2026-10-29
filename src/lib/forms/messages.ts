@@ -10,8 +10,8 @@ export const FORM_ERROR_MESSAGES: Record<string, Record<Locale, string>> = {
   invalid_value: { ru: 'Проверьте значение', kk: 'Мәнді тексеріңіз' },
   invalid_number: { ru: 'Введите число', kk: 'Санды енгізіңіз' },
   invalid_phone: {
-    ru: 'Проверьте номер: +7 и 10 цифр',
-    kk: 'Нөмірді тексеріңіз: +7 және 10 сан',
+    ru: 'Нужен казахстанский номер: +7 7XX XXX XX XX',
+    kk: 'Қазақстандық нөмір қажет: +7 7XX XXX XX XX',
   },
   invalid_email: { ru: 'Проверьте e-mail', kk: 'E-mail мекенжайын тексеріңіз' },
   invalid_option: { ru: 'Выберите вариант из списка', kk: 'Тізімнен таңдаңыз' },

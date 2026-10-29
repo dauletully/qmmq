@@ -54,3 +54,6 @@ node_modules/
 
 # per-process dev build dirs
 /.next-*/
+
+# исходные материалы заказчика (в сайт попадают через админку или src/seed/assets)
+/contents/

@@ -112,6 +112,8 @@ export const EVENT_FORMATS = [
 export const BENEFIT_ICONS = [
   { value: 'Award', label: { ru: 'Награда', kk: 'Марапат' } },
   { value: 'FileBadge', label: { ru: 'Документ', kk: 'Құжат' } },
+  { value: 'Hourglass', label: { ru: 'Песочные часы', kk: 'Құм сағат' } },
+  { value: 'Building', label: { ru: 'Школа', kk: 'Мектеп' } },
   { value: 'GraduationCap', label: { ru: 'Академическая шапочка', kk: 'Академиялық бөрік' } },
   { value: 'BookOpen', label: { ru: 'Книга', kk: 'Кітап' } },
   { value: 'Brain', label: { ru: 'Мышление', kk: 'Ойлау' } },

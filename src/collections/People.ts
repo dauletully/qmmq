@@ -2,6 +2,7 @@ import type { Access, CollectionConfig } from 'payload'
 
 import { contentEditors, roleOf } from '../access'
 import { adminOptions, PERSON_ROLES, REGIONS, SUBJECTS } from '../lib/constants'
+import { revalidateAfterChange, revalidateAfterDelete } from '../lib/revalidate'
 
 // Посетители сайта видят только тех, кто дал согласие на публикацию.
 const readPeople: Access = ({ req }) => {
@@ -26,6 +27,10 @@ export const People: CollectionConfig = {
     create: contentEditors,
     update: contentEditors,
     delete: contentEditors,
+  },
+  hooks: {
+    afterChange: [revalidateAfterChange],
+    afterDelete: [revalidateAfterDelete],
   },
   fields: [
     {

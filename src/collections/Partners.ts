@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 
 import { anyone, contentEditors } from '../access'
 import { adminOptions, PARTNER_KINDS } from '../lib/constants'
+import { revalidateAfterChange, revalidateAfterDelete } from '../lib/revalidate'
 import { validateUrl } from '../lib/validators'
 
 export const Partners: CollectionConfig = {
@@ -19,6 +20,10 @@ export const Partners: CollectionConfig = {
     create: contentEditors,
     update: contentEditors,
     delete: contentEditors,
+  },
+  hooks: {
+    afterChange: [revalidateAfterChange],
+    afterDelete: [revalidateAfterDelete],
   },
   fields: [
     { name: 'name', label: 'Название', type: 'text', required: true, localized: true },

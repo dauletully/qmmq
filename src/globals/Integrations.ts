@@ -1,6 +1,7 @@
 import type { FieldHook, GlobalConfig } from 'payload'
 
 import { adminFieldOnly, adminOnly, noFieldUpdate } from '../access'
+import { revalidateGlobalAfterChange } from '../lib/revalidate'
 import { validateAmoBaseUrl, validateMetaPixelId, validateTiktokPixelId } from '../lib/validators'
 
 const trim: FieldHook = ({ value }) => (typeof value === 'string' ? value.trim() : value)
@@ -18,6 +19,8 @@ export const Integrations: GlobalConfig = {
     read: adminOnly,
     update: adminOnly,
   },
+  // ID пикселей выводятся на лендинге.
+  hooks: { afterChange: [revalidateGlobalAfterChange] },
   fields: [
     {
       type: 'tabs',

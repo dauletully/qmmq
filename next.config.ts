@@ -10,7 +10,11 @@ const nextConfig: NextConfig = {
   // Самодостаточная сборка для Docker-образа (см. Dockerfile и docs/DEPLOY.md).
   output: 'standalone',
   // Отдельная папка сборки на процесс: несколько dev-серверов в одном репозитории не мешают друг другу.
-  distDir: process.env.NEXT_DIST_DIR || ".next",
+  distDir: process.env.NEXT_DIST_DIR || '.next',
+  // Своя 404 для адресов вне маршрутов: у публичной части две корневые разметки (RU/KZ) и админка.
+  experimental: {
+    globalNotFound: true,
+  },
   images: {
     localPatterns: [
       {

@@ -1,4 +1,4 @@
-// Телефоны Казахстана (и России) с кодом +7. Без серверных импортов.
+// Только казахстанские номера: +7 7XX XXX XX XX. Без серверных импортов.
 
 // Возвращает +7XXXXXXXXXX или null, если номер не распознан.
 export function normalizePhone(input: string | null | undefined): string | null {
@@ -10,8 +10,8 @@ export function normalizePhone(input: string | null | undefined): string | null 
   } else if (digits.length === 10) {
     rest = digits
   }
-  // Номера +7 начинаются с 3–9 после кода страны (7xx — Казахстан, 9xx — мобильные России).
-  if (!rest || !/^[3-9]\d{9}$/.test(rest)) return null
+  // Все номера Казахстана после +7 начинаются с 7; российские (+7 9xx, +7 4xx…) не принимаем.
+  if (!rest || !/^7\d{9}$/.test(rest)) return null
   return `+7${rest}`
 }
 

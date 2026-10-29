@@ -20,6 +20,7 @@ export const LANDING_SECTIONS = [
   { id: 'hero', label: 'Первый экран' },
   { id: 'audience', label: 'Для кого' },
   { id: 'benefits', label: 'Что получает участник' },
+  { id: 'gallery', label: 'Фотографии' },
   { id: 'program', label: 'Программа' },
   { id: 'pricing', label: 'Стоимость и регистрация' },
   { id: 'speakers', label: 'Спикеры и жюри' },
