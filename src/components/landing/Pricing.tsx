@@ -46,7 +46,7 @@ export function Pricing({ ctx }: { ctx: Ctx }) {
                       deadline={ev.deadline}
                       renderedAt={ctx.renderedAt}
                       locale={locale}
-                      variant="cells"
+                      variant="panel"
                     />
                     {p.deadlineNote && (
                       <p className="q-small" style={{ marginTop: 12 }}>

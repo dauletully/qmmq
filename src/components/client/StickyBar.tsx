@@ -58,7 +58,6 @@ export function StickyBar({ locale, deadline, renderedAt, label, whatsappHref }:
       <div className={`q-sticky lp-sticky${visible ? ' is-visible' : ''}`} aria-hidden={!visible}>
         {deadline && (
           <div className="q-sticky__meta">
-            <span className="if-open">{t.countdown.until}</span>
             <span className="if-open">
               <Countdown
                 deadline={deadline}

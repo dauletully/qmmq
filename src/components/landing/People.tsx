@@ -33,6 +33,44 @@ function Portrait({ person, sizes }: { person: PersonView; sizes: string }) {
   )
 }
 
+function roleOf(p: PersonView): string | undefined {
+  return p.roles.includes('jury') && !p.roles.includes('speaker') ? 'jury' : p.roles[0]
+}
+
+function RoleTag({ role, t }: { role: string | undefined; t: Ctx['t'] }) {
+  if (!role) return null
+  return (
+    <div style={{ display: 'flex', gap: 6 }}>
+      <span className={`q-tag ${role === 'speaker' ? 'q-tag--accent' : 'q-tag--outline'}`}>
+        {t.roles[role as keyof typeof t.roles] ?? role}
+      </span>
+    </div>
+  )
+}
+
+// Один человек — не карусель из одной карточки, а крупный блок: портрет, регалии, вклад, цитата.
+function FeaturedPerson({ person, t }: { person: PersonView; t: Ctx['t'] }) {
+  return (
+    <article className="lp-featured">
+      <div className="lp-featured__photo q-speaker__photo">
+        <Portrait person={person} sizes="(min-width: 1024px) 420px, 100vw" />
+      </div>
+      <div className="lp-featured__body">
+        <RoleTag role={roleOf(person)} t={t} />
+        <h3 className="lp-featured__name">{person.name}</h3>
+        {person.position && <p className="lp-featured__role">{person.position}</p>}
+        {person.contribution && <p className="lp-featured__note">{person.contribution}</p>}
+        {person.quote && (
+          <figure className="lp-featured__quote">
+            <Quote className="q-icon lp-featured__mark" aria-hidden="true" />
+            <blockquote>{person.quote}</blockquote>
+          </figure>
+        )}
+      </div>
+    </article>
+  )
+}
+
 // ---------- 6. Спикеры и жюри ----------
 export function Speakers({ ctx }: { ctx: Ctx }) {
   const { view, t } = ctx
@@ -47,17 +85,17 @@ export function Speakers({ ctx }: { ctx: Ctx }) {
           lead={view.speakers.lead}
           split
         />
-        <Carousel
-          label={t.carousel.speakers}
-          count={n}
-          desktop={n > 8 ? 'scroll' : 'grid'}
-          cols={4}
-          labels={{ prev: t.carousel.prev, next: t.carousel.next }}
-        >
-          {people.map((p, i) => {
-            const role =
-              p.roles.includes('jury') && !p.roles.includes('speaker') ? 'jury' : p.roles[0]
-            return (
+        {n === 1 ? (
+          <FeaturedPerson person={people[0]!} t={t} />
+        ) : (
+          <Carousel
+            label={t.carousel.speakers}
+            count={n}
+            desktop={n > 8 ? 'scroll' : 'grid'}
+            cols={4}
+            labels={{ prev: t.carousel.prev, next: t.carousel.next }}
+          >
+            {people.map((p, i) => (
               <article
                 className="q-speaker"
                 key={p.id}
@@ -71,22 +109,14 @@ export function Speakers({ ctx }: { ctx: Ctx }) {
                     sizes="(min-width: 1440px) 300px, (min-width: 1024px) 23vw, 264px"
                   />
                 </div>
-                {role && (
-                  <div style={{ display: 'flex', gap: 6 }}>
-                    <span
-                      className={`q-tag ${role === 'speaker' ? 'q-tag--accent' : 'q-tag--outline'}`}
-                    >
-                      {t.roles[role as keyof typeof t.roles] ?? role}
-                    </span>
-                  </div>
-                )}
+                <RoleTag role={roleOf(p)} t={t} />
                 <h3 className="q-speaker__name">{p.name}</h3>
                 {p.position && <p className="q-speaker__role">{p.position}</p>}
                 {p.contribution && <p className="q-speaker__note">{p.contribution}</p>}
               </article>
-            )
-          })}
-        </Carousel>
+            ))}
+          </Carousel>
+        )}
       </div>
     </section>
   )

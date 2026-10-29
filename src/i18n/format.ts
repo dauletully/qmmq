@@ -53,27 +53,36 @@ export function formatDateRange(
   return locale === 'kk' ? `${b.year} жылғы ${range}` : `${range} ${b.year}`
 }
 
-export type CountdownParts = { days: number; hours: number; minutes: number; done: boolean }
+// Спокойный дедлайн: «5 декабря» + сколько календарных дней осталось (по времени Казахстана).
+// daysLeft = 0 — последний день; закрытие регистрации по времени решает data-reg.
+export type DeadlineInfo = { date: string; daysLeft: number; lastDay: boolean }
 
-export function countdownParts(deadlineMs: number, nowMs: number): CountdownParts {
-  const diff = deadlineMs - nowMs
-  if (diff <= 0) return { days: 0, hours: 0, minutes: 0, done: true }
-  const totalMinutes = Math.floor(diff / 60_000)
+function kzDayNumber(ms: number): number {
+  return Math.floor((ms + KZ_OFFSET_MS) / 86_400_000)
+}
+
+export function deadlineInfo(deadlineMs: number, nowMs: number, locale: Locale): DeadlineInfo {
+  const t = getDict(locale)
+  const p = kzParts(new Date(deadlineMs).toISOString())
+  const daysLeft = Math.max(0, kzDayNumber(deadlineMs) - kzDayNumber(nowMs))
   return {
-    days: Math.floor(totalMinutes / 1440),
-    hours: Math.floor((totalMinutes % 1440) / 60),
-    minutes: totalMinutes % 60,
-    done: false,
+    date: `${p.day}${NBSP}${t.monthsDative[p.month]}`,
+    daysLeft,
+    lastDay: daysLeft === 0,
   }
 }
 
-// 27 дн 14 ч 32 мин; меньше суток — без дней.
-export function countdownInline(p: CountdownParts, t: Dict): string {
-  const s = t.countdown.short
-  const parts = [] as string[]
-  if (p.days > 0) parts.push(`${p.days}${NBSP}${s.d}`)
-  parts.push(`${p.hours}${NBSP}${s.h}`, `${p.minutes}${NBSP}${s.m}`)
-  return parts.join(' ')
+// «осталось 36 дней» / «последний день»
+export function deadlineLeft(info: DeadlineInfo, t: Dict): string {
+  return info.lastDay ? t.countdown.lastDay : t.countdown.left(info.daysLeft)
+}
+
+// Полная строка: «Регистрация до 5 декабря · осталось 36 дней» / «Тіркеу 5 желтоқсанға дейін · 36 күн қалды»
+export function deadlineLine(info: DeadlineInfo, locale: Locale, short = false): string {
+  const t = getDict(locale)
+  const head = short ? t.countdown.untilShort : t.countdown.until
+  const date = locale === 'kk' ? `${info.date} дейін` : info.date
+  return `${head ? `${head} ` : ''}${date} · ${deadlineLeft(info, t)}`
 }
 
 export function unit(n: number, forms: readonly string[]): string {

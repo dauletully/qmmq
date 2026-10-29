@@ -93,7 +93,12 @@ export function setupPixels({ metaPixelId, tiktokPixelId }: PixelIds) {
     if (event == 'page_view') {
       meta('track', 'PageView')
       tiktok('page')
-    } else if (event == 'form_submit' && (props.form == 'registration' || props.form == 'school')) {
+    } else if (
+      event == 'form_submit' &&
+      (props.form == 'registration' || props.form == 'school') &&
+      props.step != 2
+    ) {
+      // Регистрация в два шага: заявка создаётся после шага 1 — второй шаг конверсию не дублирует.
       // event_id совпадёт с серверной отправкой (Conversions API / Events API), если её подключат
       const id = props.leadId ? 'lead-' + props.leadId : 'ev-' + Date.now().toString(36)
       const data = { content_name: props.form }

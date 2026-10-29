@@ -15,7 +15,7 @@ const SYNC = [
   { value: 'sent', label: 'Отправлена' },
 ]
 
-type Filters = { type?: string; sync?: string; paid?: boolean }
+type Filters = { type?: string; sync?: string; paid?: boolean; incomplete?: boolean }
 
 function readFilters(where: Where | undefined): Filters {
   const result: Filters = {}
@@ -31,6 +31,7 @@ function readFilters(where: Where | undefined): Filters {
       if (key === 'type' && typeof equals === 'string') result.type = equals
       if (key === 'amo.syncStatus' && typeof equals === 'string') result.sync = equals
       if (key === 'payment.paid' && (equals === true || equals === 'true')) result.paid = true
+      if (key === 'incomplete' && (equals === true || equals === 'true')) result.incomplete = true
     }
   }
   visit(where)
@@ -42,6 +43,7 @@ function toWhere(f: Filters): Where {
   if (f.type) and.push({ type: { equals: f.type } })
   if (f.sync) and.push({ 'amo.syncStatus': { equals: f.sync } })
   if (f.paid) and.push({ 'payment.paid': { equals: true } })
+  if (f.incomplete) and.push({ incomplete: { equals: true } })
   return and.length ? { and } : {}
 }
 
@@ -131,6 +133,13 @@ export function LeadFilters() {
           onClick={() => apply({ ...current, paid: !current.paid })}
         >
           Только оплаченные
+        </Chip>
+        <span style={{ ...label, minWidth: 0, marginLeft: 12 }}>Заполнение:</span>
+        <Chip
+          active={Boolean(current.incomplete)}
+          onClick={() => apply({ ...current, incomplete: !current.incomplete })}
+        >
+          Только неполные
         </Chip>
       </div>
     </div>

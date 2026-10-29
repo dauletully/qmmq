@@ -1,4 +1,13 @@
-import { EXPERIENCE, labelOf, LEAD_TYPES, REGIONS, SUBJECTS, type LeadType } from '../constants'
+import {
+  EXPERIENCE,
+  labelOf,
+  LEAD_TYPES,
+  PARTNER_FORMATS,
+  REGIONS,
+  SPEAKER_ROLES,
+  SUBJECTS,
+  type LeadType,
+} from '../constants'
 import { formatPhone } from '../phone'
 import type { AmoComplexLead, AmoCustomFieldValue } from './client'
 import { AMO_UTM_CODES, type AmoFieldKey, type AmoFieldMap, type AmoUtmKey } from './fields'
@@ -26,6 +35,15 @@ export type LeadForAmo = {
   subjects?: Nullable<string[]>
   consent?: Nullable<boolean>
   consentAt?: Nullable<string>
+  // Заполнен только первый шаг регистрации (ФИО, предмет, телефон).
+  incomplete?: Nullable<boolean>
+  // Формы сайта (community, speaker, partner) — src/lib/forms/site.ts
+  speakerRole?: Nullable<string>
+  topic?: Nullable<string>
+  partnerFormat?: Nullable<string>
+  wantsCatalog?: Nullable<boolean>
+  message?: Nullable<string>
+  sourcePath?: Nullable<string>
   createdAt: string
   attribution?: Nullable<
     Partial<
@@ -72,9 +90,13 @@ export function formatDateTime(iso: Nullable<string>): string {
   }).format(d)
 }
 
+// Заявки от организаций: школа (лендинг) и партнёр (сайт) — в названии организация.
+const isOrgLead = (lead: LeadForAmo) => lead.type === 'school' || lead.type === 'partner'
+
 export function leadDisplayName(lead: LeadForAmo): string {
   return (
-    (lead.type === 'school' ? lead.organization : lead.fullName)?.trim() || `Заявка №${lead.id}`
+    (isOrgLead(lead) ? lead.organization || lead.fullName : lead.fullName)?.trim() ||
+    `Заявка №${lead.id}`
   )
 }
 
@@ -131,7 +153,7 @@ function customFieldValues(
   select('subjects', leadSubjects(lead))
   select('region', [lead.region])
   text('city', lead.city)
-  text('school', lead.type === 'school' ? lead.organization : lead.school)
+  text('school', isOrgLead(lead) ? lead.organization : lead.school)
   select('experience', [lead.experience])
   text('howHeard', lead.howHeard)
   text('participantsCount', lead.participantsCount)
@@ -155,8 +177,10 @@ function customFieldValues(
 export function buildComplexLead(opts: BuildLeadOptions): AmoComplexLead {
   const { lead, event, settings } = opts
   const contactName =
-    (lead.type === 'school' ? lead.contactPerson || lead.organization : lead.fullName)?.trim() ||
-    `Заявка №${lead.id}`
+    (isOrgLead(lead)
+      ? lead.contactPerson || lead.fullName || lead.organization
+      : lead.fullName
+    )?.trim() || `Заявка №${lead.id}`
 
   const contactFields: AmoCustomFieldValue[] = []
   if (lead.phone) {
@@ -198,15 +222,18 @@ export function buildLeadNote(
   }
 
   lines.push(`Заявка с сайта №${lead.id} — ${labelOf(LEAD_TYPES, lead.type)}`)
+  if (lead.incomplete) {
+    lines.push('Заявка неполная: заполнен шаг 1 из 2 (ФИО, предмет, телефон). Согласие дано.')
+  }
   add('Мероприятие', event?.title)
   add('Лендинг', landingSlug)
   add('Язык формы', lead.locale === 'kk' ? 'казахский' : 'русский')
   add('Дата', `${formatDateTime(lead.createdAt)} (Алматы)`)
   lines.push('')
 
-  if (lead.type === 'school') {
+  if (isOrgLead(lead)) {
     add('Организация', lead.organization)
-    add('Контактное лицо', lead.contactPerson)
+    add('Контактное лицо', lead.contactPerson || lead.fullName)
     add('Число участников', lead.participantsCount)
     add('Предметы', (lead.subjects ?? []).map((s) => labelOf(SUBJECTS, s)).join(', '))
   } else {
@@ -220,6 +247,13 @@ export function buildLeadNote(
   add('Телефон (WhatsApp)', lead.phone ? formatPhone(lead.phone) : '')
   add('E-mail', lead.email)
   add('Как узнали', lead.howHeard)
+  // Формы сайта
+  add('Предлагает себя как', labelOf(SPEAKER_ROLES, lead.speakerRole))
+  add('Тема выступления', lead.topic)
+  add('Формат сотрудничества', labelOf(PARTNER_FORMATS, lead.partnerFormat))
+  if (lead.type === 'community') add('Хочет в каталог педагогов', lead.wantsCatalog ? 'да' : 'нет')
+  add('Сообщение', lead.message)
+  add('Страница формы', lead.sourcePath)
   add(
     'Согласие на обработку данных',
     lead.consent ? `да, ${formatDateTime(lead.consentAt)}` : 'нет',

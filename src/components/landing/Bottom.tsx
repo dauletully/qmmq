@@ -252,7 +252,7 @@ export function FinalAndContacts({ ctx }: { ctx: Ctx }) {
                     deadline={ev.deadline}
                     renderedAt={ctx.renderedAt}
                     locale={locale}
-                    variant="cells"
+                    variant="panel"
                   />
                 </div>
                 <div className="if-closed">

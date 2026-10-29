@@ -1,7 +1,7 @@
 'use client'
 
-import { Check } from 'lucide-react'
-import { useEffect, useRef } from 'react'
+import { Check, CheckCircle2 } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 
 import { track } from '@/analytics/client'
 import { useRouter } from 'next/navigation'
@@ -21,7 +21,7 @@ import {
   Select,
   Summary,
 } from './fields'
-import { loadSchemas, useLeadForm } from './useLeadForm'
+import { loadSchemas, type Submission, useLeadForm } from './useLeadForm'
 
 type Props = {
   landing: string
@@ -62,14 +62,14 @@ const INITIAL: Values = {
 const ORDER = [
   'fullName',
   'subject',
-  'experience',
+  'phone',
+  'consent',
   'region',
   'city',
   'school',
-  'phone',
+  'experience',
   'email',
   'howHeard',
-  'consent',
 ]
 
 const IDS: Record<string, string> = {
@@ -95,6 +95,11 @@ const toFields = (v: Values) => ({
   howHeard: v.howHeard || undefined,
 })
 
+// На телефоне форма идёт в два шага (шаг 1 — ФИО, предмет, телефон, согласие — уже сохраняет
+// заявку), на компьютере — одной формой: там все поля видны сразу, парами, и лишний экран не нужен.
+const twoSteps = () =>
+  typeof window !== 'undefined' && !window.matchMedia('(min-width: 1024px)').matches
+
 export function RegistrationForm({
   landing,
   locale,
@@ -108,6 +113,12 @@ export function RegistrationForm({
   const router = useRouter()
   const f = t.form
   const formRef = useRef<HTMLFormElement>(null)
+  const titleRef = useRef<HTMLHeadingElement>(null)
+  const [step, setStep] = useState<1 | 2>(1)
+  const stepRef = useRef<1 | 2>(1)
+  // Заявка после первого шага и одноразовый токен для второго.
+  const draft = useRef<{ id: number; token: string } | null>(null)
+
   const form = useLeadForm<Values>({
     kind: 'registration',
     landing,
@@ -115,7 +126,38 @@ export function RegistrationForm({
     initial: INITIAL,
     order: ORDER,
     toFields,
+    prepare: (mod): Submission => {
+      if (!twoSteps()) {
+        return { schema: mod.registrationSchema, method: 'POST', path: '/api/forms/registration' }
+      }
+      if (stepRef.current === 2 && draft.current) {
+        return {
+          schema: mod.registrationStep2Schema,
+          method: 'PATCH',
+          path: `/api/forms/registration/${draft.current.id}`,
+          body: { token: draft.current.token },
+        }
+      }
+      return {
+        schema: mod.registrationStep1Schema,
+        method: 'POST',
+        path: '/api/forms/registration',
+        body: { step: 1 },
+      }
+    },
+    eventProps: () => (twoSteps() ? { step: stepRef.current } : {}),
     onSuccess: (json) => {
+      if (typeof json.token === 'string' && typeof json.leadId === 'number') {
+        draft.current = { id: json.leadId, token: json.token }
+        stepRef.current = 2
+        setStep(2)
+        form.nextStage()
+        requestAnimationFrame(() => {
+          formRef.current?.scrollIntoView({ block: 'start' })
+          titleRef.current?.focus({ preventScroll: true })
+        })
+        return
+      }
       const redirect = typeof json.redirect === 'string' ? json.redirect : '/spasibo'
       // Небольшая пауза — пиксели успевают отправить конверсию.
       setTimeout(() => router.push(`${base}${redirect}`), 300)
@@ -155,19 +197,38 @@ export function RegistrationForm({
       ref={formRef}
       className="q-form lp-card lp-form"
       id="register"
+      data-step={step}
       noValidate
       onSubmit={form.submit}
       aria-labelledby="register-title"
     >
       <div className="lp-form__head">
-        <h3 className="q-h3" id="register-title">
-          <span className="if-open">{f.registrationTitle}</span>
-          <span className="if-closed">{f.waitlistTitle}</span>
+        <p className="lp-form__step-label only-m">{f.step(step, 2)}</p>
+        <h3 className="q-h3" id="register-title" ref={titleRef} tabIndex={-1}>
+          {step === 2 ? (
+            <>
+              <span className="only-m">{f.step2Title}</span>
+              <span className="only-d if-open">{f.registrationTitle}</span>
+              <span className="only-d if-closed">{f.waitlistTitle}</span>
+            </>
+          ) : (
+            <>
+              <span className="if-open">{f.registrationTitle}</span>
+              <span className="if-closed">{f.waitlistTitle}</span>
+            </>
+          )}
         </h3>
         <p className="lp-form__legend">
           <span aria-hidden="true">*</span> {f.requiredLegend}
         </p>
       </div>
+
+      {step === 2 && (
+        <div className="q-note lp-form__saved only-m" role="status">
+          <CheckCircle2 className="q-icon" aria-hidden="true" />
+          <span>{f.step2Saved}</span>
+        </div>
+      )}
 
       <Summary
         t={t}
@@ -178,166 +239,172 @@ export function RegistrationForm({
       />
       <Honeypot inputRef={form.hpRef} />
 
-      <Field id="r-name" label={f.fullName} required error={e.fullName}>
-        <input
-          id="r-name"
-          className={`q-input${e.fullName ? ' is-error' : ''}`}
-          placeholder={f.fullNamePh}
-          autoComplete="name"
-          value={v.fullName}
-          onChange={(ev) => form.set('fullName', ev.target.value)}
-          onBlur={() => form.blur('fullName')}
-          required
-          aria-invalid={e.fullName ? true : undefined}
-          aria-describedby={describedBy('r-name', e.fullName)}
-        />
-      </Field>
-
-      <div className="lp-form__pair">
-        <Field id="r-subject" label={f.subject} required error={e.subject}>
-          <Select
-            id="r-subject"
-            value={v.subject}
-            placeholder={f.subjectPh}
-            options={optionsFor(SUBJECTS, locale)}
-            error={e.subject}
-            onChange={(val) => form.set('subject', val)}
-            onBlur={() => form.blur('subject')}
+      <div className="lp-form__step lp-form__step--1">
+        <Field id="r-name" label={f.fullName} required error={e.fullName}>
+          <input
+            id="r-name"
+            className={`q-input${e.fullName ? ' is-error' : ''}`}
+            placeholder={f.fullNamePh}
+            autoComplete="name"
+            value={v.fullName}
+            onChange={(ev) => form.set('fullName', ev.target.value)}
+            onBlur={() => form.blur('fullName')}
             required
-            describedById={describedBy('r-subject', e.subject)}
+            aria-invalid={e.fullName ? true : undefined}
+            aria-describedby={describedBy('r-name', e.fullName)}
           />
         </Field>
-        <fieldset className="q-field" style={{ border: 0, margin: 0, padding: 0, minWidth: 0 }}>
-          <legend className="q-label" style={{ padding: 0, marginBottom: 8 }}>
-            {f.experience}
-          </legend>
-          <div className="q-chips lp-chips3">
-            {EXPERIENCE.map((opt) => {
-              const on = v.experience === opt.value
-              return (
-                <label key={opt.value} className={`q-chip${on ? ' is-selected' : ''}`}>
-                  <input
-                    type="radio"
-                    name="experience"
-                    id={`r-exp-${opt.value}`}
-                    value={opt.value}
-                    checked={on}
-                    onChange={() => form.set('experience', opt.value)}
-                    onClick={() => on && form.set('experience', '')}
-                  />
-                  {on && <Check className="q-icon" aria-hidden="true" />}
-                  {f.experienceChips[opt.value]}
-                </label>
-              )
-            })}
+
+        <div className="lp-form__pair">
+          <Field id="r-subject" label={f.subject} required error={e.subject}>
+            <Select
+              id="r-subject"
+              value={v.subject}
+              placeholder={f.subjectPh}
+              options={optionsFor(SUBJECTS, locale)}
+              error={e.subject}
+              onChange={(val) => form.set('subject', val)}
+              onBlur={() => form.blur('subject')}
+              required
+              describedById={describedBy('r-subject', e.subject)}
+            />
+          </Field>
+          <div className="q-field">
+            <label className="q-label" htmlFor="r-phone">
+              {f.phone}
+              <span className="q-req" aria-hidden="true">
+                *
+              </span>
+            </label>
+            <PhoneInput
+              id="r-phone"
+              digits={v.phone}
+              error={e.phone}
+              onChange={(d) => form.set('phone', d)}
+              onBlur={() => form.blur('phone')}
+              describedById={e.phone ? 'r-phone-e' : undefined}
+            />
+            <ErrorText id="r-phone-e" text={e.phone} />
           </div>
-        </fieldset>
-      </div>
-
-      <div className="lp-form__pair">
-        <Field id="r-region" label={f.region} required error={e.region}>
-          <Select
-            id="r-region"
-            value={v.region}
-            placeholder={f.regionPh}
-            options={optionsFor(REGIONS, locale)}
-            error={e.region}
-            onChange={onRegion}
-            onBlur={() => form.blur('region')}
-            required
-            describedById={describedBy('r-region', e.region)}
-          />
-        </Field>
-        <Field id="r-city" label={f.city} required error={e.city}>
-          <input
-            id="r-city"
-            className={`q-input${e.city ? ' is-error' : ''}`}
-            placeholder={v.region ? f.cityPh : f.cityPhDisabled}
-            autoComplete="address-level2"
-            disabled={!v.region}
-            value={v.city}
-            onChange={(ev) => form.set('city', ev.target.value)}
-            onBlur={() => form.blur('city')}
-            required
-            aria-invalid={e.city ? true : undefined}
-            aria-describedby={describedBy('r-city', e.city)}
-          />
-        </Field>
-      </div>
-
-      <Field id="r-school" label={f.school} required error={e.school}>
-        <input
-          id="r-school"
-          className={`q-input${e.school ? ' is-error' : ''}`}
-          placeholder={f.schoolPh}
-          autoComplete="organization"
-          value={v.school}
-          onChange={(ev) => form.set('school', ev.target.value)}
-          onBlur={() => form.blur('school')}
-          required
-          aria-invalid={e.school ? true : undefined}
-          aria-describedby={describedBy('r-school', e.school)}
-        />
-      </Field>
-
-      <div className="lp-form__pair">
-        <div className="q-field">
-          <label className="q-label" htmlFor="r-phone">
-            {f.phone}
-            <span className="q-req" aria-hidden="true">
-              *
-            </span>
-          </label>
-          <PhoneInput
-            id="r-phone"
-            digits={v.phone}
-            error={e.phone}
-            onChange={(d) => form.set('phone', d)}
-            onBlur={() => form.blur('phone')}
-            describedById={e.phone ? 'r-phone-e' : undefined}
-          />
-          <ErrorText id="r-phone-e" text={e.phone} />
         </div>
-        <Field id="r-email" label={f.email} required error={e.email}>
-          <input
-            id="r-email"
-            type="email"
-            inputMode="email"
-            className={`q-input${e.email ? ' is-error' : ''}`}
-            placeholder="name@example.kz"
-            autoComplete="email"
-            autoCapitalize="none"
-            spellCheck={false}
-            value={v.email}
-            onChange={(ev) => form.set('email', ev.target.value)}
-            onBlur={() => form.blur('email')}
-            required
-            aria-invalid={e.email ? true : undefined}
-            aria-describedby={describedBy('r-email', e.email)}
-          />
-        </Field>
+
+        <div className="lp-form__consent">
+          <Checkbox
+            id="r-consent"
+            checked={v.consent}
+            error={e.consent}
+            onChange={(val) => form.set('consent', val)}
+          >
+            {renderConsent(consent, docs)}
+          </Checkbox>
+        </div>
       </div>
 
-      {howHeardOptions.length > 0 && (
-        <Field id="r-how" label={f.howHeard} optional={f.optional}>
-          <Select
-            id="r-how"
-            value={v.howHeard}
-            placeholder={f.howHeardPh}
-            options={howHeardOptions.map((o) => ({ value: o, label: o }))}
-            onChange={(val) => form.set('howHeard', val)}
+      <div className="lp-form__step lp-form__step--2">
+        <div className="lp-form__pair">
+          <Field id="r-region" label={f.region} required error={e.region}>
+            <Select
+              id="r-region"
+              value={v.region}
+              placeholder={f.regionPh}
+              options={optionsFor(REGIONS, locale)}
+              error={e.region}
+              onChange={onRegion}
+              onBlur={() => form.blur('region')}
+              required
+              describedById={describedBy('r-region', e.region)}
+            />
+          </Field>
+          <Field id="r-city" label={f.city} required error={e.city}>
+            <input
+              id="r-city"
+              className={`q-input${e.city ? ' is-error' : ''}`}
+              placeholder={v.region ? f.cityPh : f.cityPhDisabled}
+              autoComplete="address-level2"
+              disabled={!v.region}
+              value={v.city}
+              onChange={(ev) => form.set('city', ev.target.value)}
+              onBlur={() => form.blur('city')}
+              required
+              aria-invalid={e.city ? true : undefined}
+              aria-describedby={describedBy('r-city', e.city)}
+            />
+          </Field>
+        </div>
+
+        <Field id="r-school" label={f.school} required error={e.school}>
+          <input
+            id="r-school"
+            className={`q-input${e.school ? ' is-error' : ''}`}
+            placeholder={f.schoolPh}
+            autoComplete="organization"
+            value={v.school}
+            onChange={(ev) => form.set('school', ev.target.value)}
+            onBlur={() => form.blur('school')}
+            required
+            aria-invalid={e.school ? true : undefined}
+            aria-describedby={describedBy('r-school', e.school)}
           />
         </Field>
-      )}
 
-      <Checkbox
-        id="r-consent"
-        checked={v.consent}
-        error={e.consent}
-        onChange={(val) => form.set('consent', val)}
-      >
-        {renderConsent(consent, docs)}
-      </Checkbox>
+        <div className="lp-form__pair">
+          <fieldset className="q-field" style={{ border: 0, margin: 0, padding: 0, minWidth: 0 }}>
+            <legend className="q-label" style={{ padding: 0, marginBottom: 8 }}>
+              {f.experience}
+            </legend>
+            <div className="q-chips lp-chips3">
+              {EXPERIENCE.map((opt) => {
+                const on = v.experience === opt.value
+                return (
+                  <label key={opt.value} className={`q-chip${on ? ' is-selected' : ''}`}>
+                    <input
+                      type="radio"
+                      name="experience"
+                      id={`r-exp-${opt.value}`}
+                      value={opt.value}
+                      checked={on}
+                      onChange={() => form.set('experience', opt.value)}
+                      onClick={() => on && form.set('experience', '')}
+                    />
+                    {on && <Check className="q-icon" aria-hidden="true" />}
+                    {f.experienceChips[opt.value]}
+                  </label>
+                )
+              })}
+            </div>
+          </fieldset>
+          <Field id="r-email" label={f.email} required error={e.email}>
+            <input
+              id="r-email"
+              type="email"
+              inputMode="email"
+              className={`q-input${e.email ? ' is-error' : ''}`}
+              placeholder="name@example.kz"
+              autoComplete="email"
+              autoCapitalize="none"
+              spellCheck={false}
+              value={v.email}
+              onChange={(ev) => form.set('email', ev.target.value)}
+              onBlur={() => form.blur('email')}
+              required
+              aria-invalid={e.email ? true : undefined}
+              aria-describedby={describedBy('r-email', e.email)}
+            />
+          </Field>
+        </div>
+
+        {howHeardOptions.length > 0 && (
+          <Field id="r-how" label={f.howHeard} optional={f.optional}>
+            <Select
+              id="r-how"
+              value={v.howHeard}
+              placeholder={f.howHeardPh}
+              options={howHeardOptions.map((o) => ({ value: o, label: o }))}
+              onChange={(val) => form.set('howHeard', val)}
+            />
+          </Field>
+        )}
+      </div>
 
       <div className="lp-form__submit">
         <button
@@ -347,11 +414,21 @@ export function RegistrationForm({
           disabled={form.sending}
           onPointerDown={form.holdBlur}
         >
-          {form.sending ? f.sending : <CtaLabel t={t} price={price} />}
+          {form.sending ? (
+            f.sending
+          ) : (
+            <>
+              <span className="only-m">{step === 1 ? f.continueBtn : f.step2Submit}</span>
+              <span className="only-d">
+                <CtaLabel t={t} price={price} />
+              </span>
+            </>
+          )}
         </button>
         <p className="q-small">
-          <span className="if-open">{f.submitNote}</span>
-          <span className="if-closed">{f.waitlistNote}</span>
+          {step === 1 && <span className="only-m">{f.step1Note}</span>}
+          <span className={`if-open${step === 1 ? ' only-d' : ''}`}>{f.submitNote}</span>
+          <span className={`if-closed${step === 1 ? ' only-d' : ''}`}>{f.waitlistNote}</span>
         </p>
       </div>
     </form>

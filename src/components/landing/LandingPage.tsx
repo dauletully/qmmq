@@ -62,9 +62,9 @@ export async function LandingPage({ routeSlug, locale }: { routeSlug: string; lo
       />
       <main id="main">
         <Hero ctx={ctx} />
+        {vis.gallery && <Gallery ctx={ctx} />}
         {vis.audience && <Audience ctx={ctx} />}
         {vis.benefits && <Benefits ctx={ctx} />}
-        {vis.gallery && <Gallery ctx={ctx} />}
         {vis.program && <Program ctx={ctx} />}
         <Pricing ctx={ctx} />
         {vis.speakers && <Speakers ctx={ctx} />}

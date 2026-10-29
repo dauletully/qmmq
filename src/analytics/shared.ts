@@ -18,9 +18,9 @@ export type AnalyticsEventName = (typeof ANALYTICS_EVENTS)[number]
 // Порядок — как блоки идут на странице (для отчёта о досмотре).
 export const LANDING_SECTIONS = [
   { id: 'hero', label: 'Первый экран' },
+  { id: 'gallery', label: 'Фотографии' },
   { id: 'audience', label: 'Для кого' },
   { id: 'benefits', label: 'Что получает участник' },
-  { id: 'gallery', label: 'Фотографии' },
   { id: 'program', label: 'Программа' },
   { id: 'pricing', label: 'Стоимость и регистрация' },
   { id: 'speakers', label: 'Спикеры и жюри' },

@@ -1,8 +1,9 @@
 'use client'
 
 import { type FormEvent, useCallback, useEffect, useRef, useState } from 'react'
+import type { z } from 'zod'
 
-import { getAttribution, track } from '@/analytics/client'
+import { type EventProps, getAttribution, track } from '@/analytics/client'
 import { getDict } from '@/i18n/dictionary'
 import type { FormType, Locale } from '@/lib/constants'
 import { formErrorMessage } from '@/lib/forms/messages'
@@ -22,6 +23,14 @@ const MIN_FILL_MS = 3200
 
 export type FieldValues = Record<string, unknown>
 
+// Что именно отправляем: схема для проверки, метод и адрес, дополнительные поля тела.
+export type Submission = {
+  schema: z.ZodType
+  method: 'POST' | 'PATCH'
+  path: string
+  body?: Record<string, unknown>
+}
+
 type Options<V extends FieldValues> = {
   kind: FormType
   landing: string
@@ -31,6 +40,10 @@ type Options<V extends FieldValues> = {
   order: string[]
   // Значения формы → поля API (например, телефон: 10 цифр → +7XXXXXXXXXX).
   toFields: (values: V) => Record<string, unknown>
+  // По умолчанию — POST /api/forms/:kind со схемой формы. Регистрация в два шага подменяет.
+  prepare?: (mod: SchemasModule, values: V) => Submission
+  // Дополнительные свойства событий аналитики (например, step).
+  eventProps?: () => EventProps
   onSuccess: (json: Record<string, unknown>) => void
 }
 
@@ -79,11 +92,23 @@ export function useLeadForm<V extends FieldValues>(opts: Options<V>) {
     return schemas.current
   }, [])
 
+  const prepare = useCallback(
+    (mod: SchemasModule, vals: V): Submission =>
+      optsRef.current.prepare?.(mod, vals) ?? {
+        schema: mod.formSchemas[kind],
+        method: 'POST',
+        path: `/api/forms/${kind}`,
+      },
+    [kind],
+  )
+
+  const eventProps = (): EventProps => ({ form: kind, ...optsRef.current.eventProps?.() })
+
   // Синхронная проверка — когда схемы уже загружены (после первого касания формы).
   const validate = useCallback(
     (vals: V, mod: SchemasModule | null = schemas.current): ErrorMap => {
       if (!mod) return {}
-      const res = mod.formSchemas[kind].safeParse(toFields(vals))
+      const res = prepare(mod, vals).schema.safeParse(toFields(vals))
       if (res.success) return {}
       const keys = mod.fieldErrors(res.error)
       const out: ErrorMap = {}
@@ -91,7 +116,7 @@ export function useLeadForm<V extends FieldValues>(opts: Options<V>) {
         out[field] = errorText(field, key, vals, locale)
       return out
     },
-    [kind, toFields, locale],
+    [prepare, toFields, locale],
   )
 
   const begin = useCallback(() => {
@@ -114,6 +139,15 @@ export function useLeadForm<V extends FieldValues>(opts: Options<V>) {
     begin()
   }, [begin])
 
+  // Новый этап той же формы (второй шаг): form_start сработает снова, время открытия не сбрасываем.
+  const nextStage = useCallback(() => {
+    started.current = false
+    setErrors({})
+    setSummary(null)
+    setFormError(null)
+    setSending(false)
+  }, [])
+
   useEffect(() => {
     begin()
   }, [begin])
@@ -125,7 +159,7 @@ export function useLeadForm<V extends FieldValues>(opts: Options<V>) {
   function markStarted() {
     if (started.current) return
     started.current = true
-    track('form_start', { form: kind })
+    track('form_start', eventProps())
     void ensureSchemas()
   }
 
@@ -189,7 +223,7 @@ export function useLeadForm<V extends FieldValues>(opts: Options<V>) {
     const errs = validate(values, mod)
     if (Object.keys(errs).length) {
       showErrors(errs)
-      for (const field of Object.keys(errs)) track('form_error', { form: kind, field })
+      for (const field of Object.keys(errs)) track('form_error', { ...eventProps(), field })
       return
     }
     setSummary(null)
@@ -197,9 +231,10 @@ export function useLeadForm<V extends FieldValues>(opts: Options<V>) {
     const wait = startedAt.current + MIN_FILL_MS - Date.now()
     if (wait > 0) await new Promise((r) => setTimeout(r, wait))
     const t = getDict(locale)
+    const sub = prepare(mod, values)
     try {
-      const res = await fetch(`/api/forms/${kind}`, {
-        method: 'POST',
+      const res = await fetch(sub.path, {
+        method: sub.method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           landing,
@@ -208,11 +243,12 @@ export function useLeadForm<V extends FieldValues>(opts: Options<V>) {
           attribution: getAttribution(),
           hp: hpRef.current?.value ?? '',
           startedAt: startedAt.current,
+          ...sub.body,
         }),
       })
       const json = (await res.json().catch(() => ({}))) as Record<string, unknown>
       if (res.ok && json.ok) {
-        track('form_submit', { form: kind, leadId: json.leadId as number | undefined })
+        track('form_submit', { ...eventProps(), leadId: json.leadId as number | undefined })
         optsRef.current.onSuccess(json)
         return
       }
@@ -221,13 +257,13 @@ export function useLeadForm<V extends FieldValues>(opts: Options<V>) {
         const out: ErrorMap = {}
         for (const [field, key] of Object.entries(json.errors as Record<string, string>)) {
           out[field] = errorText(field, key, values, locale)
-          track('form_error', { form: kind, field })
+          track('form_error', { ...eventProps(), field })
         }
         showErrors(out)
         return
       }
       const key = typeof json.error === 'string' ? json.error : 'server_error'
-      track('form_error', { form: kind, field: key })
+      track('form_error', { ...eventProps(), field: key })
       setFormError(
         key === 'rate_limited'
           ? t.form.errors.rate_limited
@@ -236,7 +272,7 @@ export function useLeadForm<V extends FieldValues>(opts: Options<V>) {
       setSummaryNonce((n) => n + 1)
     } catch {
       setSending(false)
-      track('form_error', { form: kind, field: 'network' })
+      track('form_error', { ...eventProps(), field: 'network' })
       setFormError(t.form.errors.network)
       setSummaryNonce((n) => n + 1)
     }
@@ -260,6 +296,7 @@ export function useLeadForm<V extends FieldValues>(opts: Options<V>) {
     reset,
     begin,
     open,
+    nextStage,
     hpRef,
     summaryRef,
   }

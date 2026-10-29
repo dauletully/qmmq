@@ -1,6 +1,7 @@
 import type { Payload } from 'payload'
 
 import type { Event, Landing, Lead } from '../../payload-types'
+import { AMO_LEAD_TYPES } from '../constants'
 import { amoDisabledReason, getAmoSettings, type AmoSettings } from '../integrations'
 import { AmoClient, AmoError } from './client'
 import { buildComplexLead, buildLeadNote, type LeadForAmo } from './lead'
@@ -79,6 +80,16 @@ async function doSync(payload: Payload, leadId: number, opts: SyncOptions): Prom
   })
   if (!lead) return 'skipped'
   if (lead.amo?.syncStatus === 'sent' && lead.amo?.leadId) return 'skipped'
+  // Обратная связь и подобные заявки в amoCRM не уходят — даже по кнопке «Отправить повторно».
+  if (!AMO_LEAD_TYPES.includes(lead.type)) {
+    if (lead.amo?.syncStatus !== 'skipped') {
+      await updateAmo(payload, leadId, {
+        syncStatus: 'skipped',
+        lastError: 'Этот тип заявки не отправляется в amoCRM',
+      })
+    }
+    return 'skipped'
+  }
 
   const settings = opts.settings ?? (await getAmoSettings(payload))
   const reason = amoDisabledReason(settings)

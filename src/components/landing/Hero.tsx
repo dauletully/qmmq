@@ -110,7 +110,7 @@ export function Hero({ ctx }: { ctx: Ctx }) {
                   deadline={event.deadline}
                   renderedAt={ctx.renderedAt}
                   locale={locale}
-                  variant="cells"
+                  variant="panel"
                 />
               </div>
               <div className="if-closed">
