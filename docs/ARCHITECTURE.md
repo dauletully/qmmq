@@ -157,6 +157,15 @@ Content-Type: application/json
 
 Отчёты в админке: посетители и визиты по дням, источники и UTM-кампании, устройства, досмотр блоков, воронка «визит → цена → клик → начало формы → заявка → оплата», прогресс к плану. Пиксели Meta и TikTok получают те же события (`Lead` / `SubmitForm`) через трекер.
 
+## Переменные окружения
+
+| Переменная | Пример | Назначение |
+|---|---|---|
+| `DATABASE_URL` | `postgres://user:pass@db:5432/qmmq` | PostgreSQL |
+| `PAYLOAD_SECRET` | `openssl rand -hex 32` | Подпись сессий Payload |
+| `SITE_URL` | `https://qmmq.kz` | Абсолютные ссылки, URL вебхука amoCRM |
+| `LANDING_HOST` | `contest.qmmq.kz` | Хост, на котором `/` отдаёт активный лендинг |
+
 ## Локальная разработка
 
 - Node 24, pnpm. PostgreSQL 17 — локальный кластер в `.local/pgdata`, порт 5433:
