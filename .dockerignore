@@ -1,0 +1,27 @@
+# Контекст сборки Docker. Секреты (.env, deploy/.env) в образ попадать не должны.
+.git
+**/node_modules
+.next
+.next-*
+.local
+media
+coverage
+test-results
+playwright-report
+blob-report
+*.tsbuildinfo
+npm-debug.log*
+
+# секреты и локальные настройки
+**/.env
+**/.env.*
+test.env
+*.pem
+
+# не нужно для сборки приложения
+tests
+docs
+.claude
+.vscode
+.idea
+.DS_Store

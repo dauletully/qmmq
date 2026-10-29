@@ -1,0 +1,24 @@
+<!-- @dsCard group="Действия" height=200 subtitle="Плавающая кнопка WhatsApp: на светлом, на brand, над панелью регистрации" -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>WhatsAppButton</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+  body { margin: 0; }
+  .stage { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); min-height: 200px; }
+  .cell { position: relative; padding: 20px; }
+  .cap { margin: 0; font-size: 12px; line-height: 16px; color: var(--ink-muted); }
+  .q-dark .cap { color: var(--on-brand-muted); }
+  .q-fab { position: absolute; right: 24px; bottom: 24px; }
+</style>
+</head>
+<body class="q-root">
+<div class="stage">
+  <div class="cell"><p class="cap">На светлом разделе</p><a class="q-fab" href="#" aria-label="Написать в WhatsApp"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/></svg></a></div>
+  <div class="cell q-dark q-grid-bg"><p class="cap">На первом экране</p><a class="q-fab" href="#" aria-label="Написать в WhatsApp"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/></svg></a></div>
+  <div class="cell" style="background: var(--surface-alt)"><p class="cap">Отступ 16 px от края и от панели</p><a class="q-fab" href="#" aria-label="Написать в WhatsApp" style="bottom: 92px"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/></svg></a><div class="q-sticky" style="position:absolute;left:0;right:0;bottom:0;height:76px;"></div></div>
+</div>
+</body>
+</html>

@@ -23,6 +23,7 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    dateFormat: 'dd.MM.yyyy HH:mm',
     meta: {
       titleSuffix: ' — QMMQ',
     },

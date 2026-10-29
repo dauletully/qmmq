@@ -1,0 +1,32 @@
+<!-- @dsCard group="Контент" height=330 subtitle="Карточка предмета для блока «Для кого»" -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>SubjectCard</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+  body { margin: 0; background: var(--surface-alt); }
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; padding: 24px; }
+</style>
+</head>
+<body class="q-root">
+<div class="grid">
+  <article class="q-subject q-subject--math">
+    <span class="q-subject__icon"><svg class="q-icon q-icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 7V5a1 1 0 0 0-1-1H6.5a.5.5 0 0 0-.4.8l4.5 6a2 2 0 0 1 0 2.4l-4.5 6a.5.5 0 0 0 .4.8H17a1 1 0 0 0 1-1v-2"/></svg></span>
+    <h3 class="q-subject__title">Учителям математики</h3>
+    <p class="q-subject__text">Олимпиадные задачи, разбор решений с тренерами и споры о способах решения с коллегами из всех регионов.</p>
+  </article>
+  <article class="q-subject q-subject--physics">
+    <span class="q-subject__icon"><svg class="q-icon q-icon--lg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="1"/><path d="M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.54-4.52-9.87-6.54-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.54 4.52 9.87 6.54 11.9 4.5Z"/><path d="M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5Z"/></svg></span>
+    <h3 class="q-subject__title">Учителям физики</h3>
+    <p class="q-subject__text">Задачи олимпиадного уровня, разбор решений и обмен методиками с теми, кто готовит призёров.</p>
+  </article>
+  <article class="q-subject q-subject--informatics">
+    <span class="q-subject__icon"><svg class="q-icon q-icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg></span>
+    <h3 class="q-subject__title">Учителям информатики</h3>
+    <p class="q-subject__text">Алгоритмические задачи, разбор решений с тренерами и среда коллег, которые растят олимпиадников.</p>
+  </article>
+</div>
+</body>
+</html>

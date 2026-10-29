@@ -1,0 +1,53 @@
+# Caddy для qmmq.kz: автоматический HTTPS (Let's Encrypt) и маршрутизация доменов.
+# Переменные приходят из окружения контейнера (deploy/docker-compose.yml ← deploy/.env):
+#   SITE_DOMAIN  — основной домен (qmmq.kz)
+#   LANDING_HOST — домен лендинга (contest.qmmq.kz)
+#   ACME_EMAIL   — почта для Let's Encrypt
+# Применить изменения без простоя: docker compose exec caddy caddy reload --config /etc/caddy/Caddyfile
+# (scripts/release.sh делает это при каждом деплое).
+
+{
+	email {$ACME_EMAIL}
+}
+
+(common) {
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+		-X-Powered-By
+	}
+	log {
+		output stdout
+		format json
+	}
+}
+
+(app) {
+	reverse_proxy app:3000 {
+		# Пока контейнер приложения перезапускается при деплое, запросы ждут до 30 с,
+		# а не получают 502.
+		lb_try_duration 30s
+		lb_try_interval 500ms
+	}
+}
+
+www.{$SITE_DOMAIN} {
+	import common
+	redir https://{$SITE_DOMAIN}{uri} permanent
+}
+
+{$SITE_DOMAIN} {
+	import common
+	# Основного сайта пока нет: ровно «/» временно ведёт на лендинг (UTM-метки сохраняются).
+	# /admin, /api и остальные пути работают. Когда сайт будет готов — удалите строку ниже.
+	redir / https://{$LANDING_HOST}{uri} 302
+	import app
+}
+
+{$LANDING_HOST} {
+	import common
+	import app
+}

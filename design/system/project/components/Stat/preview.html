@@ -1,0 +1,37 @@
+<!-- @dsCard group="Данные" height=330 subtitle="Цифра-статистика: строки на 390, крупные столбцы на 1440" -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Stat</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+  body { margin: 0; }
+  .stage { display: grid; grid-template-columns: 360px minmax(0, 1fr); min-height: 330px; }
+  .cell { padding: 24px; }
+  .cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+  .cap { margin: 0 0 8px; font-size: 12px; line-height: 16px; color: var(--ink-muted); }
+  .q-dark .cap { color: var(--on-brand-muted); }
+</style>
+</head>
+<body class="q-root">
+<div class="stage">
+  <div class="cell q-dark">
+    <p class="cap">390 — строками, на brand</p>
+    <div class="q-stats">
+      <div class="q-stat q-stat--row"><span class="q-stat__value">14</span><span class="q-stat__label">лет — с 2012 года</span></div>
+      <div class="q-stat q-stat--row"><span class="q-stat__value">10&nbsp;000+</span><span class="q-stat__label">учителей-участников</span></div>
+      <div class="q-stat q-stat--row"><span class="q-stat__value">11</span><span class="q-stat__label">международных конкурсов</span></div>
+    </div>
+  </div>
+  <div class="cell">
+    <p class="cap">1440 — столбцами, 72 px, на светлом цифры brand</p>
+    <div class="cols">
+      <div class="q-stat q-stat--lg"><span class="q-stat__value">11</span><span class="q-stat__label">международных конкурсов</span></div>
+      <div class="q-stat q-stat--lg"><span class="q-stat__value">~130</span><span class="q-stat__label">городских и областных</span></div>
+      <div class="q-stat q-stat--lg"><span class="q-stat__value">~40</span><span class="q-stat__label">онлайн-конкурсов</span></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

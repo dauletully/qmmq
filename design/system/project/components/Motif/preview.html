@@ -1,0 +1,55 @@
+<!-- @dsCard group="Основа" height=420 subtitle="Координатная сетка и построение Евклида (Начала, I.1) — единственный графический мотив" -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Motif</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+  body { margin: 0; }
+  .stage { display: grid; grid-template-columns: 1.2fr 1fr; min-height: 420px; }
+  .cell { position: relative; padding: 24px; overflow: hidden; }
+  .cap { position: relative; margin: 0; font-size: 12px; line-height: 16px; color: var(--ink-muted); max-width: 320px; }
+  .q-dark .cap { color: var(--on-brand-muted); }
+  svg.fig { position: absolute; right: -20px; bottom: -10px; width: 480px; height: 400px; overflow: visible; }
+  .cell--light svg.fig { width: 360px; height: 300px; right: 0; bottom: 10px; }
+</style>
+</head>
+<body class="q-root">
+<div class="stage">
+  <div class="cell q-dark q-grid-bg">
+    <p class="cap">На brand: сетка 32 px `grid-on-brand`, окружности — `on-brand-line`, треугольник и точки — `accent`.</p>
+    <svg class="fig" viewBox="0 0 480 400" aria-hidden="true">
+      <circle class="q-construct q-construct--faint" cx="150" cy="250" r="180"/>
+      <circle class="q-construct q-construct--faint" cx="330" cy="250" r="180"/>
+      <line class="q-construct q-construct--faint" x1="240" y1="40" x2="240" y2="430" stroke-dasharray="4 6"/>
+      <path class="q-construct" d="M150 250 L330 250 L240 94.12 Z"/>
+      <path class="q-construct" d="M174 250 A24 24 0 0 0 162 229.22"/>
+      <line class="q-construct" x1="240" y1="245" x2="240" y2="255"/>
+      <line class="q-construct" x1="190.67" y1="169.56" x2="199.33" y2="174.56"/>
+      <line class="q-construct" x1="280.67" y1="174.56" x2="289.33" y2="169.56"/>
+      <circle class="q-construct-dot" cx="150" cy="250" r="3.5"/>
+      <circle class="q-construct-dot" cx="330" cy="250" r="3.5"/>
+      <circle class="q-construct-dot" cx="240" cy="94.12" r="3.5"/>
+      <text class="q-construct-label" x="132" y="274">A</text>
+      <text class="q-construct-label" x="338" y="274">B</text>
+      <text class="q-construct-label" x="234" y="78">C</text>
+    </svg>
+  </div>
+  <div class="cell cell--light q-grid-bg q-grid-bg--light">
+    <p class="cap">На светлом: сетка `grid-on-surface`, линии `line-strong` и `brand`. Только страницы «Спасибо» и заглушки фото.</p>
+    <svg class="fig" viewBox="0 0 480 400" aria-hidden="true">
+      <circle class="q-construct q-construct--ink-faint" cx="150" cy="250" r="180" stroke-opacity="0.5"/>
+      <circle class="q-construct q-construct--ink-faint" cx="330" cy="250" r="180" stroke-opacity="0.5"/>
+      <path class="q-construct q-construct--ink" d="M150 250 L330 250 L240 94.12 Z"/>
+      <circle class="q-construct-dot" cx="150" cy="250" r="3.5" style="fill:var(--brand)"/>
+      <circle class="q-construct-dot" cx="330" cy="250" r="3.5" style="fill:var(--brand)"/>
+      <circle class="q-construct-dot" cx="240" cy="94.12" r="3.5" style="fill:var(--accent)"/>
+      <text class="q-construct-label q-construct-label--ink" x="132" y="274">A</text>
+      <text class="q-construct-label q-construct-label--ink" x="338" y="274">B</text>
+      <text class="q-construct-label q-construct-label--ink" x="234" y="78">C</text>
+    </svg>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!-- @dsCard group="Данные" height=320 subtitle="Счётчик до конца регистрации: панель, строка, «Лист ожидания»" -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Countdown</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+  body { margin: 0; }
+  .stage { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); min-height: 320px; }
+  .cell { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+  .cap { margin: 0; font-size: 12px; line-height: 16px; color: var(--ink-muted); }
+  .q-dark .cap { color: var(--on-brand-muted); }
+</style>
+</head>
+<body class="q-root">
+<div class="stage">
+  <div class="cell q-dark">
+    <p class="cap">Панель — первый экран 1440, блок стоимости</p>
+    <div class="q-countdown" role="timer" aria-live="off">
+      <span class="q-countdown__label"><svg class="q-icon q-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>До конца регистрации</span>
+      <div class="q-countdown__cells">
+        <div class="q-countdown__cell"><span class="q-countdown__num">27</span><span class="q-countdown__unit">дней</span></div>
+        <div class="q-countdown__cell"><span class="q-countdown__num">14</span><span class="q-countdown__unit">часов</span></div>
+        <div class="q-countdown__cell"><span class="q-countdown__num">32</span><span class="q-countdown__unit">минуты</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="cell">
+    <p class="cap">Строка — первый экран 390, светлые блоки</p>
+    <div class="q-countdown q-countdown--inline"><svg class="q-icon q-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>До конца регистрации</span><b>27 дн 14 ч 32 мин</b></div>
+    <div class="q-dark" style="padding:16px;border-radius:4px"><div class="q-countdown q-countdown--inline"><svg class="q-icon q-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>До конца регистрации</span><b>27 дн 14 ч 32 мин</b></div></div>
+  </div>
+  <div class="cell q-dark">
+    <p class="cap">После дедлайна</p>
+    <div class="q-waitlist">
+      <span class="q-waitlist__status"><svg class="q-icon q-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 14v2.2l1.6 1"/><path d="M16 2v3"/><path d="M21 7.338V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2h2.338"/><path d="M3 9h5.859"/><path d="M8 2v3"/><circle cx="16" cy="16" r="6"/></svg>Лист ожидания</span>
+      <p class="q-body" style="font-size:15px;line-height:22px">Приём заявок завершён. Оставьте заявку — менеджер свяжется с вами, если появится возможность участвовать.</p>
+    </div>
+    <a class="q-btn q-btn--primary q-btn--block" href="#">Записаться в лист ожидания</a>
+  </div>
+</div>
+</body>
+</html>

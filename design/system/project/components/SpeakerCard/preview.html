@@ -1,0 +1,37 @@
+<!-- @dsCard group="Контент" height=470 subtitle="Карточка спикера: квадратный портрет, заглушка без фото" -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>SpeakerCard</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+  body { margin: 0; }
+  .row { display: flex; gap: 24px; padding: 24px; }
+  .q-speaker { width: 260px; }
+</style>
+</head>
+<body class="q-root">
+<div class="row">
+  <article class="q-speaker">
+    <div class="q-speaker__photo"><div class="q-placeholder"><span class="q-placeholder__initials">АД</span></div><span class="q-placeholder__note">Фото будет добавлено</span></div>
+    <div style="display:flex;gap:6px"><span class="q-tag q-tag--accent">Спикер</span></div>
+    <h3 class="q-speaker__name">Аскар Джумадильдаев</h3>
+    <p class="q-speaker__role">Академик</p>
+  </article>
+  <article class="q-speaker">
+    <div class="q-speaker__photo"><div class="q-placeholder"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true" style="width:48px;height:48px;stroke-width:1.25"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div></div>
+    <div style="display:flex;gap:6px"><span class="q-tag q-tag--outline">Жюри</span></div>
+    <h3 class="q-speaker__name">Имя Фамилия</h3>
+    <p class="q-speaker__role">Должность, учёная степень</p>
+    <p class="q-speaker__note">Одна строка о вкладе в олимпиадное движение</p>
+  </article>
+  <article class="q-speaker">
+    <div class="q-speaker__photo"><div class="q-placeholder" style="background-color:var(--ink-muted);background-image:none;color:var(--on-brand)"><span style="font-size:13px;line-height:18px;text-align:center;padding:0 24px">Портрет: ч/б, глаза на 40 % высоты, плечи в кадре</span></div></div>
+    <div style="display:flex;gap:6px"><span class="q-tag q-tag--accent">Спикер</span></div>
+    <h3 class="q-speaker__name">Имя Фамилия</h3>
+    <p class="q-speaker__role">Обработка фото — одинаковая для всех</p>
+  </article>
+</div>
+</body>
+</html>

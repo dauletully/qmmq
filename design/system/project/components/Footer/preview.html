@@ -1,0 +1,42 @@
+<!-- @dsCard group="Контент" height=520 subtitle="Подвал: знак, контакты, реквизиты, документы" -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Footer</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+  body { margin: 0; }
+  .q-footer { padding-bottom: 48px; }
+  .grid { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 40px; }
+  .h { margin: 0 0 12px; font-size: 13px; line-height: 16px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+  .list { display: flex; flex-direction: column; gap: 8px; font-size: 15px; line-height: 22px; }
+  .list a { text-decoration: none; }
+  .bottom { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+</style>
+</head>
+<body class="q-root">
+<footer class="q-footer q-dark">
+  <div class="grid">
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <span class="q-mark">QMMQ</span>
+      <p style="margin:0;font-size:16px;line-height:24px;font-weight:600;max-width:280px">Казахстанская ассоциация учителей математики</p>
+      <p class="q-footer__muted" style="max-width:320px">Профессиональное сообщество учителей математики, физики и информатики с 2012 года</p>
+    </div>
+    <div>
+      <p class="h">Контакты</p>
+      <div class="list"><a href="#">+7 (000) 000-00-00</a><a href="#">WhatsApp</a><a href="#">name@qmmq.kz</a><span class="q-footer__muted">Алматы, адрес уточняется</span></div>
+    </div>
+    <div>
+      <p class="h">Документы</p>
+      <div class="list"><a href="#">Положение о конкурсе (PDF)</a><a href="#">Договор-оферта</a><a href="#">Политика конфиденциальности</a></div>
+    </div>
+  </div>
+  <hr class="q-footer__rule">
+  <div class="bottom">
+    <p class="q-footer__muted">Реквизиты: наименование, БИН, юридический адрес — из настроек сайта</p>
+    <p class="q-footer__muted">© 2012–2026 · RU · <a href="#">KZ</a></p>
+  </div>
+</footer>
+</body>
+</html>

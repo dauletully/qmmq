@@ -7,6 +7,8 @@ const __filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(__filename)
 
 const nextConfig: NextConfig = {
+  // Самодостаточная сборка для Docker-образа (см. Dockerfile и docs/DEPLOY.md).
+  output: 'standalone',
   // Отдельная папка сборки на процесс: несколько dev-серверов в одном репозитории не мешают друг другу.
   distDir: process.env.NEXT_DIST_DIR || ".next",
   images: {

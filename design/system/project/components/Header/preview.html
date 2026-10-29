@@ -1,0 +1,40 @@
+<!-- @dsCard group="Действия" height=300 width=1440 subtitle="Мобильная 390 и десктопная 1440 шапка: знак, меню-якоря, RU/KZ" -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Header</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+  body { margin: 0; background: var(--surface-alt); }
+  .stage { padding: 24px; display: flex; flex-direction: column; gap: 24px; }
+  .cap { margin: 0 0 8px; font-size: 12px; line-height: 16px; color: var(--ink-muted); }
+  .phone { width: 390px; }
+</style>
+</head>
+<body class="q-root">
+<div class="stage">
+  <div>
+    <p class="cap">390 — знак, RU/KZ, меню. Название ассоциации — в первом экране.</p>
+    <header class="q-header q-dark phone">
+      <a class="q-mark" href="#" aria-label="QMMQ — Казахстанская ассоциация учителей математики">QMMQ</a>
+      <span class="q-header__spacer"></span>
+      <nav class="q-lang" aria-label="Язык"><a href="#" aria-current="true">RU</a><a href="#">KZ</a></nav>
+      <button class="q-iconbtn" type="button" aria-label="Меню"><svg class="q-icon q-icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg></button>
+    </header>
+  </div>
+  <div>
+    <p class="cap">1440 — знак и название, якоря, RU/KZ, компактная главная кнопка.</p>
+    <header class="q-header q-header--desktop q-dark">
+      <a class="q-brandline" href="#"><span class="q-mark">QMMQ</span><span class="q-brandline__name">Казахстанская ассоциация учителей математики</span></a>
+      <nav class="q-header__nav" aria-label="Разделы">
+        <a href="#" class="is-active">О конкурсе</a><a href="#">Программа</a><a href="#">Спикеры</a><a href="#">Стоимость</a><a href="#">FAQ</a><a href="#">Контакты</a>
+      </nav>
+      <span class="q-header__spacer"></span>
+      <nav class="q-lang" aria-label="Язык"><a href="#" aria-current="true">RU</a><a href="#">KZ</a></nav>
+      <a class="q-btn q-btn--primary q-btn--sm" href="#">Зарегистрироваться</a>
+    </header>
+  </div>
+</div>
+</body>
+</html>

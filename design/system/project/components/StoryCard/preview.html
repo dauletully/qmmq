@@ -1,0 +1,27 @@
+<!-- @dsCard group="Контент" height=540 subtitle="История участника: цитата, человек, школа, год первого участия" -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>StoryCard</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+  body { margin: 0; background: var(--surface-alt); }
+  .row { display: flex; gap: 24px; padding: 24px; align-items: flex-start; }
+</style>
+</head>
+<body class="q-root">
+<div class="row">
+  <figure class="q-story is-placeholder" style="margin:0">
+    <svg class="q-icon q-icon--xl q-story__mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/><path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/></svg>
+    <blockquote class="q-story__quote" style="margin:0">Здесь будет история учителя: с чего начиналось участие в конкурсе и как оно изменило работу с олимпиадниками. Две–четыре фразы, собственными словами участника.</blockquote>
+    <div style="display:flex;gap:6px;flex-wrap:wrap"><span class="q-tag q-tag--math">Математика</span><span class="q-tag q-tag--outline">IMO</span></div>
+    <figcaption class="q-story__person">
+      <div class="q-story__photo"><div class="q-placeholder"><span class="q-placeholder__initials">ИФ</span></div></div>
+      <div><p class="q-story__name">Имя Фамилия</p><p class="q-story__meta">Школа, город · участник с 20__ года</p></div>
+    </figcaption>
+  </figure>
+  <div style="max-width:360px;font-size:14px;line-height:20px;color:var(--ink-muted);padding-top:8px">Пока историй нет, карточка показывает заглушку приглушённым цветом <code>ink-muted</code>. С реальной цитатой текст — <code>ink</code>, 18/28.</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!-- @dsCard group="Основа" height=600 width=1200 page subtitle="Golos Text: проверка казахской кириллицы и почему не Manrope" -->
+<!doctype html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<title>Typeface</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Manrope:wght@400;700&display=swap">
+<style>
+  body { margin: 0; }
+  .stage { padding: 28px 32px; display: flex; flex-direction: column; gap: 20px; }
+  .cap { margin: 0; font-size: 12px; line-height: 16px; color: var(--ink-muted); font-family: var(--font-sans); }
+  .big { margin: 0; font-size: 40px; line-height: 46px; font-weight: 700; color: var(--brand); letter-spacing: -0.01em; }
+  .mid { margin: 0; font-size: 22px; line-height: 30px; font-weight: 600; color: var(--ink); }
+  .body { margin: 0; font-size: 16px; line-height: 26px; color: var(--ink-secondary); max-width: 760px; }
+  .glyphs { display: grid; grid-template-columns: repeat(18, minmax(0, 1fr)); gap: 6px; }
+  .glyphs span { display: flex; align-items: center; justify-content: center; height: 52px; border-radius: 4px; background: var(--surface-alt); font-size: 26px; font-weight: 600; color: var(--brand); }
+  .nums { margin: 0; font-size: 36px; line-height: 40px; font-weight: 600; color: var(--brand); font-variant-numeric: tabular-nums; }
+  .cmp { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 8px 16px; align-items: baseline; padding-top: 16px; border-top: 1px solid var(--line); }
+  .cmp b { font-size: 13px; font-weight: 600; color: var(--ink-muted); font-family: var(--font-sans); }
+  .manrope { font-family: "Manrope", "Courier New", monospace; font-size: 22px; line-height: 30px; color: var(--ink); }
+  .golos { font-family: var(--font-sans); font-size: 22px; line-height: 30px; color: var(--ink); }
+  .verdict { font-size: 13px; line-height: 18px; color: var(--ink-muted); font-family: var(--font-sans); grid-column: 2; margin-top: -4px; }
+  .verdict.bad { color: var(--error); }
+</style>
+</head>
+<body class="q-root">
+<div class="stage">
+  <p class="cap">Строка проверки, 40 / 22 / 16 px</p>
+  <p class="big">Қазақстан математика мұғалімдерінің қауымдастығы — ӘҒҚҢӨҰҮҺІ</p>
+  <p class="mid">Математика, физика және информатика мұғалімдерінің XII Халықаралық шығармашылық байқауы</p>
+  <p class="body">Тіркеудің аяқталуына дейін: 27 күн 14 сағат. Байқау Қазақстан Республикасы Оқу-ағарту министрлігімен бірлесіп өтеді. Қатысу құны — 50 000 ₸.</p>
+  <div class="glyphs"><span>ә</span><span>ғ</span><span>қ</span><span>ң</span><span>ө</span><span>ұ</span><span>ү</span><span>һ</span><span>і</span><span>Ә</span><span>Ғ</span><span>Қ</span><span>Ң</span><span>Ө</span><span>Ұ</span><span>Ү</span><span>Һ</span><span>І</span></div>
+  <p class="nums">0123456789 · 10&nbsp;000+ · 50&nbsp;000&nbsp;₸ · 2012–2026</p>
+  <div class="cmp">
+    <b>Golos Text</b><span class="golos">Қазақстан мұғалімдерінің қауымдастығы — ӘҒҚҢӨҰҮҺІ</span>
+    <span class="verdict">Все 18 казахских букв и знак ₸ — родные глифы (проверено замером в Chrome). Принят.</span>
+    <b>Manrope</b><span class="manrope">Қазақстан мұғалімдерінің қауымдастығы — ӘҒҚҢӨҰҮҺІ</span>
+    <span class="verdict bad">Нет 10 из 18: ә ғ қ ң ұ Ә Ғ Қ Ң Ұ — браузер подставляет другой шрифт, буквы «прыгают». Отклонён.</span>
+  </div>
+</div>
+</body>
+</html>

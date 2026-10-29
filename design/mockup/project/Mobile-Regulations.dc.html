@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Скачать положение · Mobile</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/qmmq/tokens.css">
+<link rel="stylesheet" href="ds/qmmq/components/bundle.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:inherit}
+</style>
+</helmet>
+<div class="q-root" data-theme="{{theme}}" style="width: 390px; height: 844px; position: relative; overflow: hidden; background: var(--brand);">
+
+<header class="q-header q-dark">
+<span class="q-mark">QMMQ</span>
+<span class="q-header__spacer"></span>
+<span class="q-lang"><a href="#" aria-current="true">RU</a><a href="#">KZ</a></span>
+</header>
+<div class="q-dark q-grid-bg" aria-hidden="true" style="padding: 24px 20px; background-color: var(--brand);">
+<p style="margin: 0; font-size: 15px; line-height: 20px; font-weight: 600; color: var(--on-brand); max-width: 200px;">Казахстанская ассоциация учителей математики</p>
+<p style="margin: 64px 0 0; font-size: 32px; line-height: 38px; font-weight: 700; color: var(--on-brand);"><span style="color: var(--accent);">XII</span> Международный творческий конкурс учителей</p>
+</div>
+<div aria-hidden="true" style="position: absolute; inset: 0; background: var(--overlay); z-index: 1;"></div>
+
+<div role="dialog" aria-modal="true" aria-labelledby="reg-title" style="position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 12px 20px 28px; border-radius: var(--radius-lg) var(--radius-lg) 0 0; background: var(--surface); box-shadow: var(--shadow-sheet);">
+<div aria-hidden="true" style="width: 40px; height: 4px; margin: 0 auto 12px; border-radius: var(--radius-full); background: var(--line);"></div>
+<div style="display: flex; align-items: flex-start; gap: 12px;">
+<div style="display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 14px; align-items: center; flex: 1 1 auto; padding-top: 4px;">
+<span style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: var(--radius-xs); background: var(--brand-tint); color: var(--brand);"><svg class="q-icon q-icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"></path><path d="M14 2v5a1 1 0 0 0 1 1h5"></path><path d="M10 9H8"></path><path d="M16 13H8"></path><path d="M16 17H8"></path></svg></span>
+<div><h2 id="reg-title" style="margin: 0; font-size: 22px; line-height: 28px; font-weight: 700; color: var(--brand);">Положение о конкурсе</h2><p class="q-small" style="margin-top: 2px;">PDF · правила, сроки, критерии</p></div>
+</div>
+<button class="q-iconbtn" type="button" aria-label="Закрыть" style="color: var(--ink-secondary);"><svg class="q-icon q-icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+</div>
+<p class="q-body" style="margin-top: 16px; font-size: 15px; line-height: 22px;">Оставьте контакты — положение откроется сразу после отправки.</p>
+<form class="q-form" style="margin-top: 20px; gap: 16px;">
+<div class="q-field"><label class="q-label" for="d-name">Имя<span class="q-req" aria-hidden="true">*</span></label><input class="q-input" id="d-name" value="Айгерим" autocomplete="given-name"></div>
+<div class="q-field"><label class="q-label" for="d-phone">Телефон<span class="q-req" aria-hidden="true">*</span></label><div class="q-phone"><span class="q-phone__code">+7</span><input id="d-phone" inputmode="tel" value="(707) 123-45-67"></div></div>
+<div class="q-field"><label class="q-label" for="d-mail">E-mail<span class="q-req" aria-hidden="true">*</span></label><input class="q-input is-focus" id="d-mail" type="email" value="aigerim@" autocomplete="email"></div>
+<label class="q-check" style="padding: 4px 0;"><span class="q-check__box"></span><span>Даю согласие на <a class="q-link" href="#">обработку персональных данных</a></span></label>
+<a class="q-btn q-btn--primary q-btn--block" href="#"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="m7 10 5 5 5-5"></path></svg>Открыть положение</a>
+</form>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["navy","board"],"default":"navy","section":"Палитра"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { theme: this.props.theme ?? 'navy' };
+  }
+}
+</script>
+</body>
+</html>

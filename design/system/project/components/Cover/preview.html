@@ -1,0 +1,59 @@
+<!-- @dsCard height=288 -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>QMMQ</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+  html, body { margin: 0; height: 100%; }
+  body { background: var(--surface); color: var(--ink); font-family: var(--font-sans); overflow: hidden; }
+  .cover { position: relative; height: 288px; overflow: hidden; }
+  .art { position: absolute; top: 0; left: 480px; width: 480px; height: 288px; overflow: hidden; }
+  .art svg { display: block; width: 480px; height: 288px; }
+  .brand { fill: var(--brand); }
+  .deep { fill: var(--brand-deep); }
+  .acc { fill: var(--accent); }
+  .tint { fill: var(--accent-tint); }
+  .blk { rx: var(--radius-md); }
+  .sq { rx: var(--radius-sm); }
+  .arc { fill: none; stroke: var(--on-brand-line); stroke-width: 1.5; }
+  .edge { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; }
+  .pt { fill: var(--accent); }
+  .words { position: absolute; left: var(--space-8); right: var(--space-8); bottom: var(--space-8); max-width: 440px; }
+  .name { margin: 0; font-size: 120px; line-height: 0.92; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
+  .tag { margin: var(--space-3) 0 0 6px; font-size: 14px; line-height: 20px; color: var(--ink-muted); }
+</style>
+</head>
+<body>
+<div class="cover">
+<div class="art" aria-hidden="true">
+<svg viewBox="0 0 480 288" width="480" height="288">
+<!--
+  blocks      brand 256×272 slab bled off the top (identity, largest) · brand-deep 208×144 bled off the top and right · accent 112×112 (the gold the brand is remembered by) · accent-tint 80×112 bled off the right for relief — ≈36% of 960×288
+  arrangement one tall brand slab with three satellites to its right, bottoms on one line space-8 above the edge, space-4 gutters
+  pattern     literal motif row — Euclid I.1, "the first construction": two circles of radius space-8×4 on the slab cut by its edge, the equilateral triangle in accent, three points — from the README's "координатная сетка и построение циркулем"
+  scales      sides in space-4 multiples; gutters space-4; circle radius 128 = space-16×2; corners radius-md, the gold square radius-sm
+-->
+<defs><clipPath id="slab"><rect x="16" y="-16" width="256" height="272" rx="10"/></clipPath></defs>
+<rect class="brand blk" x="16" y="-16" width="256" height="272" rx="10"/>
+<rect class="deep blk" x="288" y="-16" width="208" height="144" rx="10"/>
+<rect class="acc sq" x="288" y="144" width="112" height="112" rx="6"/>
+<rect class="tint blk" x="416" y="144" width="80" height="112" rx="10"/>
+<g clip-path="url(#slab)">
+<circle class="arc" cx="80" cy="208" r="128"/>
+<circle class="arc" cx="208" cy="208" r="128"/>
+<path class="edge" d="M80 208 L208 208 L144 97.15 Z"/>
+<circle class="pt" cx="80" cy="208" r="4"/>
+<circle class="pt" cx="208" cy="208" r="4"/>
+<circle class="pt" cx="144" cy="97.15" r="4"/>
+</g>
+</svg>
+</div>
+<div class="words">
+<h1 class="name">QMMQ</h1>
+<p class="tag">Строго, с воздухом и крупными цифрами — для сообщества учителей математики, физики и информатики.</p>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,118 @@
+# Продакшен qmmq.kz: приложение (Next.js + Payload), PostgreSQL 17, Caddy (HTTPS).
+#
+# На сервере код лежит в /opt/qmmq, команды выполняются из этой папки:
+#   cd /opt/qmmq/deploy && docker compose ps
+# Переменные берутся из deploy/.env рядом с этим файлом (шаблон — deploy/.env.example).
+# Деплой, миграции и откат — scripts/deploy.sh и scripts/release.sh, см. docs/DEPLOY.md.
+
+name: qmmq
+
+x-app-env: &app-env
+  NODE_ENV: production
+  DATABASE_URL: ${DATABASE_URL:?DATABASE_URL is not set in deploy/.env}
+  PAYLOAD_SECRET: ${PAYLOAD_SECRET:?PAYLOAD_SECRET is not set in deploy/.env}
+  SITE_URL: ${SITE_URL:?SITE_URL is not set in deploy/.env}
+  LANDING_HOST: ${LANDING_HOST:?LANDING_HOST is not set in deploy/.env}
+  COOKIE_DOMAIN: ${COOKIE_DOMAIN:-}
+  # Новые переменные приложения добавляйте сюда и в deploy/.env.example.
+
+x-build-args: &build-args
+  NODE_BUILD_HEAP_MB: ${NODE_BUILD_HEAP_MB:-3072}
+
+services:
+  app:
+    image: qmmq-app:${APP_TAG:-latest}
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      target: runner
+      args: *build-args
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      <<: *app-env
+      HOSTNAME: 0.0.0.0
+      PORT: "3000"
+    volumes:
+      - media:/app/media
+    # Только для проверок с самого сервера и SSH-туннеля; снаружи порт закрыт.
+    ports:
+      - "127.0.0.1:3000:3000"
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3000/api/users/me').then(r=>process.exit(r.status<500?0:1)).catch(()=>process.exit(1))"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+      start_interval: 3s
+    stop_grace_period: 20s
+
+  # Одноразовый контейнер миграций: docker compose --profile tools run --rm migrate
+  migrate:
+    image: qmmq-migrate:${APP_TAG:-latest}
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      target: migrator
+      args: *build-args
+    profiles: ["tools"]
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      <<: *app-env
+    command: ["pnpm", "payload", "migrate"]
+
+  db:
+    # Дистрибутив в теге (trixie) не меняйте без dump/restore: смена glibc меняет сортировку строк.
+    image: postgres:17-trixie
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-qmmq}
+      POSTGRES_USER: ${POSTGRES_USER:-qmmq}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is not set in deploy/.env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    shm_size: 256mb
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+      start_interval: 2s
+    # Порт базы наружу не публикуется: доступ только из сети compose.
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN:-qmmq.kz}
+      LANDING_HOST: ${LANDING_HOST:?LANDING_HOST is not set in deploy/.env}
+      ACME_EMAIL: ${ACME_EMAIL:?ACME_EMAIL is not set in deploy/.env}
+    volumes:
+      # Папка, а не файл: после обновления Caddyfile достаточно `caddy reload`.
+      - ./caddy:/etc/caddy:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  pgdata:
+    name: qmmq_pgdata
+  media:
+    name: qmmq_media
+  caddy_data:
+    name: qmmq_caddy_data
+  caddy_config:
+    name: qmmq_caddy_config

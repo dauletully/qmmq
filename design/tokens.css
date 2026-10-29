@@ -1,0 +1,171 @@
+/*
+ * QMMQ — токены для вёрстки лендинга (contest.qmmq.kz).
+ * Сгенерировано из того же источника, что и дизайн-система QMMQ:
+ * https://claude.ai/artifact/TUnmWWAMb1Pc1iJJAvFpsa — значения совпадают один в один.
+ * Менять значения — в дизайн-системе, затем перегенерировать этот файл.
+ *
+ * Палитра A (navy) — по умолчанию. Палитра B (board) — альтернатива: <html data-theme="board">.
+ * Шрифт: Golos Text (Google Fonts), веса 400 500 600 700, подмножества cyrillic, cyrillic-ext, latin:
+ *   https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap
+ * Брейкпоинты в медиазапросах: @media (min-width: 1024px) и (min-width: 1440px) — значения --bp-*.
+ */
+/* QMMQ — generated from tokens.json */
+:root, [data-theme="navy"] {
+  --brand: #0b2a5b;
+  --brand-deep: #061a3a;
+  --brand-raised: #133a75;
+  --brand-tint: #e6ecf5;
+  --on-brand: #ffffff;
+  --on-brand-muted: #b9c5da;
+  --on-brand-line: rgba(255,255,255,0.18);
+  --grid-on-brand: rgba(255,255,255,0.07);
+  --accent: #c9a227;
+  --accent-hover: #b8921c;
+  --accent-light: #d9b84a;
+  --accent-ink: #7a5d0a;
+  --accent-tint: #f7f0da;
+  --on-accent: var(--brand);
+  --surface: #ffffff;
+  --surface-alt: #f4f6f9;
+  --surface-disabled: #eef1f5;
+  --ink: #111a2e;
+  --ink-secondary: #3c4659;
+  --ink-muted: #5d6678;
+  --line: #dde2ea;
+  --line-strong: #7e889a;
+  --grid-on-surface: rgba(11,42,91,0.07);
+  --subject-math: #2549b0;
+  --subject-math-tint: #eaf0fc;
+  --subject-physics: #a63c10;
+  --subject-physics-tint: #fceee6;
+  --subject-informatics: #0d6b63;
+  --subject-informatics-tint: #e3f4f1;
+  --error: #b3261e;
+  --error-tint: #fcebea;
+  --success: #1d7044;
+  --success-tint: #e5f3ea;
+  --whatsapp: #128c7e;
+  --overlay: rgba(6,26,58,0.6);
+  --shadow-sticky: 0 -1px 0 #dde2ea, 0 -8px 24px rgba(11,42,91,0.10);
+  --shadow-fab: 0 6px 16px rgba(6,26,58,0.28);
+  --shadow-sheet: 0 -12px 40px rgba(6,26,58,0.22);
+  --focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px #0b2a5b;
+  --focus-ring-on-brand: 0 0 0 2px #0b2a5b, 0 0 0 4px #d9b84a;
+}
+[data-theme="board"] {
+  --brand: #0f3d33;
+  --brand-deep: #0a2b24;
+  --brand-raised: #17493e;
+  --brand-tint: #e3ece8;
+  --on-brand-muted: #b7cbc3;
+  --accent: #d4aa52;
+  --accent-hover: #c99a3b;
+  --accent-light: #e2c27a;
+  --accent-ink: #72560e;
+  --accent-tint: #f5ecd6;
+  --on-accent: var(--brand);
+  --surface-alt: #f3f1ea;
+  --surface-disabled: #ecebe5;
+  --ink: #14211d;
+  --ink-secondary: #3d4a45;
+  --ink-muted: #5b6661;
+  --line: #e0ded6;
+  --line-strong: #7c8782;
+  --grid-on-surface: rgba(15,61,51,0.07);
+  --overlay: rgba(10,43,36,0.6);
+  --shadow-sticky: 0 -1px 0 #e0ded6, 0 -8px 24px rgba(15,61,51,0.10);
+  --shadow-fab: 0 6px 16px rgba(10,43,36,0.28);
+  --shadow-sheet: 0 -12px 40px rgba(10,43,36,0.22);
+  --focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px #0f3d33;
+  --focus-ring-on-brand: 0 0 0 2px #0f3d33, 0 0 0 4px #e2c27a;
+}
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-28: 112px;
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 999px;
+  --gutter-mobile: 20px;
+  --gutter-tablet: 40px;
+  --gutter-desktop: 80px;
+  --container-max: 1280px;
+  --columns-mobile: 4;
+  --columns-tablet: 8;
+  --columns-desktop: 12;
+  --column-gap-mobile: 16px;
+  --column-gap-desktop: 24px;
+  --section-y-mobile: 64px;
+  --section-y-desktop: 112px;
+  --header-h-mobile: 56px;
+  --header-h-desktop: 72px;
+  --sticky-bar-h: 76px;
+  --tap-min: 44px;
+  --control-h: 52px;
+  --bp-mobile: 390px;
+  --bp-tablet: 1024px;
+  --bp-desktop: 1440px;
+  --font-sans: "Golos Text", "Segoe UI", Roboto, Arial, sans-serif;
+}
+.display-m { font-family: var(--font-sans); font-size: 32px; line-height: 38px; font-weight: 700; letter-spacing: -0.01em; }
+.h2-m { font-family: var(--font-sans); font-size: 26px; line-height: 32px; font-weight: 700; letter-spacing: -0.005em; }
+.h3-m { font-family: var(--font-sans); font-size: 20px; line-height: 26px; font-weight: 600; }
+.lead-m { font-family: var(--font-sans); font-size: 18px; line-height: 28px; font-weight: 400; }
+.body-m { font-family: var(--font-sans); font-size: 16px; line-height: 26px; font-weight: 400; }
+.small-m { font-family: var(--font-sans); font-size: 14px; line-height: 20px; font-weight: 400; }
+.label-m { font-family: var(--font-sans); font-size: 15px; line-height: 20px; font-weight: 600; }
+.overline-m { font-family: var(--font-sans); font-size: 13px; line-height: 16px; font-weight: 600; letter-spacing: 0.08em; }
+.stat-m { font-family: var(--font-sans); font-size: 44px; line-height: 44px; font-weight: 600; letter-spacing: -0.02em; }
+.price-m { font-family: var(--font-sans); font-size: 40px; line-height: 44px; font-weight: 700; letter-spacing: -0.02em; }
+.display-d { font-family: var(--font-sans); font-size: 60px; line-height: 66px; font-weight: 700; letter-spacing: -0.015em; }
+.h2-d { font-family: var(--font-sans); font-size: 40px; line-height: 48px; font-weight: 700; letter-spacing: -0.01em; }
+.h3-d { font-family: var(--font-sans); font-size: 24px; line-height: 32px; font-weight: 600; }
+.lead-d { font-family: var(--font-sans); font-size: 22px; line-height: 34px; font-weight: 400; }
+.body-d { font-family: var(--font-sans); font-size: 18px; line-height: 28px; font-weight: 400; }
+.small-d { font-family: var(--font-sans); font-size: 15px; line-height: 22px; font-weight: 400; }
+.label-d { font-family: var(--font-sans); font-size: 16px; line-height: 20px; font-weight: 600; }
+.overline-d { font-family: var(--font-sans); font-size: 14px; line-height: 16px; font-weight: 600; letter-spacing: 0.08em; }
+.stat-d { font-family: var(--font-sans); font-size: 72px; line-height: 72px; font-weight: 600; letter-spacing: -0.025em; }
+.price-d { font-family: var(--font-sans); font-size: 56px; line-height: 60px; font-weight: 700; letter-spacing: -0.02em; }
+
+/* ---- Адаптивные роли (mobile-first): одно имя, значение меняется на 1024+ ---- */
+:root {
+  --text-body: 16px;
+  --text-body-lh: 26px;
+  --gutter: var(--gutter-mobile);
+  --section-y: var(--section-y-mobile);
+  --header-h: var(--header-h-mobile);
+  --column-gap: var(--column-gap-mobile);
+  /* Движение — описано в README дизайн-системы (у страницы ДС нет семейства motion) */
+  --duration-fast: 150ms;
+  --duration-reveal: 400ms;
+  --duration-count: 1200ms;
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+@media (min-width: 1024px) {
+  :root {
+    --text-body: 18px;
+    --text-body-lh: 28px;
+    --gutter: var(--gutter-tablet);
+    --section-y: var(--section-y-desktop);
+    --header-h: var(--header-h-desktop);
+    --column-gap: var(--column-gap-desktop);
+  }
+}
+@media (min-width: 1440px) {
+  :root { --gutter: var(--gutter-desktop); }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { --duration-reveal: 0ms; --duration-count: 0ms; }
+}

@@ -1,0 +1,61 @@
+<!-- @dsCard group="Контент" height=560 subtitle="Аккордеон: программа по дням и FAQ (нажмите на заголовок)" -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Accordion</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+  body { margin: 0; }
+  .stage { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px; padding: 24px; }
+  .cap { margin: 0 0 12px; font-size: 12px; line-height: 16px; color: var(--ink-muted); }
+</style>
+</head>
+<body class="q-root">
+<div class="stage">
+  <div>
+    <p class="cap">Программа — день, дата, состав</p>
+    <div class="q-acc" id="prog">
+      <div class="q-acc__item is-open">
+        <button class="q-acc__head" type="button" aria-expanded="true"><span class="q-acc__title"><span class="q-acc__meta">День 1 · дата уточняется</span>Регистрация и олимпиадный тур</span><span class="q-acc__chev"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></button>
+        <div class="q-acc__panel">
+          <div class="q-sched">
+            <div class="q-sched__row"><span class="q-sched__time">—:—</span><div><div class="q-sched__title">Регистрация участников</div><div class="q-sched__text">Получение материалов и бейджа</div></div></div>
+            <div class="q-sched__row"><span class="q-sched__time">—:—</span><div><div class="q-sched__title">Олимпиадный тур</div><div class="q-sched__text">4–6 часов решения задач</div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="q-acc__item">
+        <button class="q-acc__head" type="button" aria-expanded="false"><span class="q-acc__title"><span class="q-acc__meta">День 2 · дата уточняется</span>Разборы решений и лекции</span><span class="q-acc__chev"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></button>
+        <div class="q-acc__panel"><p>Разбор решений с тренерами, лекции учёных.</p></div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <p class="cap">FAQ — вопрос и ответ</p>
+    <div class="q-acc" id="faq">
+      <div class="q-acc__item is-open">
+        <button class="q-acc__head" type="button" aria-expanded="true"><span class="q-acc__title">Какой документ получает участник?</span><span class="q-acc__chev"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></button>
+        <div class="q-acc__panel"><p>Документ о повышении квалификации. Он подтверждает квалификацию при аттестации.</p></div>
+      </div>
+      <div class="q-acc__item">
+        <button class="q-acc__head" type="button" aria-expanded="false"><span class="q-acc__title">Может ли школа оплатить участие группы?</span><span class="q-acc__chev"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></button>
+        <div class="q-acc__panel"><p>Да. Для групп от 5 человек действуют групповые условия. Оставьте заявку от школы — менеджер перезвонит в рабочее время.</p></div>
+      </div>
+      <div class="q-acc__item">
+        <button class="q-acc__head" type="button" aria-expanded="false"><span class="q-acc__title">Можно ли участвовать онлайн?</span><span class="q-acc__chev"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></button>
+        <div class="q-acc__panel"><p>Ответ заполняется в админке.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  document.querySelectorAll('.q-acc__head').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var it = b.parentElement, open = !it.classList.contains('is-open');
+      it.classList.toggle('is-open', open); b.setAttribute('aria-expanded', String(open));
+    });
+  });
+</script>
+</body>
+</html>

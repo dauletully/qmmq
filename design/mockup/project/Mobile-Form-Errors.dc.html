@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Регистрация · ошибки валидации · Mobile</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/qmmq/tokens.css">
+<link rel="stylesheet" href="ds/qmmq/components/bundle.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:inherit}
+</style>
+</helmet>
+<div class="q-root" data-theme="{{theme}}" style="width: 390px; position: relative; overflow: hidden; background: var(--surface-alt);">
+
+<header class="q-header q-dark">
+<a class="q-mark" href="#" aria-label="QMMQ — Казахстанская ассоциация учителей математики">QMMQ</a>
+<span class="q-header__spacer"></span>
+<nav class="q-lang" aria-label="Язык"><a href="#" aria-current="true">RU</a><a href="#">KZ</a></nav>
+<button class="q-iconbtn" type="button" aria-label="Меню"><svg class="q-icon q-icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg></button>
+</header>
+
+<div style="padding: 24px 20px 40px;">
+<form class="q-form" id="register" style="padding: 24px 20px 28px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface);">
+<div style="display: flex; flex-direction: column; gap: 4px;">
+<h3 class="q-h3">Регистрация участника</h3>
+<p class="q-small"><span style="color: var(--error);">*</span> — обязательные поля</p>
+</div>
+
+<div class="q-summary" role="alert" tabindex="-1"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="8" y2="12"></line><line x1="12" x2="12.01" y1="16" y2="16"></line></svg><div><b style="font-weight: 600;">Проверьте 5 полей:</b> <a href="#r-name">ФИО</a>, <a href="#r-school">школа</a>, <a href="#r-phone">телефон</a>, <a href="#r-mail">e-mail</a>, <a href="#r-consent">согласие</a></div></div>
+
+<div class="q-field"><label class="q-label" for="r-name">ФИО<span class="q-req" aria-hidden="true">*</span></label><input class="q-input is-error" id="r-name" value="Асель" aria-invalid="true" aria-describedby="r-name-e"><p class="q-error" id="r-name-e"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="8" y2="12"></line><line x1="12" x2="12.01" y1="16" y2="16"></line></svg>Укажите фамилию и имя полностью</p></div>
+
+<div class="q-field"><label class="q-label" for="r-subj">Предмет<span class="q-req" aria-hidden="true">*</span></label><div class="q-select"><select class="q-input" id="r-subj"><option>Математика</option></select><svg class="q-icon q-select__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></div></div>
+
+<div class="q-field"><label class="q-label" for="r-reg">Регион<span class="q-req" aria-hidden="true">*</span></label><div class="q-select"><select class="q-input" id="r-reg"><option>Алматы</option></select><svg class="q-icon q-select__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></div></div>
+
+<div class="q-field"><label class="q-label" for="r-city">Город или населённый пункт<span class="q-req" aria-hidden="true">*</span></label><input class="q-input" id="r-city" value="Алматы"></div>
+
+<div class="q-field"><label class="q-label" for="r-school">Школа или организация<span class="q-req" aria-hidden="true">*</span></label><input class="q-input is-error" id="r-school" placeholder="Полное название" aria-invalid="true" aria-describedby="r-school-e"><p class="q-error" id="r-school-e"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="8" y2="12"></line><line x1="12" x2="12.01" y1="16" y2="16"></line></svg>Заполните это поле</p></div>
+
+<div class="q-field"><span class="q-label">Педагогический стаж, лет</span><div class="q-chips" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));"><span class="q-chip" style="justify-content: center; padding: 0 8px;">до 5</span><span class="q-chip is-selected" style="justify-content: center; padding: 0 8px;"><svg class="q-icon q-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>5–15</span><span class="q-chip" style="justify-content: center; padding: 0 8px;">более 15</span></div></div>
+
+<div class="q-field"><label class="q-label" for="r-phone">Телефон WhatsApp<span class="q-req" aria-hidden="true">*</span></label><div class="q-phone is-error"><span class="q-phone__code">+7</span><input id="r-phone" inputmode="tel" value="(701) 23" aria-invalid="true" aria-describedby="r-phone-e"></div><p class="q-error" id="r-phone-e"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="8" y2="12"></line><line x1="12" x2="12.01" y1="16" y2="16"></line></svg>Введите 10 цифр номера после +7</p></div>
+
+<div class="q-field"><label class="q-label" for="r-mail">E-mail<span class="q-req" aria-hidden="true">*</span></label><input class="q-input is-error" id="r-mail" type="email" value="asel.mail.kz" aria-invalid="true" aria-describedby="r-mail-e"><p class="q-error" id="r-mail-e"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="8" y2="12"></line><line x1="12" x2="12.01" y1="16" y2="16"></line></svg>Проверьте адрес: в нём должны быть @ и домен</p></div>
+
+<div class="q-field"><label class="q-label" for="r-how">Как вы узнали о конкурсе <span class="q-opt">(необязательно)</span></label><div class="q-select"><select class="q-input is-placeholder" id="r-how"><option>Выберите вариант</option></select><svg class="q-icon q-select__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></div></div>
+
+<div class="q-field" style="gap: 0;">
+<label class="q-check is-error" id="r-consent"><span class="q-check__box"></span><span>Принимаю условия <a class="q-link" href="#">договора-оферты</a> и даю согласие на <a class="q-link" href="#">обработку персональных данных</a></span></label>
+<p class="q-error"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="8" y2="12"></line><line x1="12" x2="12.01" y1="16" y2="16"></line></svg>Без согласия мы не сможем принять заявку</p>
+</div>
+
+<a class="q-btn q-btn--primary q-btn--block" href="#" data-cta="pricing">Зарегистрироваться <span class="q-btn__sep">—</span> 50&nbsp;000&nbsp;₸</a>
+<p class="q-small" style="text-align: center;">Оплата не нужна сейчас: после отправки откроется страница с датами, адресом и ссылкой на чат участников.</p>
+</form>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["navy","board"],"default":"navy","section":"Палитра"},"$preview":{"width":390,"height":1678}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { theme: this.props.theme ?? 'navy' };
+  }
+}
+</script>
+</body>
+</html>

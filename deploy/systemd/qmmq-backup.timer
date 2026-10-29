@@ -1,0 +1,12 @@
+# Ежедневно в 03:00 по Алматы. Persistent=true — если сервер был выключен, бэкап
+# выполнится сразу после включения. Проверка: systemctl list-timers qmmq-backup.timer
+[Unit]
+Description=QMMQ daily backup at 03:00 Asia/Almaty
+
+[Timer]
+OnCalendar=*-*-* 03:00:00 Asia/Almaty
+Persistent=true
+AccuracySec=1min
+
+[Install]
+WantedBy=timers.target

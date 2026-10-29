@@ -1,0 +1,44 @@
+{
+  "v": 3,
+  "createdOnFiles": {"v": 1, "at": "2026-10-29T17:48:02Z"},
+  "title": "Лендинг XII конкурса учителей",
+  "launch": {"view": "canvas"},
+  "pages": [],
+  "boards": {
+    "Main.dc.html": {"x": 0, "y": 0, "w": 390, "h": 6794, "title": "Mobile 390 · страница 1/2 — шапка, блоки 1–5"},
+    "Mobile-Page-2.dc.html": {"x": 470, "y": 0, "w": 390, "h": 7687, "title": "Mobile 390 · страница 2/2 — блоки 6–12, подвал"},
+    "Mobile-Scrolled.dc.html": {"x": 940, "y": 0, "w": 390, "h": 844, "title": "Mobile · при прокрутке: панель регистрации и WhatsApp"},
+    "Mobile-Form-Errors.dc.html": {"x": 1410, "y": 0, "w": 390, "h": 1678, "title": "Mobile · регистрация: ошибки валидации"},
+    "Mobile-Thanks.dc.html": {"x": 1880, "y": 0, "w": 390, "h": 1376, "title": "Mobile · страница «Спасибо»"},
+    "Mobile-School-Form.dc.html": {"x": 2350, "y": 0, "w": 390, "h": 1104, "title": "Mobile · заявка от школы"},
+    "Mobile-Regulations.dc.html": {"x": 2820, "y": 0, "w": 390, "h": 844, "title": "Mobile · скачать положение"},
+    "Mobile-Waitlist.dc.html": {"x": 3290, "y": 0, "w": 390, "h": 844, "title": "Mobile · первый экран после дедлайна — лист ожидания"},
+    "Mobile-Hero-KZ.dc.html": {"x": 3760, "y": 0, "w": 390, "h": 844, "title": "Mobile · первый экран на казахском (черновой перевод)"},
+    "Mobile-Hero-B.dc.html": {"x": 4230, "y": 0, "w": 390, "h": 844, "title": "Mobile · первый экран, палитра B «Доска и латунь»"},
+    "Desktop-Page-1.dc.html": {"x": 0, "y": 8120, "w": 1440, "h": 5535, "title": "Desktop 1440 · страница 1/2 — шапка, блоки 1–6"},
+    "Desktop-Page-2.dc.html": {"x": 1520, "y": 8120, "w": 1440, "h": 5924, "title": "Desktop 1440 · страница 2/2 — блоки 7–12, подвал"}
+  },
+  "order": [
+    "Main.dc.html",
+    "Mobile-Page-2.dc.html",
+    "Mobile-Scrolled.dc.html",
+    "Mobile-Form-Errors.dc.html",
+    "Mobile-Thanks.dc.html",
+    "Mobile-School-Form.dc.html",
+    "Mobile-Regulations.dc.html",
+    "Mobile-Waitlist.dc.html",
+    "Mobile-Hero-KZ.dc.html",
+    "Mobile-Hero-B.dc.html",
+    "Desktop-Page-1.dc.html",
+    "Desktop-Page-2.dc.html"
+  ],
+  "notes": {
+    "rowMobile": {"x": 0, "y": -300, "text": "Mobile 390 — основной макет", "kind": "title1", "maxW": 4620},
+    "rowDesktop": {"x": 0, "y": 7820, "text": "Desktop 1440", "kind": "title1", "maxW": 2960},
+    "kzDraft": {"x": 3760, "y": 964, "w": 390, "text": "Казахский текст — черновой перевод. Нужна вычитка носителем языка до публикации.", "color": "orange"},
+    "placeholders": {"x": 940, "y": 964, "w": 390, "text": "Заглушки до заполнения в админке: точные даты, время программы, площадка, телефон и e-mail, спикеры кроме академика А. Джумадильдаева, истории участников, текст обращения, логотипы партнёров. Цифры счётчика условные.", "color": "gray"}
+  },
+  "designSystems": [
+    {"title": "QMMQ", "namespace": "qmmq", "artifact": "https://claude.ai/artifact/TUnmWWAMb1Pc1iJJAvFpsa", "version": "1793295900-511f", "copiedAt": "2026-10-29T17:48:02Z"}
+  ]
+}

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Лендинг · Mobile · при прокрутке</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/qmmq/tokens.css">
+<link rel="stylesheet" href="ds/qmmq/components/bundle.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:inherit}
+</style>
+</helmet>
+<div class="q-root" data-theme="{{theme}}" style="width: 390px; height: 844px; position: relative; overflow: hidden; background: var(--surface);">
+
+<header class="q-header q-dark" style="position: relative; z-index: 2;">
+<a class="q-mark" href="#" aria-label="QMMQ — Казахстанская ассоциация учителей математики">QMMQ</a>
+<span class="q-header__spacer"></span>
+<nav class="q-lang" aria-label="Язык"><a href="#" aria-current="true">RU</a><a href="#">KZ</a></nav>
+<button class="q-iconbtn" type="button" aria-label="Меню"><svg class="q-icon q-icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg></button>
+</header>
+
+<section style="padding: 40px 20px 0; background: var(--surface);">
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<p class="q-overline">Программа</p>
+<h2 class="q-h2">Программа по дням</h2>
+</div>
+<div class="q-note" style="margin-top: 20px;"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg><span>Программа предварительная. Даты и время появятся здесь после утверждения положения.</span></div>
+<div class="q-acc" style="margin-top: 24px;">
+<div class="q-acc__item is-open">
+<button class="q-acc__head" type="button" aria-expanded="true"><span class="q-acc__title"><span class="q-acc__meta">День 1 · дата уточняется</span>Регистрация и олимпиадный тур</span><span class="q-acc__chev"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></span></button>
+<div class="q-acc__panel">
+<div class="q-sched">
+<div class="q-sched__row"><span class="q-sched__time">—:—</span><div><div class="q-sched__title">Регистрация участников</div><div class="q-sched__text">Получение материалов</div></div></div>
+<div class="q-sched__row"><span class="q-sched__time">—:—</span><div><div class="q-sched__title">Олимпиадный тур</div><div class="q-sched__text">4–6 часов решения задач по своему предмету</div></div></div>
+</div>
+</div>
+</div>
+<div class="q-acc__item">
+<button class="q-acc__head" type="button" aria-expanded="false"><span class="q-acc__title"><span class="q-acc__meta">День 2 · дата уточняется</span>Разборы решений и лекции</span><span class="q-acc__chev"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></span></button>
+</div>
+<div class="q-acc__item">
+<button class="q-acc__head" type="button" aria-expanded="false"><span class="q-acc__title"><span class="q-acc__meta">День 3 · дата уточняется</span>Награждение</span><span class="q-acc__chev"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></span></button>
+</div>
+</div>
+</section>
+
+<a class="q-fab" href="#" aria-label="Написать в WhatsApp" style="position: absolute; right: 16px; bottom: 112px; z-index: 3;"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"></path></svg></a>
+
+<div class="q-sticky" style="position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; padding-bottom: 20px;">
+<div class="q-sticky__meta"><span>До конца регистрации</span><b class="q-num">27 дн 14 ч 32 мин</b></div>
+<a class="q-btn q-btn--primary q-btn--block" href="#pricing" data-cta="sticky">Зарегистрироваться <span class="q-btn__sep">—</span> 50&nbsp;000&nbsp;₸</a>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["navy","board"],"default":"navy","section":"Палитра"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { theme: this.props.theme ?? 'navy' };
+  }
+}
+</script>
+</body>
+</html>

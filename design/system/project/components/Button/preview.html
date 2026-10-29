@@ -1,0 +1,41 @@
+<!-- @dsCard group="Действия" height=340 subtitle="Главная, второстепенная, текстовая — на светлом и на brand" -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Button</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+  body { margin: 0; }
+  .wrap { display: grid; grid-template-columns: 1fr 1fr; min-height: 340px; }
+  .pane { padding: 24px; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+  .cap { margin: 4px 0 0; font-size: 12px; line-height: 16px; color: var(--ink-muted); }
+  .q-dark .cap { color: var(--on-brand-muted); }
+  .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+</style>
+</head>
+<body class="q-root">
+<div class="wrap">
+  <div class="pane">
+    <a class="q-btn q-btn--primary" href="#">Зарегистрироваться <span class="q-btn__sep">—</span> 50&nbsp;000&nbsp;₸</a>
+    <a class="q-btn q-btn--secondary" href="#"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>Скачать положение</a>
+    <div class="row">
+      <a class="q-btn q-btn--text" href="#">Заявка от школы</a>
+      <a class="q-btn q-btn--sm q-btn--primary" href="#">Зарегистрироваться</a>
+    </div>
+    <div class="row">
+      <button class="q-btn q-btn--primary is-focus" type="button">Фокус с клавиатуры</button>
+      <button class="q-btn q-btn--primary" type="button" disabled>Отправляем…</button>
+    </div>
+    <p class="cap">Текст на золоте — brand (5.8:1). Высота 52 px, компактная — 44 px.</p>
+  </div>
+  <div class="pane q-dark">
+    <a class="q-btn q-btn--primary" href="#">Зарегистрироваться <span class="q-btn__sep">—</span> 50&nbsp;000&nbsp;₸</a>
+    <a class="q-btn q-btn--secondary" href="#"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>Скачать положение</a>
+    <a class="q-btn q-btn--text" href="#">Заявка от школы</a>
+    <button class="q-btn q-btn--primary is-focus-on-brand" type="button">Фокус на тёмном</button>
+    <p class="cap">На brand фокус — кольцо accent-light (7.3:1).</p>
+  </div>
+</div>
+</body>
+</html>

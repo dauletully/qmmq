@@ -1,0 +1,42 @@
+<!-- @dsCard group="Действия" height=300 subtitle="Закреплённая снизу панель на мобильных: регистрация и лист ожидания" -->
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>StickyBar</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+  body { margin: 0; background: var(--surface-alt); }
+  .stage { display: flex; gap: 32px; padding: 24px; flex-wrap: wrap; }
+  .phone { position: relative; width: 390px; height: 220px; overflow: hidden; background: var(--surface); border: 1px solid var(--line); }
+  .fake { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+  .fake i { display: block; height: 10px; border-radius: 2px; background: var(--line); }
+  .bar { position: absolute; left: 0; right: 0; bottom: 0; }
+  .cap { margin: 0 0 8px; font-size: 12px; line-height: 16px; color: var(--ink-muted); }
+</style>
+</head>
+<body class="q-root">
+<div class="stage">
+  <div>
+    <p class="cap">Регистрация открыта</p>
+    <div class="phone">
+      <div class="fake"><i style="width:60%"></i><i></i><i style="width:85%"></i><i style="width:70%"></i></div>
+      <div class="q-sticky bar">
+        <div class="q-sticky__meta"><span>До конца регистрации</span><b class="q-num">27 дн 14 ч 32 мин</b></div>
+        <a class="q-btn q-btn--primary q-btn--block" href="#" data-cta="sticky">Зарегистрироваться <span class="q-btn__sep">—</span> 50&nbsp;000&nbsp;₸</a>
+      </div>
+    </div>
+  </div>
+  <div>
+    <p class="cap">Регистрация завершена</p>
+    <div class="phone">
+      <div class="fake"><i style="width:60%"></i><i></i><i style="width:85%"></i><i style="width:70%"></i></div>
+      <div class="q-sticky bar">
+        <div class="q-sticky__meta"><span>Приём заявок завершён</span><b>Лист ожидания</b></div>
+        <a class="q-btn q-btn--brand q-btn--block" href="#" data-cta="sticky">Записаться в лист ожидания</a>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

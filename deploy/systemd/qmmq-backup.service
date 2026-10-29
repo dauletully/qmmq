@@ -1,0 +1,19 @@
+# Ежедневный бэкап qmmq.kz (scripts/backup.sh). Запускается таймером qmmq-backup.timer.
+# Ставится в /etc/systemd/system автоматически при деплое (scripts/release.sh).
+# Ручной запуск: sudo systemctl start qmmq-backup.service; журнал: journalctl -u qmmq-backup.service
+[Unit]
+Description=QMMQ backup: PostgreSQL dump and media to Yandex Object Storage (KZ)
+Wants=network-online.target
+After=network-online.target docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+User=deploy
+Group=deploy
+SupplementaryGroups=docker
+ExecStart=/bin/bash /opt/qmmq/scripts/backup.sh
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+TimeoutStartSec=2h

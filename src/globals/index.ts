@@ -1,3 +1,6 @@
 import type { GlobalConfig } from 'payload'
 
-export const globals: GlobalConfig[] = []
+import { Integrations } from './Integrations'
+import { SiteSettings } from './SiteSettings'
+
+export const globals: GlobalConfig[] = [SiteSettings, Integrations]

@@ -1,0 +1,14 @@
+{
+  "v": 3,
+  "layout": "files",
+  "createdOnFiles": {"v": 1, "at": "2026-10-29T17:44:40Z"},
+  "title": "QMMQ",
+  "namespace": "QMMQ",
+  "libraries": [],
+  "sections": {},
+  "groups": [],
+  "assetGroups": {},
+  "blobs": {},
+  "docs": {"readme": "project/README.md", "sections": []},
+  "lastChange": {"by": "Claude", "via": "Claude Code", "at": "2026-10-29T17:44:40Z", "note": "Первая версия: палитры A и B, Golos Text, токены, 19 компонентов, обложка"}
+}

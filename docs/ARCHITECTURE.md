@@ -165,6 +165,7 @@ Content-Type: application/json
 | `PAYLOAD_SECRET` | `openssl rand -hex 32` | Подпись сессий Payload |
 | `SITE_URL` | `https://qmmq.kz` | Абсолютные ссылки, URL вебхука amoCRM |
 | `LANDING_HOST` | `contest.qmmq.kz` | Хост, на котором `/` отдаёт активный лендинг |
+| `COOKIE_DOMAIN` | `.qmmq.kz` | Домен cookie входа в админку — общий для сайта и лендинга |
 
 ## Локальная разработка
 

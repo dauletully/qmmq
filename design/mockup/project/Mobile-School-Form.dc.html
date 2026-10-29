@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Заявка от школы · Mobile</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/qmmq/tokens.css">
+<link rel="stylesheet" href="ds/qmmq/components/bundle.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:inherit}
+</style>
+</helmet>
+<div class="q-root" data-theme="{{theme}}" style="width: 390px; position: relative; overflow: hidden; background: var(--brand);">
+
+<header class="q-header q-dark">
+<span class="q-mark">QMMQ</span>
+<span class="q-header__spacer"></span>
+<span class="q-lang"><a href="#" aria-current="true">RU</a><a href="#">KZ</a></span>
+</header>
+<div aria-hidden="true" style="position: absolute; inset: 0; background: var(--overlay); z-index: 1;"></div>
+
+<div role="dialog" aria-modal="true" aria-labelledby="school-title" style="position: relative; z-index: 2; margin-top: 8px; padding: 12px 20px 32px; border-radius: var(--radius-lg) var(--radius-lg) 0 0; background: var(--surface); box-shadow: var(--shadow-sheet);">
+<div aria-hidden="true" style="width: 40px; height: 4px; margin: 0 auto 12px; border-radius: var(--radius-full); background: var(--line);"></div>
+<div style="display: flex; align-items: flex-start; gap: 12px;">
+<div style="flex: 1 1 auto; padding-top: 6px;">
+<p class="q-overline">Групповое участие</p>
+<h2 id="school-title" style="margin: 8px 0 0; font-size: 24px; line-height: 30px; font-weight: 700; color: var(--brand);">Заявка от школы</h2>
+</div>
+<button class="q-iconbtn" type="button" aria-label="Закрыть" style="color: var(--ink-secondary);"><svg class="q-icon q-icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+</div>
+<p class="q-body" style="margin-top: 12px; font-size: 15px; line-height: 22px;">Для школ и управлений образования, от 5 участников: групповые условия и документы для бухгалтерии.</p>
+<div class="q-note" style="margin-top: 16px;"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path></svg><span>Менеджер перезвонит в рабочее время и обсудит условия для вашей группы.</span></div>
+
+<form class="q-form" style="margin-top: 24px;">
+<div class="q-field"><label class="q-label" for="s-org">Организация<span class="q-req" aria-hidden="true">*</span></label><input class="q-input" id="s-org" placeholder="Название организации"></div>
+<div class="q-field"><label class="q-label" for="s-person">Контактное лицо<span class="q-req" aria-hidden="true">*</span></label><input class="q-input" id="s-person" placeholder="Фамилия Имя, должность"></div>
+<div class="q-field"><label class="q-label" for="s-phone">Телефон<span class="q-req" aria-hidden="true">*</span></label><div class="q-phone"><span class="q-phone__code">+7</span><input id="s-phone" inputmode="tel" placeholder="(___) ___-__-__"></div></div>
+<div class="q-field"><label class="q-label" for="s-count">Число участников<span class="q-req" aria-hidden="true">*</span></label>
+<div style="display: grid; grid-template-columns: 52px minmax(0, 1fr) 52px; gap: 8px;">
+<button class="q-btn q-btn--secondary" type="button" aria-label="Меньше" style="padding: 0;"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
+<input class="q-input q-num" id="s-count" inputmode="numeric" value="8" style="text-align: center; font-weight: 600; font-size: 18px;">
+<button class="q-btn q-btn--secondary" type="button" aria-label="Больше" style="padding: 0;"><svg class="q-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></button>
+</div>
+<p class="q-hint">Групповые условия — от 5 участников</p>
+</div>
+<div class="q-field"><span class="q-label">Предметы<span class="q-req" aria-hidden="true">*</span></span><div class="q-chips"><span class="q-chip is-selected"><svg class="q-icon q-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>Математика</span><span class="q-chip is-selected"><svg class="q-icon q-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>Физика</span><span class="q-chip">Информатика</span></div></div>
+<label class="q-check"><span class="q-check__box"></span><span>Даю согласие на <a class="q-link" href="#">обработку персональных данных</a></span></label>
+<a class="q-btn q-btn--primary q-btn--block" href="#">Отправить заявку</a>
+</form>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["navy","board"],"default":"navy","section":"Палитра"},"$preview":{"width":390,"height":1104}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { theme: this.props.theme ?? 'navy' };
+  }
+}
+</script>
+</body>
+</html>

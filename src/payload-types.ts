@@ -67,18 +67,32 @@ export interface Config {
   };
   blocks: {};
   collections: {
-    users: User;
+    leads: Lead;
+    landings: Landing;
+    events: Event;
+    people: Person;
+    partners: Partner;
     media: Media;
+    users: User;
+    'analytics-events': AnalyticsEvent;
     'payload-kv': PayloadKv;
+    'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {};
   collectionsSelect: {
-    users: UsersSelect<false> | UsersSelect<true>;
+    leads: LeadsSelect<false> | LeadsSelect<true>;
+    landings: LandingsSelect<false> | LandingsSelect<true>;
+    events: EventsSelect<false> | EventsSelect<true>;
+    people: PeopleSelect<false> | PeopleSelect<true>;
+    partners: PartnersSelect<false> | PartnersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    users: UsersSelect<false> | UsersSelect<true>;
+    'analytics-events': AnalyticsEventsSelect<false> | AnalyticsEventsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
+    'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -87,15 +101,29 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('ru' | 'kk') | ('ru' | 'kk')[];
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'site-settings': SiteSetting;
+    integrations: Integration;
+    'analytics-settings': AnalyticsSetting;
+  };
+  globalsSelect: {
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    integrations: IntegrationsSelect<false> | IntegrationsSelect<true>;
+    'analytics-settings': AnalyticsSettingsSelect<false> | AnalyticsSettingsSelect<true>;
+  };
   locale: 'ru' | 'kk';
   widgets: {
     collections: CollectionsWidget;
   };
   user: User;
   jobs: {
-    tasks: unknown;
+    tasks: {
+      amocrmSendLead: TaskAmocrmSendLead;
+      inline: {
+        input: unknown;
+        output: unknown;
+      };
+    };
     workflows: unknown;
   };
 }
@@ -118,11 +146,543 @@ export interface UserAuthOperations {
   };
 }
 /**
+ * Заявки со всех форм лендинга. Создаются только сайтом; поля менять нельзя — кроме отметки об оплате (администратор).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leads".
+ */
+export interface Lead {
+  id: number;
+  displayName?: string | null;
+  type: 'registration' | 'waitlist' | 'school' | 'regulations';
+  locale?: ('ru' | 'kk') | null;
+  event?: (number | null) | Event;
+  landing?: (number | null) | Landing;
+  fullName?: string | null;
+  subject?: ('math' | 'physics' | 'informatics') | null;
+  experience?: ('lt5' | '5to15' | 'gt15') | null;
+  region?:
+    | (
+        | 'astana'
+        | 'almaty'
+        | 'shymkent'
+        | 'abai'
+        | 'akmola'
+        | 'aktobe'
+        | 'almaty_region'
+        | 'atyrau'
+        | 'east_kazakhstan'
+        | 'zhambyl'
+        | 'zhetysu'
+        | 'west_kazakhstan'
+        | 'karaganda'
+        | 'kostanay'
+        | 'kyzylorda'
+        | 'mangystau'
+        | 'pavlodar'
+        | 'north_kazakhstan'
+        | 'turkistan'
+        | 'ulytau'
+      )
+    | null;
+  city?: string | null;
+  school?: string | null;
+  howHeard?: string | null;
+  organization?: string | null;
+  contactPerson?: string | null;
+  participantsCount?: number | null;
+  subjects?: ('math' | 'physics' | 'informatics')[] | null;
+  phone?: string | null;
+  email?: string | null;
+  consent?: boolean | null;
+  consentAt?: string | null;
+  /**
+   * Откуда пришёл посетитель — заполняет трекер аналитики.
+   */
+  attribution?: {
+    utmSource?: string | null;
+    utmMedium?: string | null;
+    utmCampaign?: string | null;
+    utmContent?: string | null;
+    utmTerm?: string | null;
+    device?: string | null;
+    referrer?: string | null;
+    landingPath?: string | null;
+    visitorId?: string | null;
+    sessionId?: string | null;
+  };
+  /**
+   * Отмечается автоматически, когда сделка в amoCRM переходит на этап «Оплачено». Администратор может отметить вручную.
+   */
+  payment?: {
+    paid?: boolean | null;
+    paidAt?: string | null;
+  };
+  amo?: {
+    syncStatus?: ('pending' | 'sent' | 'failed' | 'disabled') | null;
+    leadId?: number | null;
+    contactId?: number | null;
+    attempts?: number | null;
+    lastError?: string | null;
+    syncedAt?: string | null;
+    pipelineId?: number | null;
+    statusId?: number | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Конкурсы, олимпиады, семинары. Здесь — даты, цена, место и программа: лендинг и сайт берут их отсюда.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events".
+ */
+export interface Event {
+  id: number;
+  title: string;
+  /**
+   * Латиница и дефис, например contest-2026.
+   */
+  slug: string;
+  type: 'contest' | 'olympiad' | 'seminar' | 'training';
+  level?: ('international' | 'republic' | 'regional' | 'city') | null;
+  format?: ('offline' | 'online') | null;
+  subjects?: ('math' | 'physics' | 'informatics')[] | null;
+  /**
+   * Должна совпадать с положением о конкурсе (в начальных данных — предварительная дата, уточнить).
+   */
+  startDate: string;
+  /**
+   * Должна совпадать с положением о конкурсе (в начальных данных — предварительная дата, уточнить).
+   */
+  endDate?: string | null;
+  /**
+   * После этого момента кнопка на лендинге меняется на «Лист ожидания», а новые регистрации сохраняются как лист ожидания. Должна совпадать с положением о конкурсе (в начальных данных — предварительная дата, уточнить).
+   */
+  registrationDeadline?: string | null;
+  /**
+   * За одного участника. Уходит в сумму сделки в amoCRM.
+   */
+  price: number;
+  /**
+   * С какого числа участников действуют групповые условия.
+   */
+  groupMinSize?: number | null;
+  city?: string | null;
+  venue?: string | null;
+  venueAddress?: string | null;
+  /**
+   * Ссылка на 2ГИС, Яндекс или Google Карты.
+   */
+  mapUrl?: string | null;
+  program?:
+    | {
+        date?: string | null;
+        title?: string | null;
+        items?:
+          | {
+              time?: string | null;
+              title?: string | null;
+              description?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Открывается после формы «Скачать положение».
+   */
+  regulationsPdf?: (number | null) | Media;
+  certificateSample?: (number | null) | Media;
+  /**
+   * Показывается на странице «Спасибо», например https://chat.whatsapp.com/…
+   */
+  participantsChatUrl?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Фотографии, логотипы и PDF (положение, образец сертификата). Для фото автоматически создаются уменьшенные копии в WebP.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  /**
+   * Что изображено — коротко, одной фразой. Читают незрячие посетители и поисковики. Для PDF можно оставить пустым.
+   */
+  alt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    thumb?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    hero?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    og?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
+ * Продающая страница мероприятия. Каждый блок страницы — отдельная вкладка. Даты, цена, адрес и программа берутся из мероприятия.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "landings".
+ */
+export interface Landing {
+  id: number;
+  /**
+   * Видно только в админке.
+   */
+  internalTitle: string;
+  /**
+   * Например contest-2026. Формы отправляют этот адрес.
+   */
+  slug: string;
+  /**
+   * Отсюда берутся даты, цена, место, программа и PDF положения.
+   */
+  event: number | Event;
+  hero?: {
+    eyebrow?: string | null;
+    heading?: string | null;
+    subheading?: string | null;
+    partnerNote?: string | null;
+    partnerLogo?: (number | null) | Media;
+    /**
+     * Крупные цифры под заголовком. Должны совпадать с положением.
+     */
+    stats?:
+      | {
+          value: string;
+          label?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    primaryCta?: string | null;
+    secondaryCta?: string | null;
+  };
+  audience?: {
+    heading?: string | null;
+    cards?:
+      | {
+          subject?: ('math' | 'physics' | 'informatics') | null;
+          title?: string | null;
+          text?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  benefits?: {
+    heading?: string | null;
+    items?:
+      | {
+          icon?:
+            | (
+                | 'Award'
+                | 'FileBadge'
+                | 'GraduationCap'
+                | 'BookOpen'
+                | 'Brain'
+                | 'Calculator'
+                | 'Clock'
+                | 'Lightbulb'
+                | 'MessagesSquare'
+                | 'Mic'
+                | 'Sigma'
+                | 'Atom'
+                | 'Code'
+                | 'Trophy'
+                | 'Users'
+                | 'Handshake'
+                | 'Star'
+                | 'Target'
+              )
+            | null;
+          title?: string | null;
+          text?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  program?: {
+    heading?: string | null;
+    note?: string | null;
+  };
+  pricing?: {
+    heading?: string | null;
+    includes?:
+      | {
+          text?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    documentNote?: string | null;
+    groupTerms?: string | null;
+    paymentNote?: string | null;
+    deadlineNote?: string | null;
+  };
+  speakers?: {
+    heading?: string | null;
+    /**
+     * Порядок — перетаскиванием. Показываются только люди с отметкой «Согласие на публикацию».
+     */
+    people?: (number | Person)[] | null;
+  };
+  history?: {
+    heading?: string | null;
+    milestones?:
+      | {
+          period?: string | null;
+          title?: string | null;
+          text?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    figures?:
+      | {
+          value?: string | null;
+          label?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    prizes?:
+      | {
+          title?: string | null;
+          value?: string | null;
+          text?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  stories?: {
+    heading?: string | null;
+    /**
+     * Только реальные люди с согласием на публикацию: имя, школа и год первого участия берутся из карточки человека.
+     */
+    items?:
+      | {
+          person?: (number | null) | Person;
+          quote?: string | null;
+          achievement?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  address?: {
+    heading?: string | null;
+    /**
+     * Сокращённый текст, около трёх абзацев.
+     */
+    body?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    /**
+     * Фото и имя берутся из карточки человека.
+     */
+    author?: (number | null) | Person;
+    signature?: string | null;
+  };
+  partners?: {
+    heading?: string | null;
+    /**
+     * Порядок — перетаскиванием.
+     */
+    items?: (number | Partner)[] | null;
+  };
+  faq?: {
+    heading?: string | null;
+    items?:
+      | {
+          question?: string | null;
+          answer?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  contacts?: {
+    heading?: string | null;
+    finalCta?: string | null;
+  };
+  forms?: {
+    howHeardOptions?:
+      | {
+          label?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    schoolNote?: string | null;
+    /**
+     * Рядом с галочкой согласия во всех формах.
+     */
+    consentText?: string | null;
+  };
+  thankYou?: {
+    heading?: string | null;
+    body?: string | null;
+  };
+  seo?: {
+    /**
+     * До 60 символов.
+     */
+    title?: string | null;
+    /**
+     * До 160 символов. Показывается в поиске и в превью ссылки в WhatsApp.
+     */
+    description?: string | null;
+    /**
+     * Горизонтальная картинка, лучше 1200×630.
+     */
+    ogImage?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Команда, спикеры, жюри, педагоги-мастера и авторы историй — одна карточка на человека. Без отметки согласия человек не показывается на сайте.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "people".
+ */
+export interface Person {
+  id: number;
+  name: string;
+  roles?: ('team' | 'speaker' | 'jury' | 'master')[] | null;
+  /**
+   * Квадратный портрет, одинаковая обработка для всех спикеров.
+   */
+  photo?: (number | null) | Media;
+  /**
+   * Например: «Академик». Пишите только подтверждённые сведения.
+   */
+  position?: string | null;
+  contribution?: string | null;
+  subjects?: ('math' | 'physics' | 'informatics')[] | null;
+  region?:
+    | (
+        | 'astana'
+        | 'almaty'
+        | 'shymkent'
+        | 'abai'
+        | 'akmola'
+        | 'aktobe'
+        | 'almaty_region'
+        | 'atyrau'
+        | 'east_kazakhstan'
+        | 'zhambyl'
+        | 'zhetysu'
+        | 'west_kazakhstan'
+        | 'karaganda'
+        | 'kostanay'
+        | 'kyzylorda'
+        | 'mangystau'
+        | 'pavlodar'
+        | 'north_kazakhstan'
+        | 'turkistan'
+        | 'ulytau'
+      )
+    | null;
+  school?: string | null;
+  firstParticipationYear?: number | null;
+  /**
+   * Меньше — выше в списке.
+   */
+  order?: number | null;
+  /**
+   * Например, медали IMO / IPhO / IOI. Только подтверждённые факты.
+   */
+  studentAchievements?: string | null;
+  /**
+   * Без этой отметки карточка не появится на сайте.
+   */
+  publishConsent?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Министерство, организаторы, вузы, спонсоры и СМИ — для строки логотипов.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partners".
+ */
+export interface Partner {
+  id: number;
+  name: string;
+  /**
+   * Лучше SVG или PNG на прозрачном фоне.
+   */
+  logo?: (number | null) | Media;
+  url?: string | null;
+  kind: 'ministry' | 'organizer' | 'university' | 'sponsor' | 'media';
+  /**
+   * Меньше — левее в строке логотипов.
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Сотрудники с доступом в админку. Администратор — всё, включая интеграции; редактор — тексты и материалы; менеджер — заявки и аналитика.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
   id: number;
+  name: string;
+  /**
+   * Менять роль может только администратор. Первый пользователь становится администратором.
+   */
+  role: 'admin' | 'editor' | 'manager';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -145,22 +705,38 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
+ * via the `definition` "analytics-events".
  */
-export interface Media {
+export interface AnalyticsEvent {
   id: number;
-  alt: string;
+  event: string;
+  visitorId: string;
+  sessionId: string;
+  props?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  path?: string | null;
+  locale?: string | null;
+  landing?: string | null;
+  utmSource?: string | null;
+  utmMedium?: string | null;
+  utmCampaign?: string | null;
+  utmContent?: string | null;
+  utmTerm?: string | null;
+  referrer?: string | null;
+  landingPath?: string | null;
+  channel?: string | null;
+  device?: string | null;
+  browser?: string | null;
+  os?: string | null;
   updatedAt: string;
   createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -181,18 +757,134 @@ export interface PayloadKv {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs".
+ */
+export interface PayloadJob {
+  id: number;
+  /**
+   * Input data provided to the job
+   */
+  input?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  taskStatus?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  completedAt?: string | null;
+  totalTried?: number | null;
+  /**
+   * If hasError is true this job will not be retried
+   */
+  hasError?: boolean | null;
+  /**
+   * If hasError is true, this is the error that caused it
+   */
+  error?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Task execution log
+   */
+  log?:
+    | {
+        executedAt: string;
+        completedAt: string;
+        taskSlug: 'inline' | 'amocrmSendLead';
+        taskID: string;
+        input?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        output?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        state: 'failed' | 'succeeded';
+        error?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  taskSlug?: ('inline' | 'amocrmSendLead') | null;
+  queue?: string | null;
+  waitUntil?: string | null;
+  processing?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: 'users';
-        value: number | User;
+        relationTo: 'leads';
+        value: number | Lead;
+      } | null)
+    | ({
+        relationTo: 'landings';
+        value: number | Landing;
+      } | null)
+    | ({
+        relationTo: 'events';
+        value: number | Event;
+      } | null)
+    | ({
+        relationTo: 'people';
+        value: number | Person;
+      } | null)
+    | ({
+        relationTo: 'partners';
+        value: number | Partner;
       } | null)
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'users';
+        value: number | User;
+      } | null)
+    | ({
+        relationTo: 'analytics-events';
+        value: number | AnalyticsEvent;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -238,9 +930,387 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leads_select".
+ */
+export interface LeadsSelect<T extends boolean = true> {
+  displayName?: T;
+  type?: T;
+  locale?: T;
+  event?: T;
+  landing?: T;
+  fullName?: T;
+  subject?: T;
+  experience?: T;
+  region?: T;
+  city?: T;
+  school?: T;
+  howHeard?: T;
+  organization?: T;
+  contactPerson?: T;
+  participantsCount?: T;
+  subjects?: T;
+  phone?: T;
+  email?: T;
+  consent?: T;
+  consentAt?: T;
+  attribution?:
+    | T
+    | {
+        utmSource?: T;
+        utmMedium?: T;
+        utmCampaign?: T;
+        utmContent?: T;
+        utmTerm?: T;
+        device?: T;
+        referrer?: T;
+        landingPath?: T;
+        visitorId?: T;
+        sessionId?: T;
+      };
+  payment?:
+    | T
+    | {
+        paid?: T;
+        paidAt?: T;
+      };
+  amo?:
+    | T
+    | {
+        syncStatus?: T;
+        leadId?: T;
+        contactId?: T;
+        attempts?: T;
+        lastError?: T;
+        syncedAt?: T;
+        pipelineId?: T;
+        statusId?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "landings_select".
+ */
+export interface LandingsSelect<T extends boolean = true> {
+  internalTitle?: T;
+  slug?: T;
+  event?: T;
+  hero?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        subheading?: T;
+        partnerNote?: T;
+        partnerLogo?: T;
+        stats?:
+          | T
+          | {
+              value?: T;
+              label?: T;
+              id?: T;
+            };
+        primaryCta?: T;
+        secondaryCta?: T;
+      };
+  audience?:
+    | T
+    | {
+        heading?: T;
+        cards?:
+          | T
+          | {
+              subject?: T;
+              title?: T;
+              text?: T;
+              id?: T;
+            };
+      };
+  benefits?:
+    | T
+    | {
+        heading?: T;
+        items?:
+          | T
+          | {
+              icon?: T;
+              title?: T;
+              text?: T;
+              id?: T;
+            };
+      };
+  program?:
+    | T
+    | {
+        heading?: T;
+        note?: T;
+      };
+  pricing?:
+    | T
+    | {
+        heading?: T;
+        includes?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        documentNote?: T;
+        groupTerms?: T;
+        paymentNote?: T;
+        deadlineNote?: T;
+      };
+  speakers?:
+    | T
+    | {
+        heading?: T;
+        people?: T;
+      };
+  history?:
+    | T
+    | {
+        heading?: T;
+        milestones?:
+          | T
+          | {
+              period?: T;
+              title?: T;
+              text?: T;
+              id?: T;
+            };
+        figures?:
+          | T
+          | {
+              value?: T;
+              label?: T;
+              id?: T;
+            };
+        prizes?:
+          | T
+          | {
+              title?: T;
+              value?: T;
+              text?: T;
+              id?: T;
+            };
+      };
+  stories?:
+    | T
+    | {
+        heading?: T;
+        items?:
+          | T
+          | {
+              person?: T;
+              quote?: T;
+              achievement?: T;
+              id?: T;
+            };
+      };
+  address?:
+    | T
+    | {
+        heading?: T;
+        body?: T;
+        author?: T;
+        signature?: T;
+      };
+  partners?:
+    | T
+    | {
+        heading?: T;
+        items?: T;
+      };
+  faq?:
+    | T
+    | {
+        heading?: T;
+        items?:
+          | T
+          | {
+              question?: T;
+              answer?: T;
+              id?: T;
+            };
+      };
+  contacts?:
+    | T
+    | {
+        heading?: T;
+        finalCta?: T;
+      };
+  forms?:
+    | T
+    | {
+        howHeardOptions?:
+          | T
+          | {
+              label?: T;
+              id?: T;
+            };
+        schoolNote?: T;
+        consentText?: T;
+      };
+  thankYou?:
+    | T
+    | {
+        heading?: T;
+        body?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        ogImage?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events_select".
+ */
+export interface EventsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  type?: T;
+  level?: T;
+  format?: T;
+  subjects?: T;
+  startDate?: T;
+  endDate?: T;
+  registrationDeadline?: T;
+  price?: T;
+  groupMinSize?: T;
+  city?: T;
+  venue?: T;
+  venueAddress?: T;
+  mapUrl?: T;
+  program?:
+    | T
+    | {
+        date?: T;
+        title?: T;
+        items?:
+          | T
+          | {
+              time?: T;
+              title?: T;
+              description?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  regulationsPdf?: T;
+  certificateSample?: T;
+  participantsChatUrl?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "people_select".
+ */
+export interface PeopleSelect<T extends boolean = true> {
+  name?: T;
+  roles?: T;
+  photo?: T;
+  position?: T;
+  contribution?: T;
+  subjects?: T;
+  region?: T;
+  school?: T;
+  firstParticipationYear?: T;
+  order?: T;
+  studentAchievements?: T;
+  publishConsent?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partners_select".
+ */
+export interface PartnersSelect<T extends boolean = true> {
+  name?: T;
+  logo?: T;
+  url?: T;
+  kind?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media_select".
+ */
+export interface MediaSelect<T extends boolean = true> {
+  alt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumb?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        card?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        hero?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        og?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -261,21 +1331,29 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
+ * via the `definition` "analytics-events_select".
  */
-export interface MediaSelect<T extends boolean = true> {
-  alt?: T;
+export interface AnalyticsEventsSelect<T extends boolean = true> {
+  event?: T;
+  visitorId?: T;
+  sessionId?: T;
+  props?: T;
+  path?: T;
+  locale?: T;
+  landing?: T;
+  utmSource?: T;
+  utmMedium?: T;
+  utmCampaign?: T;
+  utmContent?: T;
+  utmTerm?: T;
+  referrer?: T;
+  landingPath?: T;
+  channel?: T;
+  device?: T;
+  browser?: T;
+  os?: T;
   updatedAt?: T;
   createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
-  filename?: T;
-  mimeType?: T;
-  filesize?: T;
-  width?: T;
-  height?: T;
-  focalX?: T;
-  focalY?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -284,6 +1362,37 @@ export interface MediaSelect<T extends boolean = true> {
 export interface PayloadKvSelect<T extends boolean = true> {
   key?: T;
   data?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs_select".
+ */
+export interface PayloadJobsSelect<T extends boolean = true> {
+  input?: T;
+  taskStatus?: T;
+  completedAt?: T;
+  totalTried?: T;
+  hasError?: T;
+  error?: T;
+  log?:
+    | T
+    | {
+        executedAt?: T;
+        completedAt?: T;
+        taskSlug?: T;
+        taskID?: T;
+        input?: T;
+        output?: T;
+        state?: T;
+        error?: T;
+        id?: T;
+      };
+  taskSlug?: T;
+  queue?: T;
+  waitUntil?: T;
+  processing?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -318,6 +1427,252 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
+ * Контакты, реквизиты и документы — общие для сайта и лендингов.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  associationName?: string | null;
+  logo?: (number | null) | Media;
+  /**
+   * Какой лендинг открывается на главной странице contest.qmmq.kz.
+   */
+  activeLanding?: (number | null) | Landing;
+  phones?:
+    | {
+        number: string;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Номер для кнопки WhatsApp (ссылка wa.me собирается автоматически).
+   */
+  whatsapp?: string | null;
+  email?: string | null;
+  address?: string | null;
+  socials?:
+    | {
+        network: 'instagram' | 'facebook' | 'telegram' | 'whatsapp' | 'youtube' | 'tiktok' | 'vk' | 'other';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Показываются в подвале. БИН, банк, ИИК, юридический адрес.
+   */
+  requisites?: string | null;
+  /**
+   * Загрузите PDF или вставьте текст — достаточно одного.
+   */
+  offer?: {
+    pdf?: (number | null) | Media;
+    text?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+  };
+  /**
+   * Загрузите PDF или вставьте текст — достаточно одного.
+   */
+  privacy?: {
+    pdf?: (number | null) | Media;
+    text?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * amoCRM и рекламные пиксели. Доступно только администраторам.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "integrations".
+ */
+export interface Integration {
+  id: number;
+  amocrm?: {
+    /**
+     * Пока выключено, заявки копятся на сайте со статусом «Не отправлялась». Их можно отправить позже кнопкой внизу.
+     */
+    enabled?: boolean | null;
+    baseUrl?: string | null;
+    /**
+     * Длинная строка из вкладки «Ключи и доступы» приватной интеграции. Никому не пересылайте.
+     */
+    accessToken?: string | null;
+    pipelinesCache?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+    pipelineId?: number | null;
+    newStatusId?: number | null;
+    paidStatusIds?: number[] | null;
+    fieldMap?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+    /**
+     * Часть адреса вебхука. Чтобы сменить — очистите поле и сохраните: будет создан новый, и адрес в amoCRM нужно будет обновить.
+     */
+    webhookSecret?: string | null;
+  };
+  pixels?: {
+    /**
+     * Где взять: business.facebook.com → Events Manager → «Источники данных» → ваш пиксель → «Настройки» → «ID пикселя». Только цифры, без кода.
+     */
+    metaPixelId?: string | null;
+    /**
+     * Где взять: ads.tiktok.com → «Инструменты» → «События» → «Веб-события» → ваш пиксель; ID указан под названием. Только ID, без кода.
+     */
+    tiktokPixelId?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Цели плана для отчётов и посетители, которых не нужно учитывать.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "analytics-settings".
+ */
+export interface AnalyticsSetting {
+  id: number;
+  planStep1: number;
+  planStep2: number;
+  planStep3: number;
+  /**
+   * Иначе заявка от школы считается как одна регистрация.
+   */
+  countSchoolParticipants?: boolean | null;
+  /**
+   * Сотрудники, вошедшие в админку, не учитываются автоматически. Телефон без входа в админку проще исключить так: открыть на нём лендинг с адресом …/?notrack=1 (вернуть — ?notrack=0).
+   */
+  excludedVisitorIds?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  associationName?: T;
+  logo?: T;
+  activeLanding?: T;
+  phones?:
+    | T
+    | {
+        number?: T;
+        label?: T;
+        id?: T;
+      };
+  whatsapp?: T;
+  email?: T;
+  address?: T;
+  socials?:
+    | T
+    | {
+        network?: T;
+        url?: T;
+        id?: T;
+      };
+  requisites?: T;
+  offer?:
+    | T
+    | {
+        pdf?: T;
+        text?: T;
+      };
+  privacy?:
+    | T
+    | {
+        pdf?: T;
+        text?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "integrations_select".
+ */
+export interface IntegrationsSelect<T extends boolean = true> {
+  amocrm?:
+    | T
+    | {
+        enabled?: T;
+        baseUrl?: T;
+        accessToken?: T;
+        pipelinesCache?: T;
+        pipelineId?: T;
+        newStatusId?: T;
+        paidStatusIds?: T;
+        fieldMap?: T;
+        webhookSecret?: T;
+      };
+  pixels?:
+    | T
+    | {
+        metaPixelId?: T;
+        tiktokPixelId?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "analytics-settings_select".
+ */
+export interface AnalyticsSettingsSelect<T extends boolean = true> {
+  planStep1?: T;
+  planStep2?: T;
+  planStep3?: T;
+  countSchoolParticipants?: T;
+  excludedVisitorIds?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "collections_widget".
  */
@@ -326,6 +1681,18 @@ export interface CollectionsWidget {
     [k: string]: unknown;
   };
   width: 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskAmocrmSendLead".
+ */
+export interface TaskAmocrmSendLead {
+  input: {
+    leadId: number;
+  };
+  output: {
+    status?: string | null;
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
