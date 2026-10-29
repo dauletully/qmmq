@@ -52,18 +52,25 @@ const experience = z.preprocess(
 )
 const consent = z.literal(true, { error: 'consent_required' })
 
-export const registrationSchema = z.object({
+// Регистрация на телефоне идёт в два шага: шаг 1 — контакт и согласие (заявка уже сохраняется),
+// шаг 2 — остальное. Одна форма на компьютере отправляет всё сразу (registrationSchema).
+export const registrationStep1Schema = z.object({
   fullName: requiredText(3, 120),
   subject,
+  phone,
+  consent,
+})
+
+export const registrationStep2Schema = z.object({
   region,
   city: requiredText(2, 80),
   school: requiredText(2, 200),
   experience,
-  phone,
   email,
   howHeard: optionalText(200),
-  consent,
 })
+
+export const registrationSchema = registrationStep1Schema.extend(registrationStep2Schema.shape)
 
 export const schoolSchema = z.object({
   organization: requiredText(2, 200),
@@ -96,6 +103,8 @@ export const formSchemas = {
 
 export type RegistrationInput = z.input<typeof registrationSchema>
 export type RegistrationData = z.output<typeof registrationSchema>
+export type RegistrationStep1Data = z.output<typeof registrationStep1Schema>
+export type RegistrationStep2Data = z.output<typeof registrationStep2Schema>
 export type SchoolInput = z.input<typeof schoolSchema>
 export type SchoolData = z.output<typeof schoolSchema>
 export type RegulationsInput = z.input<typeof regulationsSchema>
@@ -136,9 +145,22 @@ export const envelopeSchema = z.object({
   attribution: attributionSchema.optional().catch(undefined),
   hp: z.unknown().optional(),
   startedAt: z.coerce.number().optional().catch(undefined),
+  // Только для registration: 1 — первый шаг (заявка сохраняется неполной).
+  step: z.literal(1).optional().catch(undefined),
 })
 
 export type FormEnvelope = z.input<typeof envelopeSchema>
+
+// Тело запроса PATCH /api/forms/registration/:id — второй шаг регистрации.
+export const completionEnvelopeSchema = z.object({
+  token: z.string().trim().min(16).max(200),
+  locale: z.enum(LOCALES).catch('ru'),
+  fields: z.record(z.string(), z.unknown()),
+  hp: z.unknown().optional(),
+  startedAt: z.coerce.number().optional().catch(undefined),
+})
+
+export type CompletionEnvelope = z.input<typeof completionEnvelopeSchema>
 
 // Ошибки zod → { поле: ключ_ошибки } (первая ошибка на поле).
 export function fieldErrors(error: z.ZodError): Record<string, string> {

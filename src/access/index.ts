@@ -31,6 +31,12 @@ export const adminOnly: Access = ({ req }) => isAdmin(req.user)
 export const contentEditors: Access = ({ req }) => hasRole(req.user, 'admin', 'editor')
 export const leadManagers: Access = ({ req }) => hasRole(req.user, 'admin', 'manager')
 
+// Коллекции с черновиками (versions.drafts): посетители видят только опубликованное.
+export const publishedOrStaff: Access = ({ req }) => {
+  if (roleOf(req.user)) return true
+  return { _status: { equals: 'published' } }
+}
+
 // Доступ полей (только boolean)
 export const adminFieldOnly: FieldAccess = ({ req }) => isAdmin(req.user)
 export const noFieldUpdate: FieldAccess = () => false

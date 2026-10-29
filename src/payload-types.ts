@@ -68,11 +68,16 @@ export interface Config {
   blocks: {};
   collections: {
     leads: Lead;
+    subscribers: Subscriber;
     landings: Landing;
     events: Event;
     people: Person;
     partners: Partner;
     media: Media;
+    news: News;
+    materials: Material;
+    documents: Document;
+    pages: Page;
     users: User;
     'analytics-events': AnalyticsEvent;
     'payload-kv': PayloadKv;
@@ -84,11 +89,16 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     leads: LeadsSelect<false> | LeadsSelect<true>;
+    subscribers: SubscribersSelect<false> | SubscribersSelect<true>;
     landings: LandingsSelect<false> | LandingsSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
     people: PeopleSelect<false> | PeopleSelect<true>;
     partners: PartnersSelect<false> | PartnersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    news: NewsSelect<false> | NewsSelect<true>;
+    materials: MaterialsSelect<false> | MaterialsSelect<true>;
+    documents: DocumentsSelect<false> | DocumentsSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'analytics-events': AnalyticsEventsSelect<false> | AnalyticsEventsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -100,18 +110,24 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('ru' | 'kk') | ('ru' | 'kk')[];
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('ru' | 'kk' | 'en') | ('ru' | 'kk' | 'en')[];
   globals: {
     'site-settings': SiteSetting;
+    'home-page': HomePage;
+    'about-page': AboutPage;
+    'partners-page': PartnersPage;
     integrations: Integration;
     'analytics-settings': AnalyticsSetting;
   };
   globalsSelect: {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    'home-page': HomePageSelect<false> | HomePageSelect<true>;
+    'about-page': AboutPageSelect<false> | AboutPageSelect<true>;
+    'partners-page': PartnersPageSelect<false> | PartnersPageSelect<true>;
     integrations: IntegrationsSelect<false> | IntegrationsSelect<true>;
     'analytics-settings': AnalyticsSettingsSelect<false> | AnalyticsSettingsSelect<true>;
   };
-  locale: 'ru' | 'kk';
+  locale: 'ru' | 'kk' | 'en';
   widgets: {
     collections: CollectionsWidget;
   };
@@ -146,7 +162,7 @@ export interface UserAuthOperations {
   };
 }
 /**
- * Заявки со всех форм лендинга. Создаются только сайтом; поля менять нельзя — кроме отметки об оплате (администратор).
+ * Заявки со всех форм лендинга и сайта (вступление в сообщество, спикер/жюри, партнёрство, обратная связь). Создаются только сайтом; поля менять нельзя — кроме отметки об оплате (администратор). Подписки на рассылку — отдельно, в «Подписчики рассылки».
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "leads".
@@ -154,10 +170,15 @@ export interface UserAuthOperations {
 export interface Lead {
   id: number;
   displayName?: string | null;
-  type: 'registration' | 'waitlist' | 'school' | 'regulations';
-  locale?: ('ru' | 'kk') | null;
+  type: 'registration' | 'waitlist' | 'school' | 'regulations' | 'community' | 'speaker' | 'partner' | 'feedback';
+  locale?: ('ru' | 'kk' | 'en') | null;
   event?: (number | null) | Event;
   landing?: (number | null) | Landing;
+  /**
+   * Заполнен только первый шаг (ФИО, предмет, телефон). Можно звонить — согласие дано.
+   */
+  incomplete?: boolean | null;
+  completeToken?: string | null;
   fullName?: string | null;
   subject?: ('math' | 'physics' | 'informatics') | null;
   experience?: ('lt5' | '5to15' | 'gt15') | null;
@@ -192,6 +213,18 @@ export interface Lead {
   contactPerson?: string | null;
   participantsCount?: number | null;
   subjects?: ('math' | 'physics' | 'informatics')[] | null;
+  speakerRole?: ('speaker' | 'jury' | 'both') | null;
+  topic?: string | null;
+  partnerFormat?: ('general_sponsor' | 'sponsor' | 'prizes' | 'venue' | 'media' | 'other') | null;
+  /**
+   * Согласие на карточку в /community/people. Карточку создаёт редактор в «Люди» (роль «Педагог-мастер», «Показывать в каталоге»).
+   */
+  wantsCatalog?: boolean | null;
+  message?: string | null;
+  /**
+   * Адрес страницы сайта, с которой отправлена форма.
+   */
+  sourcePath?: string | null;
   phone?: string | null;
   email?: string | null;
   consent?: boolean | null;
@@ -219,7 +252,7 @@ export interface Lead {
     paidAt?: string | null;
   };
   amo?: {
-    syncStatus?: ('pending' | 'sent' | 'failed' | 'disabled') | null;
+    syncStatus?: ('pending' | 'sent' | 'failed' | 'disabled' | 'skipped') | null;
     leadId?: number | null;
     contactId?: number | null;
     attempts?: number | null;
@@ -232,13 +265,25 @@ export interface Lead {
   createdAt: string;
 }
 /**
- * Конкурсы, олимпиады, семинары. Здесь — даты, цена, место и программа: лендинг и сайт берут их отсюда.
+ * Конкурсы, олимпиады, семинары — прошедшие и будущие. Здесь даты, цена, место, программа и итоги: лендинг и каталог /events берут их отсюда. Прошедшие мероприятия попадают в архив автоматически по дате.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "events".
  */
 export interface Event {
   id: number;
+  /**
+   * Вычисляется по датам. Чтобы задать вручную — поле ниже.
+   */
+  status?: ('open' | 'closed' | 'finished') | null;
+  /**
+   * Например, закрыть регистрацию раньше срока или держать «Регистрация открыта» до особого объявления.
+   */
+  statusOverride?: ('auto' | 'open' | 'closed' | 'finished') | null;
+  /**
+   * Только для творческих конкурсов учителей: 1 — 2013, 10 — 2023, 12 — 2026. По нему строится история сезонов /contest/[год].
+   */
+  contestSeason?: number | null;
   title: string;
   /**
    * Латиница и дефис, например contest-2026.
@@ -248,6 +293,33 @@ export interface Event {
   level?: ('international' | 'republic' | 'regional' | 'city') | null;
   format?: ('offline' | 'online') | null;
   subjects?: ('math' | 'physics' | 'informatics')[] | null;
+  /**
+   * Для карточки в каталоге /events и превью ссылки. Лучше 1600×900.
+   */
+  cover?: (number | null) | Media;
+  /**
+   * О мероприятии для страницы /events/<slug>: формат, этапы, что получат участники.
+   */
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Например: «учителя математики, физики и информатики школ Казахстана».
+   */
+  forWhom?: string | null;
+  documentIssued?: string | null;
   /**
    * Должна совпадать с положением о конкурсе (в начальных данных — предварительная дата, уточнить).
    */
@@ -268,6 +340,33 @@ export interface Event {
    * С какого числа участников действуют групповые условия.
    */
   groupMinSize?: number | null;
+  /**
+   * Для фильтра каталога /events. Онлайн — оставьте пустым.
+   */
+  region?:
+    | (
+        | 'astana'
+        | 'almaty'
+        | 'shymkent'
+        | 'abai'
+        | 'akmola'
+        | 'aktobe'
+        | 'almaty_region'
+        | 'atyrau'
+        | 'east_kazakhstan'
+        | 'zhambyl'
+        | 'zhetysu'
+        | 'west_kazakhstan'
+        | 'karaganda'
+        | 'kostanay'
+        | 'kyzylorda'
+        | 'mangystau'
+        | 'pavlodar'
+        | 'north_kazakhstan'
+        | 'turkistan'
+        | 'ulytau'
+      )
+    | null;
   city?: string | null;
   venue?: string | null;
   venueAddress?: string | null;
@@ -299,6 +398,51 @@ export interface Event {
    * Показывается на странице «Спасибо», например https://chat.whatsapp.com/…
    */
   participantsChatUrl?: string | null;
+  results?: {
+    /**
+     * Одна-две строки: сколько участников, сколько призёров.
+     */
+    summary?: string | null;
+    winners?:
+      | {
+          place: 'grand_prix' | '1' | '2' | '3' | 'special';
+          /**
+           * Если у человека есть карточка — выберите её, имя подставится.
+           */
+          person?: (number | null) | Person;
+          name?: string | null;
+          detail?: string | null;
+          prize?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    photos?:
+      | {
+          image: number | Media;
+          caption?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Можно также добавить в «Материалы» с нужным уровнем доступа.
+     */
+    tasksFile?: (number | null) | Media;
+    pressRelease?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -359,6 +503,94 @@ export interface Media {
       filename?: string | null;
     };
   };
+}
+/**
+ * Команда, спикеры, жюри, педагоги-мастера и авторы историй — одна карточка на человека. Без отметки согласия человек не показывается на сайте.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "people".
+ */
+export interface Person {
+  id: number;
+  name: string;
+  /**
+   * «Команда» — страница /about/team; «Педагог-мастер» — каталог /community/people (нужна отметка «Показывать в каталоге»).
+   */
+  roles?: ('team' | 'speaker' | 'jury' | 'master')[] | null;
+  teamPosition?: string | null;
+  /**
+   * Квадратный портрет, одинаковая обработка для всех спикеров.
+   */
+  photo?: (number | null) | Media;
+  /**
+   * Например: «Академик». Пишите только подтверждённые сведения.
+   */
+  position?: string | null;
+  contribution?: string | null;
+  subjects?: ('math' | 'physics' | 'informatics')[] | null;
+  region?:
+    | (
+        | 'astana'
+        | 'almaty'
+        | 'shymkent'
+        | 'abai'
+        | 'akmola'
+        | 'aktobe'
+        | 'almaty_region'
+        | 'atyrau'
+        | 'east_kazakhstan'
+        | 'zhambyl'
+        | 'zhetysu'
+        | 'west_kazakhstan'
+        | 'karaganda'
+        | 'kostanay'
+        | 'kyzylorda'
+        | 'mangystau'
+        | 'pavlodar'
+        | 'north_kazakhstan'
+        | 'turkistan'
+        | 'ulytau'
+      )
+    | null;
+  school?: string | null;
+  firstParticipationYear?: number | null;
+  /**
+   * Меньше — выше в списке.
+   */
+  order?: number | null;
+  /**
+   * Например, медали IMO / IPhO / IOI. Только подтверждённые факты.
+   */
+  studentAchievements?: string | null;
+  /**
+   * Несколько абзацев для страницы команды или карточки педагога-мастера.
+   */
+  bio?: string | null;
+  /**
+   * Одна-две фразы от первого лица — для карточки педагога или истории участника.
+   */
+  quote?: string | null;
+  /**
+   * Показываются на сайте только у команды и педагогов-мастеров в каталоге. Публикуйте только то, на что человек согласился.
+   */
+  contact?: {
+    email?: string | null;
+    phone?: string | null;
+    /**
+     * Соцсеть или сайт.
+     */
+    url?: string | null;
+  };
+  /**
+   * Без этой отметки карточка не появится на сайте.
+   */
+  publishConsent?: boolean | null;
+  /**
+   * Каталог /community/people. Отмечайте только по явному согласию человека (форма «Вступить» → «хочу в каталог»). Нужны также роль «Педагог-мастер» и согласие на публикацию.
+   */
+  showInCatalog?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * Продающая страница мероприятия. Каждый блок страницы — отдельная вкладка. Даты, цена, адрес и программа берутся из мероприятия.
@@ -689,67 +921,6 @@ export interface Landing {
   createdAt: string;
 }
 /**
- * Команда, спикеры, жюри, педагоги-мастера и авторы историй — одна карточка на человека. Без отметки согласия человек не показывается на сайте.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "people".
- */
-export interface Person {
-  id: number;
-  name: string;
-  roles?: ('team' | 'speaker' | 'jury' | 'master')[] | null;
-  /**
-   * Квадратный портрет, одинаковая обработка для всех спикеров.
-   */
-  photo?: (number | null) | Media;
-  /**
-   * Например: «Академик». Пишите только подтверждённые сведения.
-   */
-  position?: string | null;
-  contribution?: string | null;
-  subjects?: ('math' | 'physics' | 'informatics')[] | null;
-  region?:
-    | (
-        | 'astana'
-        | 'almaty'
-        | 'shymkent'
-        | 'abai'
-        | 'akmola'
-        | 'aktobe'
-        | 'almaty_region'
-        | 'atyrau'
-        | 'east_kazakhstan'
-        | 'zhambyl'
-        | 'zhetysu'
-        | 'west_kazakhstan'
-        | 'karaganda'
-        | 'kostanay'
-        | 'kyzylorda'
-        | 'mangystau'
-        | 'pavlodar'
-        | 'north_kazakhstan'
-        | 'turkistan'
-        | 'ulytau'
-      )
-    | null;
-  school?: string | null;
-  firstParticipationYear?: number | null;
-  /**
-   * Меньше — выше в списке.
-   */
-  order?: number | null;
-  /**
-   * Например, медали IMO / IPhO / IOI. Только подтверждённые факты.
-   */
-  studentAchievements?: string | null;
-  /**
-   * Без этой отметки карточка не появится на сайте.
-   */
-  publishConsent?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
  * Организаторы, партнёры, вузы, спонсоры и СМИ. Чтобы партнёр появился на странице, сохраните его здесь, затем откройте «Лендинги» → нужный лендинг → вкладка «Партнёры», выберите его в поле и сохраните лендинг. Нового партнёра можно создать и прямо там — кнопкой «+».
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -777,8 +948,230 @@ export interface Partner {
    * Порядок в списке партнёров в админке. На лендинге порядок задаётся на вкладке «Партнёры» лендинга.
    */
   order?: number | null;
+  showOnPartnersPage?: boolean | null;
+  years?: string | null;
+  description?: string | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * E-mail из формы подписки в подвале сайта. Рассылка отправляется не с сайта: выгрузите список кнопкой «Скачать CSV» и загрузите в сервис рассылок. В amoCRM подписчики не уходят.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscribers".
+ */
+export interface Subscriber {
+  id: number;
+  email: string;
+  locale?: ('ru' | 'kk' | 'en') | null;
+  subject?: ('math' | 'physics' | 'informatics') | null;
+  region?:
+    | (
+        | 'astana'
+        | 'almaty'
+        | 'shymkent'
+        | 'abai'
+        | 'akmola'
+        | 'aktobe'
+        | 'almaty_region'
+        | 'atyrau'
+        | 'east_kazakhstan'
+        | 'zhambyl'
+        | 'zhetysu'
+        | 'west_kazakhstan'
+        | 'karaganda'
+        | 'kostanay'
+        | 'kyzylorda'
+        | 'mangystau'
+        | 'pavlodar'
+        | 'north_kazakhstan'
+        | 'turkistan'
+        | 'ulytau'
+      )
+    | null;
+  /**
+   * Снимите, если человек попросил отписать. В выгрузку попадают только активные.
+   */
+  active?: boolean | null;
+  consentAt?: string | null;
+  /**
+   * Страница, на которой заполнили форму.
+   */
+  source?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Новости и материалы для раздела /news. Черновик виден только в админке; «Опубликовать» — и новость появляется на сайте и в RSS. Казахский текст — на вкладке языка «Қазақша».
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news".
+ */
+export interface News {
+  id: number;
+  title: string;
+  /**
+   * Латиница и дефис: /news/<slug>. После публикации лучше не менять.
+   */
+  slug: string;
+  /**
+   * Пусто — поставится автоматически при публикации.
+   */
+  publishedAt?: string | null;
+  /**
+   * Короткие слова для фильтра: «конкурс», «олимпиада», «итоги», «партнёры».
+   */
+  tags?: string[] | null;
+  /**
+   * Новость появится в карточке мероприятия, а в новости будет ссылка на него.
+   */
+  relatedEvent?: (number | null) | Event;
+  /**
+   * Горизонтальное фото, лучше 1600×900. Показывается в списке и в шапке.
+   */
+  cover?: (number | null) | Media;
+  /**
+   * Одно-два предложения для списка новостей, RSS и превью в мессенджерах.
+   */
+  excerpt?: string | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  gallery?:
+    | {
+        image: number | Media;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  sourceName?: string | null;
+  sourceUrl?: string | null;
+  /**
+   * Пусто — берутся заголовок, короткое описание и обложка.
+   */
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+    ogImage?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * Библиотека /materials: положения, задачи и решения, презентации, видео. Уровень доступа — кто может скачать файл. Пока личного кабинета нет, скачать можно только «Открыто всем»; остальные показываются с пометкой.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "materials".
+ */
+export interface Material {
+  id: number;
+  title: string;
+  kind: 'regulations' | 'tasks' | 'presentation' | 'video' | 'other';
+  /**
+   * «Для зарегистрированных» и «Для участников» заработают с личным кабинетом (вторая очередь).
+   */
+  access: 'public' | 'registered' | 'participants';
+  /**
+   * PDF или изображение. Для видео оставьте пустым и укажите ссылку ниже.
+   */
+  file?: (number | null) | Media;
+  videoUrl?: string | null;
+  subject?: ('math' | 'physics' | 'informatics') | null;
+  /**
+   * Для фильтра библиотеки. Пусто — год мероприятия.
+   */
+  year?: number | null;
+  /**
+   * Материал появится в карточке мероприятия (вкладка «Итоги»).
+   */
+  event?: (number | null) | Event;
+  /**
+   * Одно-два предложения: что внутри.
+   */
+  description?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Устав, свидетельство о регистрации, благодарственные письма, реквизиты — страница /about/documents. Договор-оферта и политика конфиденциальности — в «Настройках сайта».
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "documents".
+ */
+export interface Document {
+  id: number;
+  title: string;
+  kind: 'charter' | 'certificate' | 'gratitude' | 'requisites' | 'report' | 'other';
+  /**
+   * Меньше — выше в списке.
+   */
+  order?: number | null;
+  /**
+   * PDF или скан (JPG/PNG).
+   */
+  file: number | Media;
+  /**
+   * Например, «от 31.07.2012, БИН 120740017281».
+   */
+  description?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Простые текстовые страницы: политика конфиденциальности, оферта, правила, FAQ. Открываются по адресу /<slug>. Структурные страницы («Об ассоциации», «Партнёрам») редактируются в «Настройках» → «Страница …».
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  title: string;
+  /**
+   * Латиница и дефис: /privacy, /offer. Не должен совпадать с разделами сайта.
+   */
+  slug: string;
+  /**
+   * Отметьте, если заполнили вкладку English — тогда страница откроется и на /en.
+   */
+  showInEn?: boolean | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Пусто — берётся заголовок.
+   */
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * Сотрудники с доступом в админку. Администратор — всё, включая интеграции; редактор — тексты и материалы; менеджер — заявки и аналитика.
@@ -969,6 +1362,10 @@ export interface PayloadLockedDocument {
         value: number | Lead;
       } | null)
     | ({
+        relationTo: 'subscribers';
+        value: number | Subscriber;
+      } | null)
+    | ({
         relationTo: 'landings';
         value: number | Landing;
       } | null)
@@ -987,6 +1384,22 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'news';
+        value: number | News;
+      } | null)
+    | ({
+        relationTo: 'materials';
+        value: number | Material;
+      } | null)
+    | ({
+        relationTo: 'documents';
+        value: number | Document;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: number | Page;
       } | null)
     | ({
         relationTo: 'users';
@@ -1048,6 +1461,8 @@ export interface LeadsSelect<T extends boolean = true> {
   locale?: T;
   event?: T;
   landing?: T;
+  incomplete?: T;
+  completeToken?: T;
   fullName?: T;
   subject?: T;
   experience?: T;
@@ -1059,6 +1474,12 @@ export interface LeadsSelect<T extends boolean = true> {
   contactPerson?: T;
   participantsCount?: T;
   subjects?: T;
+  speakerRole?: T;
+  topic?: T;
+  partnerFormat?: T;
+  wantsCatalog?: T;
+  message?: T;
+  sourcePath?: T;
   phone?: T;
   email?: T;
   consent?: T;
@@ -1095,6 +1516,21 @@ export interface LeadsSelect<T extends boolean = true> {
         pipelineId?: T;
         statusId?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscribers_select".
+ */
+export interface SubscribersSelect<T extends boolean = true> {
+  email?: T;
+  locale?: T;
+  subject?: T;
+  region?: T;
+  active?: T;
+  consentAt?: T;
+  source?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1310,17 +1746,25 @@ export interface LandingsSelect<T extends boolean = true> {
  * via the `definition` "events_select".
  */
 export interface EventsSelect<T extends boolean = true> {
+  status?: T;
+  statusOverride?: T;
+  contestSeason?: T;
   title?: T;
   slug?: T;
   type?: T;
   level?: T;
   format?: T;
   subjects?: T;
+  cover?: T;
+  description?: T;
+  forWhom?: T;
+  documentIssued?: T;
   startDate?: T;
   endDate?: T;
   registrationDeadline?: T;
   price?: T;
   groupMinSize?: T;
+  region?: T;
   city?: T;
   venue?: T;
   venueAddress?: T;
@@ -1343,6 +1787,30 @@ export interface EventsSelect<T extends boolean = true> {
   regulationsPdf?: T;
   certificateSample?: T;
   participantsChatUrl?: T;
+  results?:
+    | T
+    | {
+        summary?: T;
+        winners?:
+          | T
+          | {
+              place?: T;
+              person?: T;
+              name?: T;
+              detail?: T;
+              prize?: T;
+              id?: T;
+            };
+        photos?:
+          | T
+          | {
+              image?: T;
+              caption?: T;
+              id?: T;
+            };
+        tasksFile?: T;
+        pressRelease?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1353,6 +1821,7 @@ export interface EventsSelect<T extends boolean = true> {
 export interface PeopleSelect<T extends boolean = true> {
   name?: T;
   roles?: T;
+  teamPosition?: T;
   photo?: T;
   position?: T;
   contribution?: T;
@@ -1362,7 +1831,17 @@ export interface PeopleSelect<T extends boolean = true> {
   firstParticipationYear?: T;
   order?: T;
   studentAchievements?: T;
+  bio?: T;
+  quote?: T;
+  contact?:
+    | T
+    | {
+        email?: T;
+        phone?: T;
+        url?: T;
+      };
   publishConsent?: T;
+  showInCatalog?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1376,6 +1855,9 @@ export interface PartnersSelect<T extends boolean = true> {
   url?: T;
   kind?: T;
   order?: T;
+  showOnPartnersPage?: T;
+  years?: T;
+  description?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1440,6 +1922,88 @@ export interface MediaSelect<T extends boolean = true> {
               filename?: T;
             };
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news_select".
+ */
+export interface NewsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  publishedAt?: T;
+  tags?: T;
+  relatedEvent?: T;
+  cover?: T;
+  excerpt?: T;
+  body?: T;
+  gallery?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        id?: T;
+      };
+  sourceName?: T;
+  sourceUrl?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        ogImage?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "materials_select".
+ */
+export interface MaterialsSelect<T extends boolean = true> {
+  title?: T;
+  kind?: T;
+  access?: T;
+  file?: T;
+  videoUrl?: T;
+  subject?: T;
+  year?: T;
+  event?: T;
+  description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "documents_select".
+ */
+export interface DocumentsSelect<T extends boolean = true> {
+  title?: T;
+  kind?: T;
+  order?: T;
+  file?: T;
+  description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  showInEn?: T;
+  body?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1651,6 +2215,170 @@ export interface SiteSetting {
   createdAt?: string | null;
 }
 /**
+ * Тексты первого экрана и блоков главной. Мероприятия и новости подставляются автоматически: ближайшие открытые и последние опубликованные.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-page".
+ */
+export interface HomePage {
+  id: number;
+  hero?: {
+    heading?: string | null;
+    lead?: string | null;
+    /**
+     * Карточка на первом экране. Пусто — ближайшее мероприятие с открытой регистрацией.
+     */
+    featuredEvent?: (number | null) | Event;
+    primaryCta?: string | null;
+    secondaryCta?: string | null;
+  };
+  about?: {
+    heading?: string | null;
+    text?: string | null;
+  };
+  community?: {
+    heading?: string | null;
+    text?: string | null;
+  };
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+    ogImage?: (number | null) | Media;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Тексты раздела «Об ассоциации». Команда берётся из «Люди» с ролью «Команда» (поле «Должность в команде»), документы — из «Документы ассоциации». У этой страницы есть английская версия — вкладка языка English.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-page".
+ */
+export interface AboutPage {
+  id: number;
+  heading?: string | null;
+  /**
+   * Два-три предложения: кто мы и что делаем.
+   */
+  lead?: string | null;
+  cover?: (number | null) | Media;
+  mission?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Например: «с 2012 года», «X конкурсов». Только подтверждённые данные; оценки подписывайте «по данным ассоциации».
+   */
+  figures?:
+    | {
+        value: string;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  historyHeading?: string | null;
+  historyLead?: string | null;
+  timeline?:
+    | {
+        year: number;
+        period?: string | null;
+        title: string;
+        text?: string | null;
+        /**
+         * Если веха — конкурс из каталога, веха станет ссылкой.
+         */
+        event?: (number | null) | Event;
+        id?: string | null;
+      }[]
+    | null;
+  teamHeading?: string | null;
+  /**
+   * Сами карточки — из «Люди»: роль «Команда», поля «Должность в команде» и «Порядок», отметка согласия.
+   */
+  teamLead?: string | null;
+  documentsHeading?: string | null;
+  /**
+   * Список документов — коллекция «Документы ассоциации».
+   */
+  documentsLead?: string | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Форматы сотрудничества, пакет спонсора и текст над формой. Логотипы прошлых партнёров — коллекция «Партнёры» (отметка «Показывать на странице «Партнёрам»»). У этой страницы есть английская версия — вкладка языка English.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partners-page".
+ */
+export interface PartnersPage {
+  id: number;
+  heading?: string | null;
+  /**
+   * Зачем компании поддерживать конкурсы учителей — два-три предложения.
+   */
+  lead?: string | null;
+  formats?:
+    | {
+        icon?:
+          | (
+              | 'Award'
+              | 'FileBadge'
+              | 'Hourglass'
+              | 'Building'
+              | 'GraduationCap'
+              | 'BookOpen'
+              | 'Brain'
+              | 'Calculator'
+              | 'Clock'
+              | 'Lightbulb'
+              | 'MessagesSquare'
+              | 'Mic'
+              | 'Sigma'
+              | 'Atom'
+              | 'Code'
+              | 'Trophy'
+              | 'Users'
+              | 'Handshake'
+              | 'Star'
+              | 'Target'
+            )
+          | null;
+        title: string;
+        text?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Кнопка «Скачать пакет спонсора». Пусто — кнопки нет.
+   */
+  sponsorPack?: (number | null) | Media;
+  pastPartnersHeading?: string | null;
+  contactHeading?: string | null;
+  /**
+   * Кому попадёт заявка и когда ответим.
+   */
+  contactNote?: string | null;
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * amoCRM и рекламные пиксели. Доступно только администраторам.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1767,6 +2495,110 @@ export interface SiteSettingsSelect<T extends boolean = true> {
     | {
         pdf?: T;
         text?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-page_select".
+ */
+export interface HomePageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        heading?: T;
+        lead?: T;
+        featuredEvent?: T;
+        primaryCta?: T;
+        secondaryCta?: T;
+      };
+  about?:
+    | T
+    | {
+        heading?: T;
+        text?: T;
+      };
+  community?:
+    | T
+    | {
+        heading?: T;
+        text?: T;
+      };
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        ogImage?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-page_select".
+ */
+export interface AboutPageSelect<T extends boolean = true> {
+  heading?: T;
+  lead?: T;
+  cover?: T;
+  mission?: T;
+  figures?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        id?: T;
+      };
+  historyHeading?: T;
+  historyLead?: T;
+  timeline?:
+    | T
+    | {
+        year?: T;
+        period?: T;
+        title?: T;
+        text?: T;
+        event?: T;
+        id?: T;
+      };
+  teamHeading?: T;
+  teamLead?: T;
+  documentsHeading?: T;
+  documentsLead?: T;
+  seoTitle?: T;
+  seoDescription?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partners-page_select".
+ */
+export interface PartnersPageSelect<T extends boolean = true> {
+  heading?: T;
+  lead?: T;
+  formats?:
+    | T
+    | {
+        icon?: T;
+        title?: T;
+        text?: T;
+        id?: T;
+      };
+  sponsorPack?: T;
+  pastPartnersHeading?: T;
+  contactHeading?: T;
+  contactNote?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
       };
   updatedAt?: T;
   createdAt?: T;

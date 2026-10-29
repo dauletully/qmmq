@@ -2,8 +2,11 @@ import type { GlobalConfig } from 'payload'
 
 import { anyone, contentEditors } from '../access'
 import { adminOptions, SOCIAL_NETWORKS } from '../lib/constants'
-import { revalidateGlobalAfterChange } from '../lib/revalidate'
+import { SITE_CACHE_TAGS, siteRevalidateHooks } from '../lib/revalidate'
 import { validateEmail, validateOptionalPhone, validateUrl } from '../lib/validators'
+
+// Настройки общие для лендинга и сайта.
+const hooks = siteRevalidateHooks([SITE_CACHE_TAGS.settings], { withLanding: true })
 
 export const SiteSettings: GlobalConfig = {
   slug: 'site-settings',
@@ -17,7 +20,7 @@ export const SiteSettings: GlobalConfig = {
     update: contentEditors,
   },
   versions: { max: 25 },
-  hooks: { afterChange: [revalidateGlobalAfterChange] },
+  hooks: { afterChange: [hooks.globalAfterChange] },
   fields: [
     {
       type: 'tabs',

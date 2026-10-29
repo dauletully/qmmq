@@ -41,6 +41,9 @@ export default buildConfig({
     locales: [
       { code: 'ru', label: 'Русский' },
       { code: 'kk', label: 'Қазақша' },
+      // Английский заполняется только для «Об ассоциации» и «Партнёрам»; остальные страницы
+      // сайта на en не отдаются (fallback на ru — чтобы пустые поля не ломали админку).
+      { code: 'en', label: 'English' },
     ],
     defaultLocale: 'ru',
     fallback: true,

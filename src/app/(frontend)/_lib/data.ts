@@ -35,6 +35,7 @@ export type PersonView = {
   roles: string[]
   position: string
   contribution: string
+  quote: string
   school: string
   firstYear: number | null
   subjects: string[]
@@ -138,7 +139,8 @@ export type LandingView = {
   seo: { title: string; description: string; ogImage: Img | null }
 }
 
-const s = (v: unknown): string => (typeof v === 'string' ? v.trim() : '')
+// Преобразователи ниже экспортируются для хелперов сайта (site-data.ts).
+export const s = (v: unknown): string => (typeof v === 'string' ? v.trim() : '')
 
 // «10 000+», «~5 млн ₸»: неразрывные пробелы внутри числа и перед единицами.
 const num = (v: unknown): string =>
@@ -152,11 +154,11 @@ function displayPhone(n: string): string {
   return `+7 (${n.slice(2, 5)}) ${n.slice(5, 8)}-${n.slice(8, 10)}-${n.slice(10, 12)}`
 }
 
-function isObj<T>(v: unknown): v is T {
+export function isObj<T>(v: unknown): v is T {
   return Boolean(v) && typeof v === 'object'
 }
 
-function relId(v: unknown): number | null {
+export function relId(v: unknown): number | null {
   if (typeof v === 'number') return v
   if (isObj<{ id: number }>(v) && typeof v.id === 'number') return v.id
   return null
@@ -165,7 +167,11 @@ function relId(v: unknown): number | null {
 type SizeName = 'thumb' | 'card' | 'hero' | 'og'
 
 // Берём размер Payload не меньше нужного (next/image сожмёт дальше), иначе оригинал.
-function toImg(media: unknown, prefer: SizeName[] = ['card', 'hero'], alt = ''): Img | null {
+export function toImg(
+  media: unknown,
+  prefer: SizeName[] = ['card', 'hero'],
+  alt = '',
+): Img | null {
   if (!isObj<Media>(media) || !media.url) return null
   const svg = media.mimeType === 'image/svg+xml' || /\.svg$/i.test(media.filename ?? '')
   if (!svg && !media.mimeType?.startsWith('image/')) return null
@@ -195,7 +201,7 @@ function toImg(media: unknown, prefer: SizeName[] = ['card', 'hero'], alt = ''):
   }
 }
 
-function fileUrl(media: unknown): string | null {
+export function fileUrl(media: unknown): string | null {
   return isObj<Media>(media) && media.url ? media.url : null
 }
 
@@ -220,13 +226,14 @@ function toPerson(value: unknown): PersonView | null {
     roles: (value.roles ?? []).filter(Boolean) as string[],
     position: s(value.position),
     contribution: s(value.contribution),
+    quote: s(value.quote),
     school: s(value.school),
     firstYear: value.firstParticipationYear ?? null,
     subjects: (value.subjects ?? []) as string[],
   }
 }
 
-function hasRichText(v: unknown): v is RichText {
+export function hasRichText(v: unknown): v is RichText {
   if (!isObj<RichText>(v)) return false
   const children = (v as { root?: { children?: Array<{ children?: unknown[]; text?: string }> } })
     .root?.children

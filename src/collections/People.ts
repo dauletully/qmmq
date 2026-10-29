@@ -2,13 +2,22 @@ import type { Access, CollectionConfig } from 'payload'
 
 import { contentEditors, roleOf } from '../access'
 import { adminOptions, PERSON_ROLES, REGIONS, SUBJECTS } from '../lib/constants'
-import { revalidateAfterChange, revalidateAfterDelete } from '../lib/revalidate'
+import { SITE_CACHE_TAGS, siteRevalidateHooks } from '../lib/revalidate'
+import { validateEmail, validateOptionalPhone, validateUrl } from '../lib/validators'
 
 // Посетители сайта видят только тех, кто дал согласие на публикацию.
 const readPeople: Access = ({ req }) => {
   if (roleOf(req.user)) return true
   return { publishConsent: { equals: true } }
 }
+
+// Люди общие для лендинга (спикеры, истории) и сайта (команда, каталог педагогов).
+const hooks = siteRevalidateHooks([SITE_CACHE_TAGS.people], { withLanding: true })
+
+const isTeam = (data: Record<string, unknown> | undefined) =>
+  Array.isArray(data?.roles) && (data!.roles as string[]).includes('team')
+const isMaster = (data: Record<string, unknown> | undefined) =>
+  Array.isArray(data?.roles) && (data!.roles as string[]).includes('master')
 
 export const People: CollectionConfig = {
   slug: 'people',
@@ -29,8 +38,8 @@ export const People: CollectionConfig = {
     delete: contentEditors,
   },
   hooks: {
-    afterChange: [revalidateAfterChange],
-    afterDelete: [revalidateAfterDelete],
+    afterChange: [hooks.afterChange],
+    afterDelete: [hooks.afterDelete],
   },
   fields: [
     {
@@ -43,6 +52,23 @@ export const People: CollectionConfig = {
           type: 'select',
           hasMany: true,
           options: adminOptions(PERSON_ROLES),
+          admin: {
+            description:
+              '«Команда» — страница /about/team; «Педагог-мастер» — каталог /community/people (нужна отметка «Показывать в каталоге»).',
+          },
+        },
+      ],
+    },
+    {
+      type: 'row',
+      admin: { condition: isTeam },
+      fields: [
+        {
+          name: 'teamPosition',
+          label: 'Должность в команде',
+          type: 'text',
+          localized: true,
+          admin: { placeholder: 'Президент ассоциации', width: '70%' },
         },
       ],
     },
@@ -107,6 +133,57 @@ export const People: CollectionConfig = {
       admin: { description: 'Например, медали IMO / IPhO / IOI. Только подтверждённые факты.' },
     },
     {
+      name: 'bio',
+      label: 'Биография',
+      type: 'textarea',
+      localized: true,
+      admin: {
+        description: 'Несколько абзацев для страницы команды или карточки педагога-мастера.',
+        rows: 5,
+      },
+    },
+    {
+      name: 'quote',
+      label: 'Цитата',
+      type: 'textarea',
+      localized: true,
+      admin: {
+        description: 'Одна-две фразы от первого лица — для карточки педагога или истории участника.',
+      },
+    },
+    {
+      name: 'contact',
+      label: 'Контакты для сайта',
+      type: 'group',
+      admin: {
+        description:
+          'Показываются на сайте только у команды и педагогов-мастеров в каталоге. Публикуйте только то, на что человек согласился.',
+        condition: (data) => isTeam(data) || isMaster(data),
+      },
+      fields: [
+        {
+          type: 'row',
+          fields: [
+            { name: 'email', label: 'E-mail', type: 'text', validate: validateEmail },
+            {
+              name: 'phone',
+              label: 'Телефон',
+              type: 'text',
+              validate: validateOptionalPhone,
+              admin: { placeholder: '+7 701 123 45 67' },
+            },
+          ],
+        },
+        {
+          name: 'url',
+          label: 'Ссылка',
+          type: 'text',
+          validate: validateUrl,
+          admin: { placeholder: 'https://instagram.com/…', description: 'Соцсеть или сайт.' },
+        },
+      ],
+    },
+    {
       name: 'publishConsent',
       label: 'Согласие на публикацию получено',
       type: 'checkbox',
@@ -114,6 +191,18 @@ export const People: CollectionConfig = {
       admin: {
         position: 'sidebar',
         description: 'Без этой отметки карточка не появится на сайте.',
+      },
+    },
+    {
+      name: 'showInCatalog',
+      label: 'Показывать в каталоге педагогов',
+      type: 'checkbox',
+      defaultValue: false,
+      index: true,
+      admin: {
+        position: 'sidebar',
+        description:
+          'Каталог /community/people. Отмечайте только по явному согласию человека (форма «Вступить» → «хочу в каталог»). Нужны также роль «Педагог-мастер» и согласие на публикацию.',
       },
     },
   ],

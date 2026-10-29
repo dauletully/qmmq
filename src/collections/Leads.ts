@@ -1,17 +1,31 @@
 import type { CollectionConfig, Field } from 'payload'
 
 import { adminFieldOnly, adminOnly, noFieldUpdate, roleOf } from '../access'
-import { adminOptions, EXPERIENCE, LEAD_TYPES, REGIONS, SUBJECTS } from '../lib/constants'
+import {
+  adminOptions,
+  EXPERIENCE,
+  LEAD_TYPES,
+  PARTNER_FORMATS,
+  REGIONS,
+  SPEAKER_ROLES,
+  SUBJECTS,
+} from '../lib/constants'
 
 export const AMO_SYNC_STATUSES = [
   { value: 'pending', label: 'В очереди' },
   { value: 'sent', label: 'Отправлена' },
   { value: 'failed', label: 'Ошибка' },
   { value: 'disabled', label: 'Не отправлялась — amoCRM не подключена' },
+  { value: 'skipped', label: 'Не отправляется — этот тип заявки не для amoCRM' },
 ] as const
 
 const isSchool = (data: Record<string, unknown> | undefined) => data?.type === 'school'
-const isParticipant = (data: Record<string, unknown> | undefined) => !isSchool(data)
+const isPartner = (data: Record<string, unknown> | undefined) => data?.type === 'partner'
+const isParticipant = (data: Record<string, unknown> | undefined) =>
+  !isSchool(data) && !isPartner(data)
+// Формы сайта: сообщество, спикер/жюри, партнёрство, обратная связь (src/lib/forms/site.ts).
+const isSiteLead = (data: Record<string, unknown> | undefined) =>
+  ['community', 'speaker', 'partner', 'feedback'].includes(String(data?.type))
 
 // Все поля заявки — только для чтения: их пишет сервер (API форм, очередь amoCRM, вебхук).
 function locked(fields: Field[]): Field[] {
@@ -42,12 +56,13 @@ export const Leads: CollectionConfig = {
       'phone',
       'subject',
       'region',
+      'incomplete',
       'amo.syncStatus',
       'payment.paid',
     ],
     listSearchableFields: ['displayName', 'fullName', 'organization', 'phone', 'email'],
     description:
-      'Заявки со всех форм лендинга. Создаются только сайтом; поля менять нельзя — кроме отметки об оплате (администратор).',
+      'Заявки со всех форм лендинга и сайта (вступление в сообщество, спикер/жюри, партнёрство, обратная связь). Создаются только сайтом; поля менять нельзя — кроме отметки об оплате (администратор). Подписки на рассылку — отдельно, в «Подписчики рассылки».',
     pagination: { defaultLimit: 50 },
     components: {
       beforeListTable: ['/admin/leads/LeadFilters#LeadFilters'],
@@ -87,6 +102,7 @@ export const Leads: CollectionConfig = {
             options: [
               { value: 'ru', label: 'Русский' },
               { value: 'kk', label: 'Қазақша' },
+              { value: 'en', label: 'English' },
             ],
           },
         ],
@@ -97,6 +113,25 @@ export const Leads: CollectionConfig = {
           { name: 'event', label: 'Мероприятие', type: 'relationship', relationTo: 'events' },
           { name: 'landing', label: 'Лендинг', type: 'relationship', relationTo: 'landings' },
         ],
+      },
+      // Регистрация на телефоне идёт в два шага: после первого есть ФИО, предмет и телефон,
+      // остальное — после второго. Пока второй шаг не пройден, заявка отмечена неполной.
+      {
+        name: 'incomplete',
+        label: 'Заявка неполная',
+        type: 'checkbox',
+        defaultValue: false,
+        index: true,
+        admin: {
+          description:
+            'Заполнен только первый шаг (ФИО, предмет, телефон). Можно звонить — согласие дано.',
+          condition: (data) => Boolean(data?.incomplete),
+        },
+      },
+      {
+        name: 'completeToken',
+        type: 'text',
+        admin: { hidden: true },
       },
       // Участник
       {
@@ -159,6 +194,56 @@ export const Leads: CollectionConfig = {
                 options: adminOptions(SUBJECTS),
               },
             ],
+          },
+        ],
+      },
+      // Формы сайта
+      {
+        type: 'collapsible',
+        label: 'Сообщество, спикеры, партнёры, обратная связь',
+        admin: { condition: isSiteLead },
+        fields: [
+          {
+            type: 'row',
+            fields: [
+              {
+                name: 'speakerRole',
+                label: 'Предлагает себя как',
+                type: 'select',
+                options: adminOptions(SPEAKER_ROLES),
+                admin: { condition: (data) => data?.type === 'speaker' },
+              },
+              {
+                name: 'topic',
+                label: 'Тема выступления',
+                type: 'text',
+                admin: { condition: (data) => data?.type === 'speaker' },
+              },
+              {
+                name: 'partnerFormat',
+                label: 'Формат сотрудничества',
+                type: 'select',
+                options: adminOptions(PARTNER_FORMATS),
+                admin: { condition: isPartner },
+              },
+              {
+                name: 'wantsCatalog',
+                label: 'Хочет в каталог педагогов',
+                type: 'checkbox',
+                admin: {
+                  condition: (data) => data?.type === 'community',
+                  description:
+                    'Согласие на карточку в /community/people. Карточку создаёт редактор в «Люди» (роль «Педагог-мастер», «Показывать в каталоге»).',
+                },
+              },
+            ],
+          },
+          { name: 'message', label: 'Сообщение', type: 'textarea' },
+          {
+            name: 'sourcePath',
+            label: 'Страница формы',
+            type: 'text',
+            admin: { description: 'Адрес страницы сайта, с которой отправлена форма.' },
           },
         ],
       },
@@ -288,7 +373,9 @@ export const Leads: CollectionConfig = {
       ({ data, originalDoc }) => {
         const fullName = data.fullName ?? originalDoc?.fullName
         const organization = data.organization ?? originalDoc?.organization
-        data.displayName = (data.type ?? originalDoc?.type) === 'school' ? organization : fullName
+        const type = data.type ?? originalDoc?.type
+        data.displayName =
+          type === 'school' || type === 'partner' ? organization || fullName : fullName
         if (data.payment) {
           const wasPaid = Boolean(originalDoc?.payment?.paid)
           if (data.payment.paid && !data.payment.paidAt) {

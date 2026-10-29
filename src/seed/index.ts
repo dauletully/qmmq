@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url'
 
 import config from '../payload.config'
 import * as content from './content'
+import { seedSite } from './site-content'
 
 // pnpm seed — создаёт мероприятие XII конкурса и лендинг contest-2026, загружает логотип и фото.
 // Повторный запуск ничего не дублирует и не трогает правки команды.
@@ -329,12 +330,29 @@ export async function seed(payload: Payload) {
     fallbackLocale: false,
     overrideAccess: true,
   })
-  if (force || !speakerKk.position) {
+  if (force || !speakerKk.position || !speakerKk.quote) {
     await payload.update({
       collection: 'people',
       id: speakerId,
       data: content.speakerKk,
       locale: 'kk',
+      overrideAccess: true,
+    })
+  }
+  // Цитата добавлена позже сида: в существующей записи заполняем, только если пусто.
+  const speakerRu = await payload.findByID({
+    collection: 'people',
+    id: speakerId,
+    depth: 0,
+    locale: 'ru',
+    overrideAccess: true,
+  })
+  if (!speakerRu.quote && content.speaker.quote) {
+    await payload.update({
+      collection: 'people',
+      id: speakerId,
+      data: { quote: content.speaker.quote },
+      locale: 'ru',
       overrideAccess: true,
     })
   }
@@ -395,6 +413,9 @@ export async function seed(payload: Payload) {
       overrideAccess: true,
     })
   }
+
+  // Сайт: страницы «Об ассоциации» и «Партнёрам», архив мероприятий, новости (src/seed/site-content.ts).
+  await seedSite(payload, force)
 
   payload.logger.info('seed: готово')
 }

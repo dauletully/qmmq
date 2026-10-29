@@ -5,6 +5,11 @@ export type Locale = 'ru' | 'kk'
 
 export const LOCALES = ['ru', 'kk'] as const
 
+// Локали сайта: en есть только у страниц «Об ассоциации» и «Партнёрам» (остальные на en не отдаются).
+export type SiteLocale = Locale | 'en'
+export const SITE_LOCALES = ['ru', 'kk', 'en'] as const
+export const EN_ENABLED_PAGES = ['about', 'partners'] as const
+
 export type LabeledOption<V extends string = string> = {
   value: V
   label: Record<Locale, string>
@@ -66,13 +71,93 @@ export const LEAD_TYPES = [
   { value: 'waitlist', label: { ru: 'Лист ожидания', kk: 'Күту тізімі' } },
   { value: 'school', label: { ru: 'Заявка от школы', kk: 'Мектептен өтінім' } },
   { value: 'regulations', label: { ru: 'Положение', kk: 'Ереже' } },
+  // Формы сайта (src/lib/forms/site.ts)
+  { value: 'community', label: { ru: 'Вступление в сообщество', kk: 'Қауымдастыққа кіру' } },
+  { value: 'speaker', label: { ru: 'Спикер / жюри', kk: 'Спикер / қазылар алқасы' } },
+  { value: 'partner', label: { ru: 'Партнёрство', kk: 'Серіктестік' } },
+  { value: 'feedback', label: { ru: 'Обратная связь', kk: 'Кері байланыс' } },
 ] as const satisfies readonly LabeledOption[]
 
 export type LeadType = (typeof LEAD_TYPES)[number]['value']
 
-// Типы форм, которые принимает POST /api/forms/:type (waitlist назначает сервер).
+// Какие заявки уходят в amoCRM. Обратная связь остаётся только в админке.
+export const AMO_LEAD_TYPES: readonly LeadType[] = [
+  'registration',
+  'waitlist',
+  'school',
+  'regulations',
+  'community',
+  'speaker',
+  'partner',
+]
+
+// Типы форм лендинга, которые принимает POST /api/forms/:type (waitlist назначает сервер).
+// Формы сайта (community, speaker, partner, feedback, subscribe) — SITE_FORM_TYPES в src/lib/forms/site.ts.
 export const FORM_TYPES = ['registration', 'school', 'regulations'] as const
 export type FormType = (typeof FORM_TYPES)[number]
+
+// Роль, на которую человек предлагает себя в форме «Стать спикером / членом жюри».
+export const SPEAKER_ROLES = [
+  { value: 'speaker', label: { ru: 'Спикер', kk: 'Спикер' } },
+  { value: 'jury', label: { ru: 'Член жюри', kk: 'Қазылар алқасының мүшесі' } },
+  { value: 'both', label: { ru: 'Спикер и жюри', kk: 'Спикер және қазылар алқасы' } },
+] as const satisfies readonly LabeledOption[]
+
+// Форматы сотрудничества для формы «Партнёрам».
+export const PARTNER_FORMATS = [
+  { value: 'general_sponsor', label: { ru: 'Генеральный спонсор', kk: 'Бас демеуші' } },
+  { value: 'sponsor', label: { ru: 'Спонсор', kk: 'Демеуші' } },
+  { value: 'prizes', label: { ru: 'Призы участникам', kk: 'Қатысушыларға сыйлықтар' } },
+  { value: 'venue', label: { ru: 'Площадка', kk: 'Алаң' } },
+  { value: 'media', label: { ru: 'Информационный партнёр', kk: 'Ақпараттық серіктес' } },
+  { value: 'other', label: { ru: 'Другое', kk: 'Басқа' } },
+] as const satisfies readonly LabeledOption[]
+
+// Виды материалов библиотеки.
+export const MATERIAL_KINDS = [
+  { value: 'regulations', label: { ru: 'Положение', kk: 'Ереже' } },
+  { value: 'tasks', label: { ru: 'Задачи и решения', kk: 'Есептер мен шешімдер' } },
+  { value: 'presentation', label: { ru: 'Презентация', kk: 'Презентация' } },
+  { value: 'video', label: { ru: 'Видео', kk: 'Бейне' } },
+  { value: 'other', label: { ru: 'Другое', kk: 'Басқа' } },
+] as const satisfies readonly LabeledOption[]
+
+// Уровни доступа к материалам. Пока нет личного кабинета, файлы отдаются только для public.
+export const MATERIAL_ACCESS = [
+  { value: 'public', label: { ru: 'Открыто всем', kk: 'Барлығына ашық' } },
+  { value: 'registered', label: { ru: 'Для зарегистрированных', kk: 'Тіркелгендер үшін' } },
+  {
+    value: 'participants',
+    label: { ru: 'Для участников мероприятия', kk: 'Іс-шара қатысушылары үшін' },
+  },
+] as const satisfies readonly LabeledOption[]
+
+// Виды документов ассоциации.
+export const DOCUMENT_KINDS = [
+  { value: 'charter', label: { ru: 'Устав', kk: 'Жарғы' } },
+  { value: 'certificate', label: { ru: 'Свидетельство о регистрации', kk: 'Тіркеу куәлігі' } },
+  { value: 'gratitude', label: { ru: 'Благодарственное письмо', kk: 'Алғыс хат' } },
+  { value: 'requisites', label: { ru: 'Реквизиты', kk: 'Деректемелер' } },
+  { value: 'report', label: { ru: 'Отчёт', kk: 'Есеп' } },
+  { value: 'other', label: { ru: 'Другое', kk: 'Басқа' } },
+] as const satisfies readonly LabeledOption[]
+
+// Статус мероприятия на сайте: auto — вычисляется по датам, остальное — ручной override.
+export const EVENT_STATUSES = [
+  { value: 'open', label: { ru: 'Регистрация открыта', kk: 'Тіркеу ашық' } },
+  { value: 'closed', label: { ru: 'Регистрация закрыта', kk: 'Тіркеу жабық' } },
+  { value: 'finished', label: { ru: 'Завершено', kk: 'Аяқталды' } },
+] as const satisfies readonly LabeledOption[]
+
+export type EventStatus = (typeof EVENT_STATUSES)[number]['value']
+
+export const WINNER_PLACES = [
+  { value: 'grand_prix', label: { ru: 'Гран-при', kk: 'Гран-при' } },
+  { value: '1', label: { ru: 'I место', kk: 'I орын' } },
+  { value: '2', label: { ru: 'II место', kk: 'II орын' } },
+  { value: '3', label: { ru: 'III место', kk: 'III орын' } },
+  { value: 'special', label: { ru: 'Специальный приз', kk: 'Арнайы сыйлық' } },
+] as const satisfies readonly LabeledOption[]
 
 export const PERSON_ROLES = [
   { value: 'team', label: { ru: 'Команда', kk: 'Команда' } },

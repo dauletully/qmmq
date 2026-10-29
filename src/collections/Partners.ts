@@ -2,8 +2,11 @@ import type { CollectionConfig } from 'payload'
 
 import { anyone, contentEditors } from '../access'
 import { adminOptions, PARTNER_KINDS } from '../lib/constants'
-import { revalidateAfterChange, revalidateAfterDelete } from '../lib/revalidate'
+import { SITE_CACHE_TAGS, siteRevalidateHooks } from '../lib/revalidate'
 import { validateUrl } from '../lib/validators'
+
+// Партнёры общие для лендинга и страницы «Партнёрам» сайта.
+const hooks = siteRevalidateHooks([SITE_CACHE_TAGS.partners], { withLanding: true })
 
 export const Partners: CollectionConfig = {
   slug: 'partners',
@@ -23,8 +26,8 @@ export const Partners: CollectionConfig = {
     delete: contentEditors,
   },
   hooks: {
-    afterChange: [revalidateAfterChange],
-    afterDelete: [revalidateAfterDelete],
+    afterChange: [hooks.afterChange],
+    afterDelete: [hooks.afterDelete],
   },
   fields: [
     {
@@ -83,6 +86,38 @@ export const Partners: CollectionConfig = {
             description:
               'Порядок в списке партнёров в админке. На лендинге порядок задаётся на вкладке «Партнёры» лендинга.',
           },
+        },
+      ],
+    },
+    {
+      type: 'collapsible',
+      label: 'Страница «Партнёрам» на сайте',
+      admin: { initCollapsed: true },
+      fields: [
+        {
+          name: 'showOnPartnersPage',
+          label: 'Показывать в блоке «Нас поддерживали»',
+          type: 'checkbox',
+          defaultValue: false,
+          index: true,
+        },
+        {
+          type: 'row',
+          fields: [
+            {
+              name: 'years',
+              label: 'Годы сотрудничества',
+              type: 'text',
+              admin: { placeholder: '2013, 2022–2023', width: '40%' },
+            },
+            {
+              name: 'description',
+              label: 'Чем помогали',
+              type: 'text',
+              localized: true,
+              admin: { placeholder: 'Генеральный спонсор I конкурса', width: '60%' },
+            },
+          ],
         },
       ],
     },
