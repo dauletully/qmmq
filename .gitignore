@@ -48,3 +48,9 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# local postgres cluster and logs
+/.local/
+
+# per-process dev build dirs
+/.next-*/
