@@ -62,7 +62,18 @@ async function findOrCreateByName<T extends 'people' | 'partners'>(
     depth: 0,
     overrideAccess: true,
   })
-  if (docs[0]) return docs[0].id
+  if (docs[0]) {
+    if (force) {
+      await payload.update({
+        collection,
+        id: docs[0].id,
+        data: data as never,
+        locale: 'ru',
+        overrideAccess: true,
+      })
+    }
+    return docs[0].id
+  }
   const doc = await payload.create({
     collection,
     data: data as never,
@@ -108,6 +119,49 @@ async function ensureMedia(
   }
   payload.logger.info(`seed: media ${asset.file} — загружено`)
   return doc.id
+}
+
+async function ensurePerson(
+  payload: Payload,
+  data: { name: string } & Record<string, unknown>,
+  photo: Parameters<typeof ensureMedia>[1],
+): Promise<number> {
+  const id = await findOrCreateByName(payload, 'people', data)
+  const doc = await payload.findByID({ collection: 'people', id, depth: 0, overrideAccess: true })
+  if (!doc.photo) {
+    await payload.update({
+      collection: 'people',
+      id,
+      data: { photo: await ensureMedia(payload, photo) },
+      overrideAccess: true,
+    })
+  }
+  return id
+}
+
+// Абзацы → документ Lexical для полей richText.
+function richText(paragraphs: string[]) {
+  return {
+    root: {
+      type: 'root',
+      format: '' as const,
+      indent: 0,
+      version: 1,
+      direction: 'ltr' as const,
+      children: paragraphs.map((text) => ({
+        type: 'paragraph',
+        format: '' as const,
+        indent: 0,
+        version: 1,
+        direction: 'ltr' as const,
+        textFormat: 0,
+        textStyle: '',
+        children: [
+          { type: 'text', text, format: 0, style: '', mode: 'normal', detail: 0, version: 1 },
+        ],
+      })),
+    },
+  }
 }
 
 // Казахские тексты в массивах: строки массива сопоставляются по id, иначе русские значения пропадут.
@@ -161,22 +215,25 @@ export async function seed(payload: Payload) {
     })
   }
 
-  const speakerId = await findOrCreateByName(payload, 'people', content.speaker)
-  const speakerDoc = await payload.findByID({
+  const speakerId = await ensurePerson(payload, content.speaker, content.speakerPhoto)
+  const speakerKk = await payload.findByID({
     collection: 'people',
     id: speakerId,
     depth: 0,
+    locale: 'kk',
+    fallbackLocale: false,
     overrideAccess: true,
   })
-  if (!speakerDoc.photo) {
-    const photoId = await ensureMedia(payload, content.speakerPhoto)
+  if (force || !speakerKk.position) {
     await payload.update({
       collection: 'people',
       id: speakerId,
-      data: { photo: photoId },
+      data: content.speakerKk,
+      locale: 'kk',
       overrideAccess: true,
     })
   }
+  const authorId = await ensurePerson(payload, content.addressAuthor, content.addressAuthorPhoto)
 
   const partnerIds: number[] = []
   for (const partner of content.partners) {
@@ -194,6 +251,7 @@ export async function seed(payload: Payload) {
       images: content.gallery.map((photo, i) => ({ image: galleryIds[i], caption: photo.caption })),
     },
     speakers: { ...content.landing.speakers, people: [speakerId] },
+    address: { ...content.landing.address, author: authorId, body: richText(content.addressBody) },
     partners: { ...content.landing.partners, items: partnerIds },
   }
   const landingResult = await upsertBySlug(payload, 'landings', content.landing.slug, landingData)

@@ -84,6 +84,7 @@ export const PERSON_ROLES = [
 export const PARTNER_KINDS = [
   { value: 'ministry', label: { ru: 'Министерство', kk: 'Министрлік' } },
   { value: 'organizer', label: { ru: 'Организатор', kk: 'Ұйымдастырушы' } },
+  { value: 'partner', label: { ru: 'Партнёр', kk: 'Серіктес' } },
   { value: 'university', label: { ru: 'Вуз', kk: 'ЖОО' } },
   { value: 'sponsor', label: { ru: 'Спонсор', kk: 'Демеуші' } },
   { value: 'media', label: { ru: 'СМИ', kk: 'БАҚ' } },

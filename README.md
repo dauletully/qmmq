@@ -1,67 +1,46 @@
-# Payload Blank Template
+# qmmq.kz
 
-This template comes configured with the bare minimum to get started on anything you need.
+Сайт Казахстанской ассоциации учителей математики и лендинг XII Международного творческого конкурса учителей математики, физики и информатики (contest.qmmq.kz).
 
-## Quick start
+Next.js 16 + Payload CMS 3 + PostgreSQL 17. Одно приложение: публичные страницы, админка (`/admin`), API форм, аналитика.
 
-This template can be deployed directly from our Cloud hosting and it will setup MongoDB and cloud S3 object storage for media.
+## Документы
 
-## Quick Start - local setup
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — решения, модель данных, API форм, amoCRM, аналитика, переменные окружения
+- [docs/tz-landing.md](docs/tz-landing.md) — выжимка ТЗ лендинга с принятыми решениями
+- [docs/DEPLOY.md](docs/DEPLOY.md) — деплой в Yandex Cloud Kazakhstan, бэкапы, откат
+- [docs/research/facts.md](docs/research/facts.md) — проверенные факты для текстов (с источниками)
+- [design/README.md](design/README.md) — дизайн-система и раскладка блоков лендинга
+- [src/analytics/README.md](src/analytics/README.md) — трекер, события, пиксели
 
-To spin up this template locally, follow these steps:
+## Локальная разработка
 
-### Clone
+Нужны Node 24 и pnpm. База — локальный кластер PostgreSQL 17 в `.local/pgdata` на порту 5433:
 
-After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. If you've already cloned this repo, skip to [Development](#development).
+```bash
+/Library/PostgreSQL/17/bin/pg_ctl -D .local/pgdata -l .local/postgres.log start
+cp .env.example .env   # при первом запуске; PAYLOAD_SECRET — openssl rand -hex 32
+pnpm install
+pnpm dev               # http://localhost:3000 → лендинг, /admin — админка
+pnpm seed              # мероприятие и лендинг contest-2026 (SEED_FORCE=1 — перезаписать тексты)
+```
 
-### Development
+Лендинг без поддомена открывается по `/contest-2026`; с поддоменом — `http://contest.localhost:3000`.
 
-1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `MONGODB_URL` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
+## Проверки
 
-3. `pnpm install && pnpm dev` to install dependencies and start the dev server
-4. open `http://localhost:3000` to open the app in your browser
+```bash
+pnpm tsc --noEmit
+pnpm lint
+pnpm test:int
+```
 
-That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
+## Изменения схемы базы
 
-#### Docker (Optional)
+В dev схема синхронизируется сама. Для продакшена после изменения коллекций создайте миграцию и закоммитьте её:
 
-If you prefer to use Docker for local development instead of a local MongoDB instance, the provided docker-compose.yml file can be used.
+```bash
+pnpm payload migrate:create <название>
+```
 
-To do so, follow these steps:
-
-- Modify the `MONGODB_URL` in your `.env` file to `mongodb://127.0.0.1/<dbname>`
-- Modify the `docker-compose.yml` file's `MONGODB_URL` to match the above `<dbname>`
-- Run `docker-compose up` to start the database, optionally pass `-d` to run in the background.
-
-## How it works
-
-The Payload config is tailored specifically to the needs of most websites. It is pre-configured in the following ways:
-
-### Collections
-
-See the [Collections](https://payloadcms.com/docs/configuration/collections) docs for details on how to extend this functionality.
-
-- #### Users (Authentication)
-
-  Users are auth-enabled collections that have access to the admin panel.
-
-  For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/3.x/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
-
-- #### Media
-
-  This is the uploads enabled collection. It features pre-configured sizes, focal point and manual resizing to help you manage your pictures.
-
-### Docker
-
-Alternatively, you can use [Docker](https://www.docker.com) to spin up this template locally. To do so, follow these steps:
-
-1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
-
-That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
-
-## Questions
-
-If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
+Деплой применяет миграции до переключения версии — см. [docs/DEPLOY.md](docs/DEPLOY.md).

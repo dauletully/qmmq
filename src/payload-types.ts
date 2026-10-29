@@ -767,7 +767,7 @@ export interface Partner {
    */
   logo?: (number | null) | Media;
   url?: string | null;
-  kind: 'ministry' | 'organizer' | 'university' | 'sponsor' | 'media';
+  kind: 'ministry' | 'organizer' | 'partner' | 'university' | 'sponsor' | 'media';
   /**
    * Меньше — левее в строке логотипов.
    */
